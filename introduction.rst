@@ -69,7 +69,7 @@ Tight vs. loose coupling
 
 In a distributed environment, connecting between components via signals or event attributes and calling methods directly is equivalent to a stable TCP/IP connection - the connection is always present and open and you can always make a call. Tight coupling between connected components enables the most effective ways to do things. Doing the same with TCP/IP within single application is easy, since the connection can is unlikely break by itself. However, it is not so simple for connections between processes or over a network - they can break any time. Because nodes can disappear from the network, it's not always possible to achieve tight coupling efficiently and reliably over a network. That is why network services mostly use stateless protocols and communication. In the current state of affairs, the services are loosely coupled when integrated using some Service Integration Solution, such as  Zato_, or by direct communication between the services.
 
-ain truth, using loose coupling is a hard tradeoff. It makes no sense to stick to it for deployments on a single computer nor for small or reliable corporate networks. It's a "better" solution only for integrations over unreliable or external sources, or with services that can't do better. These integration solutions merely opt for implementation simplicity over effectiveness, providing classic examples of one-size-fits-all syndrome gone wrong.
+The truth is, that using loose coupling is a hard tradeoff. It makes no sense to stick to it for deployments on a single computer nor for small or reliable corporate networks. It's a "better" solution only for integrations over unreliable or external sources, or with services that can't do better. These integration solutions merely opt for implementation simplicity over effectiveness, providing classic examples of one-size-fits-all syndrome gone wrong.
 
 .. admonition:: Our approach
 
@@ -104,7 +104,7 @@ Some organizations that we know use it are: AT&T, Cisco, EA, Los Alamos Labs, NA
 Platform specification
 ----------------------
 
-the Firebird Butler Development Platform defines basic features of Butler Services and messaging protocols. For example, it describes the following:
+The Firebird Butler Development Platform defines basic features of Butler Services and messaging protocols. For example, it describes the following:
 
 - service registration and discovery
 - communication negotiation (security, protocol version, communication channels, data format, sync/async patterns etc.)
@@ -159,7 +159,7 @@ We plan to create **at least** the following set of services in this category:
 
 - User-defined state machine analytics on measured data to trigger actions or emit signals
 - Export of metrics to the Graphite_ open source monitoring product (primarily as metrics storage and a visualization solution)
-- Import the connector for the python-diamond_ open source daemon that collects system metrics such as cpu, memory, network, i/o, load, disk etc.
+- Import connector for the python-diamond_ open source daemon that collects system metrics such as cpu, memory, network, i/o, load, disk etc.
 - Notification service to send reports and alerts via e-mail and other means.
 - Logging service, to collect log entries from other services.
 
