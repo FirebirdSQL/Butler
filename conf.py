@@ -160,8 +160,8 @@ html_theme_options = {
 
     # Location of link to source.
     # Options are "nav" (default), "footer" or anything else to exclude.
-    #'source_link_position': "none",
-    'source_link_position': "nav",
+    'source_link_position': "none",
+    #'source_link_position': "nav",
 
     # Bootswatch (http://bootswatch.com/) theme.
     #
