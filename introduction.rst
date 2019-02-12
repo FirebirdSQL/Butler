@@ -130,7 +130,7 @@ Because a platform specification does not define exact API or implementation det
 Firebird Butler Services
 ========================
 
-A Butler Service is basically a piece of software that uses `ZeroMQ socket` and :doc:`Firebird the Butler Service Protocol </rfc/4/FBSP>` for communication over this ZeroMQ channel. A service could use multiple ZeroMQ sockets for various purposes, but only one primary socket is required to support the Butler Service protocol.
+A Butler Service is basically a piece of software that uses `ZeroMQ socket` and :doc:`Firebird Butler Service Protocol </rfc/4/FBSP>` for communication over this ZeroMQ channel. A service could use multiple ZeroMQ sockets for various purposes, but only one primary socket is required to support the Butler Service protocol.
 
 **Butler Services could do anything**, but a well designed service does only one task, or a small set of closely related tasks within single category. While respecting the rule of simplicity, services can be divided into several basic types:
 
