@@ -1,0 +1,40 @@
+# Map of Firebird Foundation Inc. OID namespace
+# segment: Firebird Butler Platforms
+# origin: https://github.com/FirebirdSQL/Butler/master/oid/platforms.oid
+#
+# Description of root node for this sub-tree
+node:            
+  oid: 1.3.6.1.4.1.53446.1.2
+  name: Butler Platforms
+  description: Root node for registered Firebird Butler Development Platforms
+  contact: Pavel Císař
+  email: pcisar@users.sourceforge.net
+  site: https://firebird-butler.rtfd.io
+  parent-spec: https://raw.githubusercontent.com/FirebirdSQL/Butler/master/oid/butler.oid
+  type: node     # enumeration: "root", "node", "leaf"
+
+# List of children nodes in order of numbers assigned to them
+# could be omitted for leaf node (see node.type)
+children:        
+  - number: 0
+    name: Saturnin SDK
+    description: Reference implementation of Butler Development Platform
+    contact: Pavel Císař
+    email: pcisar@users.sourceforge.net
+    site: https://firebirdsql.org/en/saturnin-sdk/
+    node-spec: leaf
+  - number: 1
+    name: ButlerJavaSDK
+    description: 
+    contact: Sergey Nikitin
+    email: nikitinse@gmail.com
+    site: https://firebirdsql.org/en/butlerjavasdk/
+    node-spec: leaf
+  - number: 2
+    name: Butler SDK for Free Pascal
+    description: 
+    contact: Paul Reeves
+    email: ibbennu@gmail.com
+    site: https://firebirdsql.org/en/butler-sdk-for-free-pascal/
+    node-spec: leaf
+   

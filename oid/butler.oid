@@ -1,0 +1,47 @@
+# Map of Firebird Foundation Inc. OID namespace
+# segment: butler
+# origin: https://github.com/FirebirdSQL/Butler/master/oid/butler.oid
+#
+# Description of root node for this sub-tree
+node:            
+  oid: 1.3.6.1.4.1.53446.1
+  name: Firebird Butler
+  description: 
+  contact: Pavel Císař
+  email: pcisar@users.sourceforge.net
+  site: https://firebird-butler.rtfd.io
+  parent-spec: https://raw.githubusercontent.com/FirebirdSQL/firebird-uuid/master/root.oid
+  type: node     # enumeration: "root", "node", "leaf"
+
+# List of children nodes in order of numbers assigned to them
+# could be omitted for leaf node (see node.type)
+children:        
+  - number: 0
+    name: Reserved
+    description: Reserved for internal purposes of Firebird Butler project
+    contact: Pavel Císař
+    email: pcisar@users.sourceforge.net
+    site: https://firebird-butler.rtfd.io
+    node-spec: leaf  # one of: keywords "leaf" or "private" or URL to YAML file describing this child node
+  - number: 1
+    name: Butler Services
+    description: Root node for registered Firebird Butler Services
+    contact: Pavel Císař
+    email: pcisar@users.sourceforge.net
+    site: https://firebird-butler.rtfd.io
+    node-spec: https://raw.githubusercontent.com/FirebirdSQL/Butler/master/oid/services.oid
+  - number: 2
+    name: Butler Platforms
+    description: Root node for registered Firebird Butler Development Platforms
+    contact: Pavel Císař
+    email: pcisar@users.sourceforge.net
+    site: https://firebird-butler.rtfd.io
+    node-spec: https://raw.githubusercontent.com/FirebirdSQL/Butler/master/platforms.oid
+  - number: 3
+    name: Butler Service Vendors
+    description: Root node for registered vendors of Firebird Butler Services
+    contact: Pavel Císař
+    email: pcisar@users.sourceforge.net
+    site: https://firebird-butler.rtfd.io
+    node-spec: https://raw.githubusercontent.com/FirebirdSQL/Butler/master/vendors.oid
+   
