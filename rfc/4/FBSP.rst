@@ -116,6 +116,11 @@ Both the `Client` and the `Service` must be uniquely identified. For this purpos
 
 A single `Transport channel`_ MAY be used for message transmission for several concurrently active `Connections`. This specification does not define how the message routing for individual connections should be done, neither the necessary encapsulation of the FBSP protocol messages into the messages transmitted by the multi-transport channel. However, the possible implementation of the multi-transport channel MUST be completely transparent from the point of view of the FBSP.
 
+.. note::
+
+   For example, if transmission is implemented using ZeroMQ ROUTER_ socket, all FBSP messages flowing through it are / must be prefixed with extra `Data Frame` with routing address.
+   
+
 2.3.2 Bound and unbound Connections
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -174,7 +179,9 @@ The following ABNF grammar defines the message format used by FBSP protocol::
   
   ; A data frame consists from zero or more octets
   data-frame    = *OCTETS
-  
+
+.. _message-token:
+
 2.4.2 Message token
 ^^^^^^^^^^^^^^^^^^^
 
@@ -237,25 +244,25 @@ The `HELLO` message is a `Client` request to open a Connection_ to the `Service`
 
 1. This message MUST be the first message sent by the `Client`.
 2. The `Service` MUST reply to this message with WELCOME_ or ERROR_ message.
-3. The first data-frame_ of this message MUST contain the `Client Identity`_ (see `Data frames - HELLO` for details).
+3. The first data-frame_ of this message MUST contain the `Client Identity`_.
 4. If the `Service` records an open Connection_ for a `Client` with the same `Client Identity`_, it MUST respond with ERROR_ message, and refuse the connection.
 5. The content of type-data_ field in this message is not significant. **[RAW NOTE: Should we use it for something? HELLO protobuf format version? bitmap of requested common connection parameters?]**
 
 .. seealso::
 
-   `Data frames - HELLO`
+   :ref:`Data frames - HELLO <hello-dataframe>`
 
 WELCOME
 """""""
 
 The WELCOME message is the response of the `Service` to the HELLO_ message sent by the `Client`, which confirms the successful creation of the required Connection_ and announces basic parameters of the `Service` and the Connection_.
 
-1. The first data-frame_ of this message MUST contain the `Service Identity`_ (see `Data frames - WELCOME` for details).
+1. The first data-frame_ of this message MUST contain the `Service Identity`_.
 2. The content of type-data_ field in this message is not significant. **[RAW NOTE: Should we use it for something? WELCOME protobuf format version? bitmap of available common service abilities?]**
 
 .. seealso::
 
-   `Data frames - WELCOME`
+   :ref:`Data frames - WELCOME <welcome-dataframe>`
 
 NOOP
 """"
@@ -321,15 +328,17 @@ The DATA message is intended for delivery of arbitrary data between connected pe
 CANCEL
 """"""
 
-The CANCEL message represents a request for a `Service` to stop processing the previous request(s) from the `Client`.
+The CANCEL message represents a request for a `Service` to stop processing the previous request from the `Client`.
 
-1. The type-data_ field of the control-frame_ MUST contain the `Request Code`_ from Client REQUEST_ message to be canceled.
-2. The message MAY contain one or more data-frame_ that MUST conform to the API defined for cancellation of particular `Request Code`_.
-3. The `Service` MUST reply to this message with STATE_ or ERROR_ message.
+1. One CANCEL message is a request to end the processing of one active request.
+2. The content of type-data_ field in this message is not significant.
+3. The message MUST have a data-frame_ with specification of the request whose processing is to be terminated. The data-frame_ MAY contain additional information.
+4. The `Service` SHALL terminate specified active request of the `Client`, and send the REPLY_ message to the `Client` when cancellation is successfully finished. The REPLY_ message MAY have a data-frame_ with additional information.
+5. If the `Service` can not stop processing the request whose cancellation is requested, it MUST respond with the ERROR_ message.
 
 .. seealso::
 
-   `Flags - ACK-REQUEST <ACK-REQUEST>`_
+   `Flags - ACK-REQUEST <ACK-REQUEST>`_, :ref:`Data frames - CANCEL <cancel-dataframe>`
 
 STATE
 """""
@@ -338,12 +347,13 @@ The STATE message is sent by `Service` to report its operating state to the `Cli
 
 1. The `Service` SHALL NOT send the STATE message on its own discretion, but only in relation to REQUEST_ message previously sent by `Client`.
 2. The type-data_ field of the control-frame_ MUST contain the `Request Code`_ from Client REQUEST_ message this STATE message relates to.
-3. The `Client` SHALL NOT respond to this message.
-4. The sole exception to rule 3. is the case when ACK-REQUEST_ flag is set in received STATE message. In such a case the `Client` MUST respond according to rules for ACK-REQUEST_ flag handling.
+3. The message MUST contain a data-frame_ with state information that conforms to the API defined for particular `Request Code`_.
+4. The `Client` SHALL NOT respond to this message.
+5. The sole exception to rule 4. is the case when ACK-REQUEST_ flag is set in received STATE message. In such a case the `Client` MUST respond according to rules for ACK-REQUEST_ flag handling.
 
 .. seealso::
 
-   `Flags - ACK-REQUEST <ACK-REQUEST>`_
+   `Flags - ACK-REQUEST <ACK-REQUEST>`_, :ref:`Data frames - STATE <state-dataframe>`
 
 CLOSE
 """""
@@ -366,7 +376,7 @@ The ERROR message notifies the `Client` about error condition detected by `Servi
 
 .. seealso::
 
-   `Error codes`_
+   `Error codes`_, :ref:`Data frames - ERROR <error-dataframe>`
 
 2.4.4 Flags
 ^^^^^^^^^^^
@@ -478,7 +488,9 @@ The handling of Client request has following general rules:
    a. Using MORE_ flag in REPLY_, DATA_ and STATE_ messages sent to the `Client`. It is RECOMMENDED to use it as preferred method for organization of the message stream.
    b. Using STATE_ message with information that indicates the end of request processing.
    c. Continuous processing terminated on `Client` request by CANCEL_ message or until Connection_ is not closed.
-
+6. The service MAY accept a new request from the client before the initial request has been fully processed. However, all parallel request messages MUST have different (unique) :ref:`Message token <message-token>` value.
+7. The processing of any active request can be terminated prematurely at the client's request via the CANCEL_ message.
+      
 .. _Request codes:
 .. _Request Code:
 
@@ -507,10 +519,10 @@ This specification defines following Request Codes:
      - Value
      - Implementation
      - Action
-   * - ALL_REQESTS_
+   * - UNKNOWN_
      - 0
      - REQUIRED
-     - For use with CANCEL_ message to cancel all active `Client` requests
+     - Illegal request. Service SHALL respond with ERROR_.
    * - SVC_ABILITIES_
      - 1
      - REQUIRED
@@ -568,34 +580,50 @@ This specification defines following Request Codes:
      - 
      - Reserved
 
-ALL_REQESTS
-"""""""""""
+.. important::
 
-1. ALL_REQESTS is a valid code only for CANCEL_ messages. `Service` SHALL reply with ERROR_ message when this code is used in REQUEST_ message.
-2. The `Service` SHALL terminate all currently active requests of the `Client`, and send the REPLY_ message to the `Client` when request is successfully finished. The data-frame_ in REPLY_ message MUST conform to the protocol-buffer_ format defined for CANCEL_ message.
-3. If the `Service` cannot terminate **all** active requests, it SHALL respond with ERROR_ message. 
-4. If the `Service` cannot terminate **some** active requests, it SHALL NOT be an error condition. All partial failures SHALL be noted in the data-frame_ of the REPLY_ message.
-5. If there are no active `Client` requests, it SHALL NOT be an error condition.
+   Service MUST support and properly handle all request codes marked as `required`. The status of implementation of `optional` request codes MUST be properly reported by the service in response to the SVC_ABILITIES_ request.
+     
+UNKNOWN
+"""""""
+
+UNKNOWN is an illegal request and the Service SHALL respond with ERROR_ message.
 
 SVC_ABILITIES
 """""""""""""
 
 The `Service` SHALL reply with single REPLY_ message that describe its abilities in the data-frame_ that MUST conform to the protocol-buffer_ format defined for this `Request Code`.
 
+.. seealso::
+
+   `SVC_ABILITIES data`_
+
 SVC_CONFIG
 """"""""""
 
-The `Service` SHALL reply with single REPLY_ message that describe its current configuration in the data-frame_ that MUST conform to the protocol-buffer_ format defined for this `Request Code`.
+The `Service` SHALL reply with single REPLY_ message that describe its current configuration in the data-frame_ that MUST conform to the protocol-buffer format defined for this `Request Code`.
+
+.. seealso::
+
+   `SVC_CONFIG data`_
 
 SVC_STATE
 """""""""
 
 The `Service` SHALL reply with single REPLY_ message that describe its current operational state in the data-frame_ that MUST conform to the protocol-buffer_ format defined for this `Request Code`.
 
+.. seealso::
+
+   `SVC_STATE data`_
+
 SVC_SET_CONFIG
 """"""""""""""
 
 The `Service` SHALL reply with single REPLY_ message that describe its abilities in the data-frame_ that MUST conform to the protocol-buffer_ format defined for this `Request Code`.
+
+.. seealso::
+
+   `SVC_SET_CONFIG data`_
 
 SVC_SET_STATE
 """""""""""""
@@ -604,6 +632,10 @@ SVC_SET_STATE
 2. The `Service` SHALL reply with single REPLY_ message that indicates the result in the data-frame_.
 3. Both REQUEST_ and REPLY_ data-frame_ MUST conform to the protocol-buffer_ format defined for this `Request Code`.
 
+.. seealso::
+
+   `SVC_SET_STATE data`_
+
 SVC_CONTROL
 """""""""""
 
@@ -611,24 +643,40 @@ SVC_CONTROL
 2. The `Service` SHALL reply with single REPLY_ message that indicates the result in the data-frame_.
 3. Both REQUEST_ and REPLY_ data-frame_ MUST conform to the protocol-buffer_ format defined for this `Request Code`.
 
+.. seealso::
+
+   `SVC_CONTROL data`_
+
 CON_REPEAT
 """"""""""
 
-1. The `Client` MUST describe the requested messages in data-frame_ passed in the REQUEST_ message, that MUST conform to the protocol-buffer_ format defined for this `Request Code`..
+1. The `Client` MUST describe the requested messages in data-frame_ passed in the REQUEST_ message, that MUST conform to the protocol-buffer_ format defined for this `Request Code`.
 2. The `Service` SHALL reply with single REPLY_ message that indicates that request was accepted and Service will start sending requested messages.
 3. The `Service` SHALL send messages requested by `Client` as DATA_ messages related to original REQUEST_ with one or more data-frame_ parts that hold the requested message (the control-frame_ of the requested message is thus the first data-frame_ of DATA_ message sent to the `Client`).
 4. The requested messages SHALL be resent in original order.
 5. The `Service` SHALL use MORE flag to organize the DATA_ message stream for the `Client`.
+
+.. seealso::
+
+   `CON_REPEAT data`_
 
 CON_CONFIG
 """"""""""
 
 The `Service` SHALL reply with single REPLY_ message that describe the current configuration of active Connection_ in the data-frame_ that MUST conform to the protocol-buffer_ format defined for this `Request Code`.
 
+.. seealso::
+
+   `CON_CONFIG data`_
+
 CON_STATE
 """""""""
 
 The `Service` SHALL reply with single REPLY_ message that describe the actual operational state of active Connection_ in the data-frame_ that MUST conform to the protocol-buffer_ format defined for this `Request Code`.
+
+.. seealso::
+
+   `CON_STATE data`_
 
 CON_SET_CONFIG
 """"""""""""""
@@ -637,12 +685,20 @@ CON_SET_CONFIG
 2. The `Service` SHALL reply with single REPLY_ message that indicates the result in the data-frame_.
 3. Both REQUEST_ and REPLY_ data-frame_ MUST conform to the protocol-buffer_ format defined for this `Request Code`.
 
+.. seealso::
+
+   `CON_SET_CONFIG data`_
+
 CON_SET_STATE
 """""""""""""
 
 1. The `Service` SHALL change the operational state of the Connection_ to the one described in data-frame_ passed in the received REQUEST_ message.
 2. The `Service` SHALL reply with single REPLY_ message that indicates the result in the data-frame_.
 3. Both REQUEST_ and REPLY_ data-frame_ MUST conform to the protocol-buffer_ format defined for this `Request Code`.
+
+.. seealso::
+
+   `CON_SET_STATE data`_
 
 CON_CONTROL
 """""""""""
@@ -651,6 +707,9 @@ CON_CONTROL
 2. The `Service` SHALL reply with single REPLY_ message that indicates the result in the data-frame_.
 3. Both REQUEST_ and REPLY_ data-frame_ MUST conform to the protocol-buffer_ format defined for this `Request Code`.
 
+.. seealso::
+
+   `CON_CONTROL data`_
 
 .. _protocol-buffer:
 
@@ -669,37 +728,348 @@ All API and other specifications that define data-frame_ contents SHALL conform 
 1. The message SHALL have minimal necessary number of `data-frames`.
 2. The total size of all `data-frames` in single message SHOULD NOT exceed 50MB.
 3. Any peer MAY set a Connection_ limit on total size (in bytes) for any single message transmitted that SHALL NOT be smaller than 1MB. Such limit SHALL be announced to other peer in HELLO and WELCOME message. Such limit MAY be negotiable between peers after Connection_ is successfully established.
-4. All API and other specifications that define rules for data-frame_ contents SHOULD use serialization to store structured data into data-frame_. The RECOMMENDED serialization methods are  `Protocol Buffers`_ (preferred) or `Flat Buffers`_ (in case the direct access to parts of serialized data is required). It is NOT RECOMMENDED to use any verbose serialization format such as JSON or XML. The whole Service API SHOULD use only one serialization method. Serialization method MAY be negotiable between peers.
+4. All structured data in `data-frames` defined by this specification are serialized as single `Protocol Buffers`_ message.
+5. All API and other specifications that define rules for data-frame_ contents SHOULD use serialization to store structured data into data-frame_. The RECOMMENDED serialization methods are `Protocol Buffers`_ (preferred) or `Flat Buffers`_ (in case the direct access to parts of serialized data is required). It is NOT RECOMMENDED to use any verbose serialization format such as JSON or XML. The whole Service API SHOULD use only one serialization method. Serialization method MAY be negotiable between peers.
+
+2.7.2 Common protobuf specifications
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+All Protocol Buffer specifications use `proto3` syntax. This syntax variant does not support required fields, and all fields are optional (basic types will have the default "empty" value when they are not serialized). However, some fields in FBSP specification are considered as mandatory (as "required" in `proto2`), and should be validated as such by receiver.
+
+State enumeration
+"""""""""""""""""
+
+.. code-block:: protobuf
+
+   enum State {
+     option allow_alias = true ;
+     
+     UNKNOWN         = 0 ;
+     READY           = 1 ;
+     RUNNING         = 2 ;
+     WAITING         = 3 ;
+     SUSPENDED       = 4 ;
+     FINISHED        = 5 ;
+     ABORTED         = 6 ;
+     
+     // Aliases
+     
+     CREATED         = 1 ;
+     BLOCKED         = 3 ;
+     STOPPED         = 4 ;
+   }
+
+Service handler types
+"""""""""""""""""""""
+
+.. code-block:: protobuf
+
+   enum ServiceHandlerType {
+     PROVIDER = 0 ; Provides the service
+     CONSUMER = 1 ; Uses the service
+   }
+
+Data handler types
+""""""""""""""""""
+
+.. code-block:: protobuf
+
+   enum DataHandlerType {
+     NONE       = 0 ; // Does not work with data
+     B_PROVIDER = 1 ; // Sends data via bind REP/ROUTER/DEALER/SERVER/STREAM socket
+     B_CONSUMER = 2 ; // Accepts data via bind REQ/ROUTER/DEALER/CLIENT/STREAM socket
+     C_PROVIDER = 3 ; // Sends data via connected REP/ROUTER/DEALER/SERVER/STREAM socket
+     C_CONSUMER = 4 ; // Accepts data via connected REQ/ROUTER/DEALER/CLIENT/STREAM socket
+     PUBLISHER  = 5 ; // Broadcasts data via PUB/XPUB/RADIO socket
+     SUBSCRIBER = 6 ; // Subscribes to data stream via SUB/XSUB/DISH socket
+     FAN_IN     = 7 ; // Collects data via PULL socket
+     FAN_OUT    = 8 ; // Distributes data via PUSH socket
+   }
+
+Protocol description
+""""""""""""""""""""
+
+.. code-block:: protobuf
+
+   message ProtocolDescription {
+      string uid                = 1
+      string version            = 2
+      uint32 level              = 3
+      repeated string supports  = 4
+   }
+
+:uid:
+  MANDATORY unique protocol ID. It's RECOMMENDED to use abbreviated protocol name.
+     
+:version:
+  MANDATORY protocol version. MUST conform to `major[.minor]` pattern, where `major` and `minor` are numbers.
+  
+:level:
+  Implemented protocol level.
+
+:supports:
+  List of implemented optional features. It's RECOMMENDED to use feature keywords.
+  
+Platform identification
+"""""""""""""""""""""""
+
+.. code-block:: protobuf
+
+   message PlatformId {
+     string uid     = 1 ;
+     string version = 2 ;
+   }
+
+:uid:
+  MANDATORY unique platform ID. It's RECOMMENDED to use uuid version 5 - SHA1, namespace OID.
+     
+:version:
+  MANDATORY platform version. MUST conform to `major[.minor[.build[-tag]]]` pattern, where `major`, `minor` and `build` are numbers, and `tag` is alphanumeric.
+  
+Vendor identification
+"""""""""""""""""""""
+
+.. code-block:: protobuf
+
+   message VendorId {
+     string uid = 1 ;
+   }
+
+:uid:
+  MANDATORY unique vendor ID. It's RECOMMENDED to use uuid version 5 - SHA1, namespace OID.
+     
+Agent identification
+""""""""""""""""""""
+
+A data structure that describes the identity of the Client or Service.
+
+.. code-block:: protobuf
+
+   message AgentIdentification {
+     string uid            = 1 ;
+     string name           = 2 ;
+     string version        = 3 ;
+     VendorId vendor       = 4 ;
+     PlatformId platform   = 5 ;
+     string classification = 6 ;
+   }
+
+:uid:
+  MANDATORY unique Agent ID. It's RECOMMENDED to use uuid version 5 - SHA1, namespace OID.
+     
+:name:
+  Agent name assigned by vendor. MANDATORY for `Service`. It's RECOMMENDED that `uid` and `name` make a stable pair, i.e. there should not be agents with the same name but different uid and vice versa.
+  
+:version:
+  MANDATORY agent version. MUST conform to `major[.minor[.build[-tag]]]` pattern, where `major`, `minor` and `build` are numbers, and `tag` is alphanumeric.
+  
+:vendor:
+  `Vendor identification`_. MANDATORY for `Service`.
+
+:platform:
+  `Platform identification`_. MANDATORY for `Service`.
+  
+:classification:
+  Agent classification. It's RECOMMENDED to use `domain/category` schema, for example *database/backup*.
 
 
-2.7.2 FBSP Data Frames for message types
+Peer Identification
+"""""""""""""""""""
+
+A data structure that describes the identity of the peer within the FBSP Connection_.
+
+.. code-block:: protobuf
+
+   import "google/protobuf/any.proto";
+
+   message PeerIdentification {
+     string uid                              = 1 ;
+     string host                             = 2 ;
+     uint32 pid                              = 3 ;
+     AgentIdentification identity            = 4 ;
+     repeated google.protobuf.Any supplement = 5 ;
+   }
+
+:uid:
+  MANDATORY unique peer ID. It's RECOMMENDED to use uuid version 1.
+  
+  .. seealso:: `2.2 Client and Service Identity`_
+
+:host:
+  MANDATORY host Id
+  
+:pid:
+  MANDATORY process Id
+  
+:identity:
+  MANDATORY `Agent identification`_
+
+:supplement:
+  Any additional information about peer.
+
+Error Description
+"""""""""""""""""
+
+A data structure that describes an error.
+
+.. code-block:: protobuf
+
+   import "google/protobuf/struct.proto";
+   
+   message ErrorDescription {
+     uint64 code                       = 1 ;
+     string description                = 2 ;
+     google.protobuf.Struct context    = 3 ;
+     google.protobuf.Struct annotation = 4 ;
+   }
+
+
+:code: 
+  MANDATORY service-specific error code.
+
+:description: 
+  MANDATORY short text description of the error.
+
+:context: 
+  Structured error context information. The context is for information that accurately identifies the source of the error by the `Client`.
+
+:annotation:
+  Additional structured error information. Annotations are intended for debugging and other internal purposes and MAY be ignored by the `Client`.
+
+2.7.3 FBSP Data Frames for message types
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. todo:: 
-   :class: todo
+.. _hello-dataframe:
 
-   Define protocol buffers for HELLO, WELCOME and CANCEL messages.
-   
 HELLO data
 """"""""""
+
+Data Frame must contain `Peer Identification`_ message.
+
+.. _welcome-dataframe:
 
 WELCOME data
 """"""""""""
 
+Data Frame must contain `Peer Identification`_ message.
+
+.. _cancel-dataframe:
+
 CANCEL data
 """""""""""
 
-2.7.3 FBSP Data Frames for Request Codes
+.. code-block:: protobuf
+ 
+   import "google/protobuf/any.proto";
+
+   message CancelRequests {
+     string token                            = 1 ;
+     repeated google.protobuf.Any supplement = 2 ;
+   }
+
+:token:
+  MANDATORY message-token_ of the message to be canceled.
+
+:supplement:
+  Any additional information required or supported by Service API specification for cancellation of particular message.
+
+
+.. _state-dataframe:
+
+STATE data
+""""""""""
+
+.. code-block:: protobuf
+
+   import "google/protobuf/any.proto";
+
+   message StateInformation {
+     State state                             = 1 ;
+     repeated google.protobuf.Any supplement = 2 ;
+   }
+
+:state:
+  MANDATORY `State enumeration`_
+
+:supplement:
+  Any additional state information supported by Service API specification.
+
+
+.. _error-dataframe:
+
+ERROR data
+""""""""""
+
+Each Data Frame must contain `Error Description`_ message.
+
+2.7.4 FBSP Data Frames for Request Codes
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. _SVC-ABILITIES-data:
 
 SVC_ABILITIES data
 """"""""""""""""""
 
-.. todo:: 
-   :class: todo
+.. code-block:: protobuf
 
-   Define protocol buffers for SVC_ABILITIES.
+   message RqSvcAbilities {
+     sint32 can_repeat_messages              = 1 ;
+     ProtocolDescription service_state       = 2 ; 
+     ProtocolDescription service_config      = 3 ;
+     ProtocolDescription service_control     = 4 ;
+     map<string, ServiceAbility> abilities   = 5 ;
+   }
+
+:can_repeat_messages:
+   MANDATORY number of messages that service previously sent to the client that could be resend (see CON_REPEAT_ Request Code).
    
+   +-----------+-----------------------------------------+
+   | **Value** | **Meaning**                             |
+   +-----------+-----------------------------------------+
+   | **0**     | Service can't resend any message        |
+   +-----------+-----------------------------------------+
+   | **X**     | Service can resend last X messages sent |
+   +-----------+-----------------------------------------+
+   | **-1**    | Service can resend all messages         |
+   +-----------+-----------------------------------------+
+
+:service_state:
+   MANDATORY description of the `Service State Protocol` supported by service.
+
+:service_config:
+   MANDATORY description of the `Service Configuration Protocol` supported by service.
+   
+:service_control:
+   MANDATORY description of the `Service Control Protocol` supported by service.
+
+:abilities:
+   Map of other abilities.
+   
+   Key = Ability ID. It’s RECOMMENDED to use uuid version 5 - SHA1, namespace OID.
+   
+   Value = Ability descriptor
+
+.. code-block:: protobuf
+
+   message ServiceAbility {
+     ServiceHandlerType service_type         = 1 ; 
+     repeated DataHandlerType data_handler   = 2 ;
+     repeated ProtocolDescription protocol   = 3 ;
+     repeated google.protobuf.Any supplement = 4 ;
+   }
+
+:service_type:
+   MANDATORY type of service (Provider / Consumer)
+
+:data_handler:
+   MANDATORY list of supported data I/O patterns
+
+:protocol:
+   MANDATORY list of supported protocols
+
+:supplement:
+   List of additional vendor-specific information about service ability
+
 SVC_CONFIG data
 """""""""""""""
 
@@ -728,7 +1098,14 @@ The data-frame_ SHALL conform to :doc:`/rfc/8/RSCTRL` specification.
 CON_REPEAT data
 """""""""""""""
 
-The data-frame_ SHALL conform to :doc:`/rfc/8/RSCTRL` specification.
+.. code-block:: protobuf
+
+   message RqConRepeat {
+     sint32 last = 1 ;
+   }
+
+:last:
+   MANDATORY number of last messages to resend.
 
 CON_CONFIG data
 """""""""""""""
@@ -777,7 +1154,62 @@ Errors are transmitted in type-data_ field of the ERROR_ message.
 .. todo:: 
    :class: todo
 
-   Add list of error codes defined by FBSP.
+   Finalize the list of error codes.
+
+Errors indicating that particular request cannot be satisfied
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+:1 - Bad Request:
+  The service cannot or will not process the request due to something that is perceived to be a client error (e.g., malformed request syntax, invalid request message framing etc.).
+
+:2 - Not Implemented:
+  The server does not support the functionality required to fulfill the request.
+
+:3 - Protocol Version Not Supported:
+  The server does not support, or refuses to support, the version of protocol that was used in the request message. The protocol to which this error refers is any protocol used for a specific request, not the FBSP itself.
+
+:4 - Internal Service Error:
+  The server encountered an unexpected condition that prevented it from fulfilling the request.
+  
+:5 - Too Many Requests:
+  The client has sent too many requests in a given amount of time ("rate limiting").
+  
+:6 - Failed Dependency:
+   The request could not be performed because the requested action depended on another action and that action failed.
+   
+:7 - Gone:
+  The target resource is no longer available and this condition is likely to be permanent.
+  
+:8 - Conflict:
+  The request could not be completed due to a conflict with the current state of the target resource. This code is used in situations where the user might be able to resolve the conflict and resubmit the request.
+
+:9 - Request Timeout:
+  The server did not receive a complete request message within the time that it was prepared to wait.
+  
+:10 - Not Found:
+  The service did not find the target resource or is not willing to disclose that one exists.
+  
+:11 - Forbidden:
+  The service understood the request but refuses to authorize it.
+  
+:12 - Unauthorized:
+  The request has not been applied because it lacks valid authentication credentials for the target resource.
+
+:13 - Payload Too Large:
+  The service is refusing to process a request because the request payload is larger than the service is willing or able to process.
+  
+:14 - Insufficient Storage:
+  The service is unable to store data needed to successfully complete the request.
+  
+Fatal errors indicating that connection would/should be terminated
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+:2000 - Service Unavailable:
+  The server is currently unable to handle the request due to a temporary overload or scheduled maintenance, which will likely be alleviated after some delay.
+
+:2001 - FBSP Version Not Supported:
+  The server does not support, or refuses to support, the version of FBSP that was used in the HELLO_ message.
+
 
 3. Reference Implementations
 ============================
@@ -873,7 +1305,7 @@ Simple Client request
 Client request with message stream
 ----------------------------------
 
-Using MORE_ flag:
+Using MORE_ flag for `Service` -> `Client` transfer:
 
 .. aafig::
          
@@ -900,7 +1332,37 @@ Using MORE_ flag:
          X<------------------------X
          X                         |
 
-Using STATE_ message:
+Using MORE_ flag for `Client` -> `Service` transfer:
+
+.. aafig::
+         
+    +---------+              +----------+
+    |  Client |              |  Service |
+    +----+----+              +-----+----+
+         |                         |
+         X        REQUEST          |
+         X------------------------>X
+         |                         X
+         |          REPLY          X
+         X<------------------------X
+         X                         |
+         X      "DATA (MORE)"      |
+         X------------------------>*
+         X                         |
+         X      "DATA (MORE)"      |
+         X------------------------>*
+         X                         |
+         X      "DATA (MORE)"      |
+         X------------------------>*
+         X                         |
+         X          DATA           |
+         X------------------------>X
+         |                         X
+         |      STATE [end]        X
+         X<------------------------X
+         X                         |
+
+Using STATE_ message (only for `Service` -> `Client` transfer):
 
 .. aafig::
          
@@ -927,7 +1389,7 @@ Using STATE_ message:
          X<------------------------X
          X                         |
 
-Using CANCEL_ message:
+Using CANCEL_ message (only for `Service` -> `Client` transfer):
 
 .. aafig::
          
@@ -957,15 +1419,71 @@ Using CANCEL_ message:
          X<------------------------X
          X                         |
 
-
 .. important::
 
    There is no guarantee that Service will not send more stream messages in time between CANCEL is sent, and REPLY to cancel request is received by the Client. However, the Service SHALL NOT send any stream message after it sends the REPLY to the CANCEL request.
- 
+
+Synchronous `Service` -> `Client` data transfer using ACK-REQUEST/ACK-REPLY flags:
+
+.. aafig::
+         
+    +---------+                 +----------+
+    |  Client |                 |  Service |
+    +----+----+                 +-----+----+
+         |                            |
+         X          REQUEST           |
+         X--------------------------->X
+         |                            X
+         |   "REPLY (ACK-REQUEST)"    X
+         X<---------------------------X
+         X                            |
+         X    "REPLY (ACK-REPLY)"     |
+         X--------------------------->X
+         |                            X
+         | "DATA/STATE (ACK-REQUEST)" X
+         X<---------------------------X
+         X                            |
+         X  "DATA/STATE (ACK-REPLY)"  |
+         X--------------------------->X
+         |                            X
+         | "DATA/STATE (ACK-REQUEST)" X
+         X<---------------------------X
+         X                            |
+         X  "DATA/STATE (ACK-REPLY)"  |
+         X--------------------------->X
+         |                            X
+
+Synchronous `Client` -> `Service` data transfer using ACK-REQUEST/ACK-REPLY flags:
+
+.. aafig::
+         
+    +---------+                 +----------+
+    |  Client |                 |  Service |
+    +----+----+                 +-----+----+
+         |                            |
+         X          REQUEST           |
+         X--------------------------->X
+         |                            X
+         |           REPLY            X
+         X<---------------------------X
+         X                            |
+         X    "DATA (ACK-REQUEST)"    |
+         X--------------------------->X
+         |                            X
+         |     "DATA (ACK-REPLY)"     X
+         X<---------------------------X
+         X                            |
+         X    "DATA (ACK-REQUEST)"    |
+         X--------------------------->X
+         |                            X
+         |     "DATA (ACK-REPLY)"     X
+         X<---------------------------X
+         X                            |
+
 .. todo:: 
    :class: todo
 
-   Describe additional transmission patterns. Especially ones for synchronous data transfer using ACK-REQUEST/ACK-REPLY flags.
+   Describe additional transmission patterns.
 
 |
 |
@@ -982,4 +1500,5 @@ Using CANCEL_ message:
 .. |SSTP| replace:: :doc:`6/SSTP</rfc/6/SSTP>`
 .. |RSCFG| replace:: :doc:`7/RSCFG</rfc/7/RSCFG>`
 .. |RSCTRL| replace:: :doc:`8/RSCTRL</rfc/8/RSCTRL>`
-
+.. _Service configuration: :doc:`7/RSCFG</rfc/7/RSCFG>`
+.. _ZMQ_PROBE_ROUTER: http://api.zeromq.org/4-1:zmq-setsockopt

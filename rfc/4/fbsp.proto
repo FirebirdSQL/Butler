@@ -1,0 +1,172 @@
+// Protocol Buffers for Firebird Butler Service Protocol v1
+// Copyright 2019 Firebird Project.  All rights reserved.
+// https://www.firebirdsql.org/
+// https://firebird-butler.rtfd.io
+//
+// License: The MIT License
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom
+// the Software is furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+syntax = "proto3";
+
+package firebird.butler;
+
+option csharp_namespace = "Firebird.Butler.FBSP";
+option java_package = "org.firebird.butler";
+option java_outer_classname = "FBSPProto";
+option java_multiple_files = true;
+option objc_class_prefix = "FPB";
+
+import "google/protobuf/any.proto";
+import "google/protobuf/struct.proto";
+
+// Data Hanler Type
+
+enum DataHandlerType {
+  NONE       = 0 ; // Does not work with data
+  B_PROVIDER = 1 ; // Sends data via bind REP/ROUTER/DEALER/SERVER/STREAM socket
+  B_CONSUMER = 2 ; // Accepts data via bind REQ/ROUTER/DEALER/CLIENT/STREAM socket
+  C_PROVIDER = 3 ; // Sends data via connected REP/ROUTER/DEALER/SERVER/STREAM socket
+  C_CONSUMER = 4 ; // Accepts data via connected REQ/ROUTER/DEALER/CLIENT/STREAM socket
+  PUBLISHER  = 5 ; // Broadcasts data via PUB/XPUB/RADIO socket
+  SUBSCRIBER = 6 ; // Subscribes to data stream via SUB/XSUB/DISH socket
+  FAN_IN     = 7 ; // Collects data via PULL socket
+  FAN_OUT    = 8 ; // Distributes data via PUSH socket
+}
+
+// ServiceHandlerType
+
+enum ServiceHandlerType {
+  PROVIDER = 0 ;
+  CONSUMER = 1 ;
+}
+
+// Universal state enumeration
+
+enum State {
+  option allow_alias = true ;
+   
+  UNKNOWN         = 0 ;
+  READY           = 1 ;
+  RUNNING         = 2 ;
+  WAITING         = 3 ;
+  SUSPENDED       = 4 ;
+  FINISHED        = 5 ;
+  ABORTED         = 6 ;
+     
+  // Aliases
+     
+  CREATED         = 1 ;
+  BLOCKED         = 3 ;
+  STOPPED         = 4 ;
+}
+
+// Protocol Description
+
+message ProtocolDescription {
+   string uid                = 1 ; // Protocol ID (short name)
+   string version            = 2 ; // Protocol version: <major>.<minor>
+   uint32 level              = 3 ; // Implemented protocol level
+   repeated string supports  = 4 ; // List of implemented optional features
+}
+
+// Butler Development Platform Identification
+
+message PlatformId {
+  string uid     = 1 ;
+  string version = 2 ;
+}
+
+// Butler Service Vendor Identification
+
+message VendorId {
+  string uid = 1 ;
+}
+
+// Butler Software Agent Identification (Service Class)
+
+message AgentIdentification {
+  string uid            = 1 ;
+  string name           = 2 ;
+  string version        = 3 ;
+  VendorId vendor       = 4 ;
+  PlatformId platform   = 5 ;
+  string classification = 6 ;
+}
+
+// Butler Peer Identification (Agent Instance)
+
+message PeerIdentification {
+  string uid                              = 1 ;
+  string host                             = 2 ;
+  uint32 pid                              = 3 ;
+  AgentIdentification identity            = 4 ;
+  repeated google.protobuf.Any supplement = 5 ;
+}
+   
+// FBSP Service Error Description Record
+
+message ErrorDescription {
+  uint64 code                       = 1 ;
+  string description                = 2 ;
+  google.protobuf.Struct context    = 3 ;
+  google.protobuf.Struct annotation = 4 ;
+}
+
+// FBSP CANCEL Message Data
+
+message CancelRequests {
+  string token                            = 1 ;
+  repeated google.protobuf.Any supplement = 2 ; // Additional vendor-specific information
+}
+
+// FBSP STATE Message Data
+
+message StateInformation {
+  State state                             = 1 ;
+  repeated google.protobuf.Any supplement = 2 ; // Additional vendor-specific information
+}
+
+// FBSP REQUEST:SVC_ABILITIES Message Data
+
+message ServiceAbility {
+  ServiceHandlerType service_type         = 1 ; // PROVIDER / CONSUMER
+  repeated DataHandlerType data_handler   = 2 ; // List of supported data I/O patterns
+  repeated ProtocolDescription protocol   = 3 ; // List of supported protocols
+  repeated google.protobuf.Any supplement = 4 ; // Additional vendor-specific information
+}
+
+message RqSvcAbilities {
+  sint32 can_repeat_messages              = 1 ; // Number of messages service can resend
+  ProtocolDescription service_state       = 2 ; 
+  ProtocolDescription service_config      = 3 ;
+  ProtocolDescription service_control     = 4 ;
+  map<string, ServiceAbility> abilities   = 5 ; // Other abilities, map<name, description>
+}
+
+// FBSP REQUEST:CON_REPEAT Message Data
+
+message RqConRepeat {
+  sint32 last = 1 ; // Number of X last messages to resend
+}
+
