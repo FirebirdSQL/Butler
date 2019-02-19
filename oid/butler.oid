@@ -44,4 +44,11 @@ children:
     email: pcisar@users.sourceforge.net
     site: https://firebird-butler.rtfd.io
     node-spec: https://raw.githubusercontent.com/FirebirdSQL/Butler/master/vendors.oid
+  - number: 4
+    name: Butler Service Abilities
+    description: Root node for registered abilities of Firebird Butler Services
+    contact: Pavel Císař
+    email: pcisar@users.sourceforge.net
+    site: https://firebird-butler.rtfd.io
+    node-spec: leaf
    
