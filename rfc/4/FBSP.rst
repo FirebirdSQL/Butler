@@ -765,8 +765,9 @@ Service handler types
 .. code-block:: protobuf
 
    enum ServiceHandlerType {
-     PROVIDER = 0 ; Provides the service
-     CONSUMER = 1 ; Uses the service
+     ILLEGAL  = 0 ; // Default (0) is not supported
+     PROVIDER = 1 ; // Provides the service
+     CONSUMER = 2 ; // Uses the service
    }
 
 Data handler types
@@ -792,14 +793,14 @@ Protocol description
 .. code-block:: protobuf
 
    message ProtocolDescription {
-      string uid                = 1
+      bytes  uid                = 1
       string version            = 2
       uint32 level              = 3
       repeated string supports  = 4
    }
 
 :uid:
-  MANDATORY unique protocol ID. It's RECOMMENDED to use abbreviated protocol name.
+  MANDATORY unique protocol ID. It's RECOMMENDED to use FourCC of the protocol, or UUID of type 5.
      
 :version:
   MANDATORY protocol version. MUST conform to `major[.minor]` pattern, where `major` and `minor` are numbers.
@@ -816,7 +817,7 @@ Platform identification
 .. code-block:: protobuf
 
    message PlatformId {
-     string uid     = 1 ;
+     bytes  uid     = 1 ;
      string version = 2 ;
    }
 
@@ -832,7 +833,7 @@ Vendor identification
 .. code-block:: protobuf
 
    message VendorId {
-     string uid = 1 ;
+     bytes uid = 1 ;
    }
 
 :uid:
@@ -846,7 +847,7 @@ A data structure that describes the identity of the Client or Service.
 .. code-block:: protobuf
 
    message AgentIdentification {
-     string uid            = 1 ;
+     bytes  uid            = 1 ;
      string name           = 2 ;
      string version        = 3 ;
      VendorId vendor       = 4 ;
@@ -858,16 +859,16 @@ A data structure that describes the identity of the Client or Service.
   MANDATORY unique Agent ID. It's RECOMMENDED to use uuid version 5 - SHA1, namespace OID.
      
 :name:
-  Agent name assigned by vendor. MANDATORY for `Service`. It's RECOMMENDED that `uid` and `name` make a stable pair, i.e. there should not be agents with the same name but different uid and vice versa.
+  MANDATORY agent name assigned by vendor. It's RECOMMENDED that `uid` and `name` make a stable pair, i.e. there should not be agents with the same name but different uid and vice versa.
   
 :version:
   MANDATORY agent version. MUST conform to `major[.minor[.build[-tag]]]` pattern, where `major`, `minor` and `build` are numbers, and `tag` is alphanumeric.
   
 :vendor:
-  `Vendor identification`_. MANDATORY for `Service`.
+  MANDATORY `Vendor identification`_.
 
 :platform:
-  `Platform identification`_. MANDATORY for `Service`.
+  MANDATORY `Platform identification`_.
   
 :classification:
   Agent classification. It's RECOMMENDED to use `domain/category` schema, for example *database/backup*.
@@ -883,7 +884,7 @@ A data structure that describes the identity of the peer within the FBSP Connect
    import "google/protobuf/any.proto";
 
    message PeerIdentification {
-     string uid                              = 1 ;
+     bytes  uid                              = 1 ;
      string host                             = 2 ;
      uint32 pid                              = 3 ;
      AgentIdentification identity            = 4 ;
@@ -963,7 +964,7 @@ CANCEL data
    import "google/protobuf/any.proto";
 
    message CancelRequests {
-     string token                            = 1 ;
+     bytes token                             = 1 ;
      repeated google.protobuf.Any supplement = 2 ;
    }
 
@@ -1012,7 +1013,7 @@ SVC_ABILITIES data
 
 .. code-block:: protobuf
 
-   message RqSvcAbilities {
+   message ReplySvcAbilities {
      sint32 can_repeat_messages              = 1 ;
      ProtocolDescription service_state       = 2 ; 
      ProtocolDescription service_config      = 3 ;
@@ -1021,7 +1022,7 @@ SVC_ABILITIES data
    }
 
 :can_repeat_messages:
-   MANDATORY number of messages that service previously sent to the client that could be resend (see CON_REPEAT_ Request Code).
+   Number of messages that service previously sent to the client that could be resend (see CON_REPEAT_ Request Code).
    
    +-----------+-----------------------------------------+
    | **Value** | **Meaning**                             |
@@ -1100,7 +1101,7 @@ CON_REPEAT data
 
 .. code-block:: protobuf
 
-   message RqConRepeat {
+   message ReqestConRepeat {
      sint32 last = 1 ;
    }
 
@@ -1140,9 +1141,10 @@ The data-frame_ SHALL conform to :doc:`/rfc/8/RSCTRL` specification.
 
 Errors are transmitted in type-data_ field of the ERROR_ message.
 
-1. The `Error Code` is a 11-bit unsigned integer number encoded in upper (leftmost) bits of the type-data_ field of ERROR_ message. The `Error Code` is thus a value in range 0..2047.
-2. The lower (rightmost) 5 bits of type-data_ field encode the message-type_ this particular error relates to (the bitmask is 31). The "zero" value represents general, out-of-band error reported by `Service`.
-3. The `Error Code` range (0..2047) is divided into next categories::
+1. The `Error Code` is a 11-bit unsigned integer number encoded in upper (leftmost) bits of the type-data_ field of ERROR_ message.
+2. Value 0 SHALL NOT be a valid `Error Code`. The `Error Code` is thus a value in range 1..2047.
+3. The lower (rightmost) 5 bits of type-data_ field encode the message-type_ this particular error relates to (the bitmask is 31). The "zero" value represents general, out-of-band error reported by `Service`.
+4. The `Error Code` range (1..2047) is divided into next categories::
 
      1..999     : Reserved by FBSP for general errors indicating that particular request cannot be satisfied ("soft" errors)
      1000..1999 : Reserved for use by Service API
@@ -1160,45 +1162,59 @@ Errors indicating that particular request cannot be satisfied
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 :1 - Bad Request:
+
   The service cannot or will not process the request due to something that is perceived to be a client error (e.g., malformed request syntax, invalid request message framing etc.).
 
 :2 - Not Implemented:
+
   The server does not support the functionality required to fulfill the request.
 
 :3 - Protocol Version Not Supported:
+
   The server does not support, or refuses to support, the version of protocol that was used in the request message. The protocol to which this error refers is any protocol used for a specific request, not the FBSP itself.
 
 :4 - Internal Service Error:
+
   The server encountered an unexpected condition that prevented it from fulfilling the request.
   
 :5 - Too Many Requests:
+
   The client has sent too many requests in a given amount of time ("rate limiting").
   
 :6 - Failed Dependency:
+
    The request could not be performed because the requested action depended on another action and that action failed.
    
 :7 - Gone:
+
   The target resource is no longer available and this condition is likely to be permanent.
   
 :8 - Conflict:
+
   The request could not be completed due to a conflict with the current state of the target resource. This code is used in situations where the user might be able to resolve the conflict and resubmit the request.
 
 :9 - Request Timeout:
+
   The server did not receive a complete request message within the time that it was prepared to wait.
   
 :10 - Not Found:
+
   The service did not find the target resource or is not willing to disclose that one exists.
   
 :11 - Forbidden:
+
   The service understood the request but refuses to authorize it.
   
 :12 - Unauthorized:
+
   The request has not been applied because it lacks valid authentication credentials for the target resource.
 
 :13 - Payload Too Large:
+
   The service is refusing to process a request because the request payload is larger than the service is willing or able to process.
   
 :14 - Insufficient Storage:
+
   The service is unable to store data needed to successfully complete the request.
   
 Fatal errors indicating that connection would/should be terminated

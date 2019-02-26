@@ -57,8 +57,10 @@ enum DataHandlerType {
 // ServiceHandlerType
 
 enum ServiceHandlerType {
-  PROVIDER = 0 ;
-  CONSUMER = 1 ;
+  ILLEGAL  = 0 ; // Default (0) is not supported
+  PROVIDER = 1 ; // Provides the service
+  CONSUMER = 2 ; // Uses the service
+
 }
 
 // Universal state enumeration
@@ -84,7 +86,7 @@ enum State {
 // Protocol Description
 
 message ProtocolDescription {
-   string uid                = 1 ; // Protocol ID (short name)
+   bytes  uid                = 1 ; // Protocol ID (OID, FourCC etc.)
    string version            = 2 ; // Protocol version: <major>.<minor>
    uint32 level              = 3 ; // Implemented protocol level
    repeated string supports  = 4 ; // List of implemented optional features
@@ -93,20 +95,20 @@ message ProtocolDescription {
 // Butler Development Platform Identification
 
 message PlatformId {
-  string uid     = 1 ;
+  bytes  uid     = 1 ;
   string version = 2 ;
 }
 
 // Butler Service Vendor Identification
 
 message VendorId {
-  string uid = 1 ;
+  bytes uid = 1 ;
 }
 
 // Butler Software Agent Identification (Service Class)
 
 message AgentIdentification {
-  string uid            = 1 ;
+  bytes  uid            = 1 ;
   string name           = 2 ;
   string version        = 3 ;
   VendorId vendor       = 4 ;
@@ -117,7 +119,7 @@ message AgentIdentification {
 // Butler Peer Identification (Agent Instance)
 
 message PeerIdentification {
-  string uid                              = 1 ;
+  bytes  uid                              = 1 ;
   string host                             = 2 ;
   uint32 pid                              = 3 ;
   AgentIdentification identity            = 4 ;
@@ -136,7 +138,7 @@ message ErrorDescription {
 // FBSP CANCEL Message Data
 
 message CancelRequests {
-  string token                            = 1 ;
+  bytes token                             = 1 ;
   repeated google.protobuf.Any supplement = 2 ; // Additional vendor-specific information
 }
 
@@ -156,7 +158,7 @@ message ServiceAbility {
   repeated google.protobuf.Any supplement = 4 ; // Additional vendor-specific information
 }
 
-message RqSvcAbilities {
+message ReplySvcAbilities {
   sint32 can_repeat_messages              = 1 ; // Number of messages service can resend
   ProtocolDescription service_state       = 2 ; 
   ProtocolDescription service_config      = 3 ;
@@ -166,7 +168,7 @@ message RqSvcAbilities {
 
 // FBSP REQUEST:CON_REPEAT Message Data
 
-message RqConRepeat {
+message ReqestConRepeat {
   sint32 last = 1 ; // Number of X last messages to resend
 }
 
