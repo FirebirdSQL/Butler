@@ -64,7 +64,7 @@ The purpose of the *Saturnin SDK* sub-project is to provide basic tools for Pyth
    * - GitHub home repository
      - `FirebirdSQL / saturnin-sdk <https://github.com/FirebirdSQL/saturnin-sdk>`_
    * - Documentation and other information sources
-     - `readthedocs`
+     - `Saturnin SDK Documentation <https://saturnin-sdk.readthedocs.io>`_
    * - Main communication channel
      - `saturnin-sdk forum <https://groups.google.com/d/forum/saturnin-sdk>`_ at googlegroups
      
@@ -121,7 +121,7 @@ The purpose of the *Saturnin* sub-project is to provide Python-based standard so
    * - GitHub home repository
      - `FirebirdSQL / saturnin <https://github.com/FirebirdSQL/saturnin>`_
    * - Documentation and other information sources
-     - `readthedocs`
+     - `Saturnin Documentation <https://saturnin.readthedocs.io>`_
    * - Main communication channel
      - `firebird-saturnin forum <https://groups.google.com/d/forum/firebird-saturnin>`_ at googlegroups
      
