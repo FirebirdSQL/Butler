@@ -1,0 +1,51 @@
+# Map of Firebird Foundation Inc. OID namespace
+# segment: Firebird Butler Protocols
+# origin: https://github.com/FirebirdSQL/Butler/master/oid/protocols.oid
+#
+# Description of root node for this sub-tree
+node:            
+    name: protocol
+    description: Root node for registered Firebird Butler protocols
+    contact: Pavel Císař
+    email: pcisar@users.sourceforge.net
+    site: https://firebird-butler.rtfd.io
+    node-spec: https://raw.githubusercontent.com/FirebirdSQL/Butler/master/protocols.oid
+   
+# List of children nodes in order of numbers assigned to them
+# could be omitted for leaf node (see node.type)
+children:        
+  - number: 0
+    name: fbsp
+    description: Firebird Butler Service Protocol
+    contact: Pavel Císař
+    email: pcisar@users.sourceforge.net
+    site: https://firebird-butler.rtfd.io
+    node-spec: leaf  # one of: keywords "leaf" or "private" or URL to YAML file describing this child node
+  - number: 1
+    name: fblp
+    description: Firebird Butler Log Protocol
+    contact: Pavel Císař
+    email: pcisar@users.sourceforge.net
+    site: https://firebird-butler.rtfd.io
+    node-spec: leaf  # one of: keywords "leaf" or "private" or URL to YAML file describing this child node
+  - number: 2
+    name: sstp
+    description: Service State Protocol
+    contact: Pavel Císař
+    email: pcisar@users.sourceforge.net
+    site: https://firebird-butler.rtfd.io
+    node-spec: leaf  # one of: keywords "leaf" or "private" or URL to YAML file describing this child node
+  - number: 3
+    name: rscfg
+    description: Remote Service Configuration Protocol
+    contact: Pavel Císař
+    email: pcisar@users.sourceforge.net
+    site: https://firebird-butler.rtfd.io
+    node-spec: leaf  # one of: keywords "leaf" or "private" or URL to YAML file describing this child node
+  - number: 4
+    name: rsctrl
+    description: Remote Service Control Protocol
+    contact: Pavel Císař
+    email: pcisar@users.sourceforge.net
+    site: https://firebird-butler.rtfd.io
+    node-spec: leaf  # one of: keywords "leaf" or "private" or URL to YAML file describing this child node

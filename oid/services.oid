@@ -5,7 +5,7 @@
 # Description of root node for this sub-tree
 node:            
   oid: 1.3.6.1.4.1.53446.1.1
-  name: Butler Services
+  name: service
   description: Root node for registered Firebird Butler Services
   contact: Pavel Císař
   email: pcisar@users.sourceforge.net
@@ -17,7 +17,7 @@ node:
 # could be omitted for leaf node (see node.type)
 children:        
   - number: 0
-    name: Dummy Service
+    name: dummy
     description: Service for internal testing purposes
     contact: Pavel Císař
     email: pcisar@users.sourceforge.net

@@ -5,8 +5,8 @@
 # Description of root node for this sub-tree
 node:            
   oid: 1.3.6.1.4.1.53446.1.3
-  name: Butler Service Vendors
-  description: 
+  name: vendor
+  description: Root node for registered Firebird Butler Service Vendors
   contact: Pavel Císař
   email: pcisar@users.sourceforge.net
   site: https://firebird-butler.rtfd.io
@@ -17,22 +17,22 @@ node:
 # could be omitted for leaf node (see node.type)
 children:        
   - number: 0
-    name: Firebird Project
-    description: 
+    name: firebird
+    description: The Firebird Project
     contact: Pavel Císař
     email: pcisar@users.sourceforge.net
     site: https://firebirdsql.org
     node-spec: leaf
   - number: 1
-    name: IBPhoenix
-    description: 
+    name: ibphoenix
+    description: IBPhoenix
     contact: Paul Beach
     email: pbeach@ibphoenix.com
     site: https://www.ibphoenix.com/
     node-spec: leaf
   - number: 2
-    name: IBSurgeon
-    description: 
+    name: ibsurgeon
+    description: IBSurgeon
     contact: Alexey Kovyazin
     email: alexey.kovyazin@gmail.com
     site: https://www.ib-aid.com/
