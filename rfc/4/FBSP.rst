@@ -1217,6 +1217,11 @@ Errors indicating that particular request cannot be satisfied
 
   The service is unable to store data needed to successfully complete the request.
   
+:15 - Invalid Message:
+
+  The message is not a valid FBSP message.
+  
+  
 Fatal errors indicating that connection would/should be terminated
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
