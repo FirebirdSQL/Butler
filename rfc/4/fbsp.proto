@@ -87,7 +87,7 @@ enum State {
 
 message ProtocolDescription {
    bytes  uid                = 1 ; // Protocol ID (OID, FourCC etc.)
-   string version            = 2 ; // Protocol version: <major>.<minor>
+   string version            = 2 ; // <major>[.<minor>]
    uint32 level              = 3 ; // Implemented protocol level
    repeated string supports  = 4 ; // List of implemented optional features
 }
@@ -96,7 +96,7 @@ message ProtocolDescription {
 
 message PlatformId {
   bytes  uid     = 1 ;
-  string version = 2 ;
+  string version = 2 ; // <major>[.<minor>]
 }
 
 // Butler Service Vendor Identification

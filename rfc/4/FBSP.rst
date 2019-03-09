@@ -897,10 +897,10 @@ A data structure that describes the identity of the peer within the FBSP Connect
   .. seealso:: `2.2 Client and Service Identity`_
 
 :host:
-  MANDATORY host Id
+  MANDATORY host (network node) ID. It could be an IP (v4/v6) address, or a hostname that must be resolvable to an IP address. Peers that run on the same network node MUST have the same address/hostname.
   
 :pid:
-  MANDATORY process Id
+  MANDATORY process ID (PID of peer's process). 
   
 :identity:
   MANDATORY `Agent identification`_
@@ -926,7 +926,7 @@ A data structure that describes an error.
 
 
 :code: 
-  MANDATORY service-specific error code.
+  Service-specific error code.
 
 :description: 
   MANDATORY short text description of the error.
