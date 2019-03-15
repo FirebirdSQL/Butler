@@ -105,15 +105,17 @@ message VendorId {
   bytes uid = 1 ;
 }
 
-// Butler Software Agent Identification (Service Class)
+// Butler Software Agent Identification (Service/Client Class)
 
 message AgentIdentification {
-  bytes  uid            = 1 ;
-  string name           = 2 ;
-  string version        = 3 ;
-  VendorId vendor       = 4 ;
-  PlatformId platform   = 5 ;
-  string classification = 6 ;
+  bytes  uid                   = 1 ;
+  string name                  = 2 ;
+  string version               = 3 ;
+  ProtocolDescription fbsp     = 4 ;
+  ProtocolDescription protocol = 5 ;
+  VendorId vendor              = 6 ;
+  PlatformId platform          = 7 ;
+  string classification        = 8 ;
 }
 
 // Butler Peer Identification (Agent Instance)

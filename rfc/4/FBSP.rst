@@ -847,12 +847,14 @@ A data structure that describes the identity of the Client or Service.
 .. code-block:: protobuf
 
    message AgentIdentification {
-     bytes  uid            = 1 ;
-     string name           = 2 ;
-     string version        = 3 ;
-     VendorId vendor       = 4 ;
-     PlatformId platform   = 5 ;
-     string classification = 6 ;
+     bytes  uid                   = 1 ;
+     string name                  = 2 ;
+     string version               = 3 ;
+     ProtocolDescription fbsp     = 4 ;
+     ProtocolDescription protocol = 5 ;
+     VendorId vendor              = 6 ;
+     PlatformId platform          = 7 ;
+     string classification        = 8 ;
    }
 
 :uid:
@@ -864,6 +866,12 @@ A data structure that describes the identity of the Client or Service.
 :version:
   MANDATORY agent version. MUST conform to `major[.minor[.build[-tag]]]` pattern, where `major`, `minor` and `build` are numbers, and `tag` is alphanumeric.
   
+:fbsp:
+  MANDATORY FBSP description.
+  
+:protocol:
+  MANDATORY service protocol description. Service protocols are extensions to FBSP.
+
 :vendor:
   MANDATORY `Vendor identification`_.
 
@@ -1195,7 +1203,7 @@ Errors indicating that particular request cannot be satisfied
 
 :9 - Request Timeout:
 
-  The server did not receive a complete request message within the time that it was prepared to wait.
+  The server cannot process the request within the time that it was prepared to work or wait for external resource.
   
 :10 - Not Found:
 
@@ -1220,6 +1228,11 @@ Errors indicating that particular request cannot be satisfied
 :15 - Invalid Message:
 
   The message is not a valid FBSP message.
+  
+:16 - Protocol violation:
+
+  Received message is a valid FBSP message, but does not conform to the protocol. Typically, a message of this type or content is not allowed at a particular point in the conversation.
+
   
   
 Fatal errors indicating that connection would/should be terminated
