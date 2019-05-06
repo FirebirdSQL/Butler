@@ -137,7 +137,7 @@ The method of agreement between the `Client` and the `Service` to use the bound 
 
 The traffic between `Client` and `Service` consists of `Messages` in a unified format sent in both directions via a `Transport Channel`_.
 
-FBSP is designed to carry arbitrary `Service API` in unified message format. This is achieved by dividing the contents of the messages into a structural part (`Control Frame`) and a data (`Data Frames`). In addition to the basic structural information, the `Control Frame` also includes a space for the transmission of control data for the `Service API`. The API's main point is the `Request Code`_ that uniquely identifies the required functionality (API call). FBSP defines (and reserves) some `Request Codes`_ for itself, while unused ones are reserved for use by `Service`. With few exceptions, all `Data Frames` are considered as part of the `Service API`, and are not regulated by this specification.
+FBSP is designed to carry arbitrary `Service API` in unified message format. This is achieved by dividing the contents of the messages into a structural part (`Control Frame`) and a data (`Data Frames`). In addition to the basic structural information, the `Control Frame` also includes a space for the transmission of control data for the `Service API`. The API's main point is the `Request Code`_ that uniquely identifies the required functionality (API call). FBSP does not define (or reserve) any `Request Code`_ for itself, so all values are available for use by `Service`. With few exceptions, all `Data Frames` are considered as part of the `Service API`, and are not regulated by this specification.
 
 2.4.1 Formal message grammar
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -257,7 +257,7 @@ WELCOME
 
 The WELCOME message is the response of the `Service` to the HELLO_ message sent by the `Client`, which confirms the successful creation of the required Connection_ and announces basic parameters of the `Service` and the Connection_.
 
-1. The first data-frame_ of this message MUST contain the `Service Identity`_.
+1. The first data-frame_ of this message MUST contain the `Service Identity`_ and the specification of `Service API`_.
 2. The content of type-data_ field in this message is not significant. **[RAW NOTE: Should we use it for something? WELCOME protobuf format version? bitmap of available common service abilities?]**
 
 .. seealso::
@@ -456,8 +456,7 @@ All revisions of this specification SHALL conform to following rules:
 
    a) defined :ref:`Message types <message-type>`
    b) defined Flags_
-   c) defined `Request Codes`_
-   d) defined `Error Codes`_
+   c) defined `Error Codes`_
 
 Version negotiation
 """""""""""""""""""
@@ -474,16 +473,19 @@ Version negotiation
 
 The `Client` SHALL send its requests to the `Service` as REQUEST_ messages with `Request Code`_ indicating the required functionality (an API call). 
 
+2.5.1 General rules
+^^^^^^^^^^^^^^^^^^^
+
 The handling of Client request has following general rules:
 
 1. The `Service` MUST always respond to the REQUEST_ message in one from following formats:
 
    a. Send the ERROR_ message describing the error status detected by the `Service` that prevents successful completion of the request.
-   b. Send the REPLY_ message as an indication of successful completion of the request, or as indication that `Service` started to fulfill the request. The actual meaning of this reply is defined by `Service API`.
+   b. Send the REPLY_ message as an indication of successful completion of the request, or as indication that `Service` started to fulfill the request. The actual meaning of this reply is defined by `Service API`_.
 2. An ERROR_ message sent to the `Client` SHALL always end the processing of the request.
 3. The fulfillment of particular request MAY require multiple messages to be sent by `Service`. In such a case, service MUST send the REPLY_ message first, before any additional message would be sent. 
 4. The subsequent messages after REPLY_ message SHALL be only of message-type_ DATA_, STATE_ or ERROR_.
-5. The `Service API` for particular `Request Code`_ that requires multiple messages to be send by `Service` SHALL use one from the following methods to indicate the end of request processing to the `Client`:
+5. The `Service API`_ for particular `Request Code`_ that requires multiple messages to be send by `Service` SHALL use one from the following methods to indicate the end of request processing to the `Client`:
 
    a. Using MORE_ flag in REPLY_, DATA_ and STATE_ messages sent to the `Client`. It is RECOMMENDED to use it as preferred method for organization of the message stream.
    b. Using STATE_ message with information that indicates the end of request processing.
@@ -491,236 +493,45 @@ The handling of Client request has following general rules:
 6. The service MAY accept a new request from the client before the initial request has been fully processed. However, all parallel request messages MUST have different (unique) :ref:`Message token <message-token>` value.
 7. The processing of any active request can be terminated prematurely at the client's request via the CANCEL_ message.
       
+.. _Service API:
+.. _Interface:
+.. _Interfaces:
+
+2.5.2 Service API
+^^^^^^^^^^^^^^^^^
+
+The `Service API` consists from `Interfaces` (API contracts) that consists from individual operations (functions).
+
+1. An `Interface` SHALL have a globally unique identification (GUID). It’s RECOMMENDED to use uuid version 5 - SHA1, namespace OID.
+2. An `Interface` MUST provide at least one `Operation` (function), and MAY provide up to 255 individual `Operations`.
+3. An `Operation` MUST have numeric identification unique within the `Interface`, and with value in range 1..255. This identification is called `Interface operation code`.
+4. The `Service` MUST assign an unique `Interface identification number` in range 1..255 to each `Interface` it provides, and announce the Interface identification along with assigned number in the data-frame of the WELCOME_ message.
+5. The `Service` MUST provide at least one `Interface`, and MAY provide up to 255 individual `Interfaces`.
+6. The set of `Interfaces` that `Service` provides MUST be stable, which means that all `Service` instances with the same `Agent identification`_ MUST provide the same set of `Interfaces` to all `Clients`.
+
+
 .. _Request codes:
 .. _Request Code:
 
-2.6 Request codes
------------------
+2.5.3 Request codes
+^^^^^^^^^^^^^^^^^^^
 
 The `Request Code` uniquely identifies the `Service` functionality (an API call). This specification define following rules for request codes:
 
-1. A `Request Code` SHALL be two-byte unsigned integer value (0 to 65,535) passed in type-data_ field in network byte order.
-2. Values in range 0..999 SHALL be reserved for FBSP (including all future FBSP revisions).
-3. Values in range 1000..65535 SHALL be reserved for free use in `Service API`.
-4. Any single value from the range defined by rule 3. SHALL NOT be reserved for any single `Service API`, ie. any API MAY use the same value as another API. This effectively means that the `Service` must properly announce its API to the `Client` and therefore the meaning of the specific values before they could be used in REQUEST_ messages.
-5. The `Service` MUST process all `Request Codes` in accordance with the FBSP revision that the Service uses to communicate with a specific `Client`.
+1. The first (more significant) byte of type-data_ field SHALL contain the `Interface identification number` assigned by `Service` to particular `Interface` it supports (see :ref:`Data frames - WELCOME <welcome-dataframe>`). 
+2. The second (less significant byte) byte of type-data_ field SHALL contain the `Interface operation code`.
 
-2.6.1 FBSP Request Codes
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-This specification defines following Request Codes:
-
-
-.. list-table:: *FBSP Request Codes*
-   :widths: 10 5 15 70
-   :header-rows: 1
-   
-   * - Name
-     - Value
-     - Implementation
-     - Action
-   * - UNKNOWN_
-     - 0
-     - REQUIRED
-     - Illegal request. Service SHALL respond with ERROR_.
-   * - SVC_ABILITIES_
-     - 1
-     - REQUIRED
-     - SHALL return `Service abilities`
-   * - SVC_CONFIG_
-     - 2
-     - REQUIRED
-     - SHALL return current `Service configuration`
-   * - SVC_STATE_
-     - 3
-     - REQUIRED
-     - SHALL return current `Service operational state`
-   * - SVC_SET_CONFIG_
-     - 4
-     - OPTIONAL
-     - SHALL change current `Service configuration`
-   * - SVC_SET_STATE_
-     - 5
-     - OPTIONAL
-     - SHALL change current `Service operational state`
-   * - SVC_CONTROL_
-     - 6
-     - OPTIONAL
-     - SHALL perform `Service Control Action`
-   * - 
-     - 7..19
-     - 
-     - Reserved
-   * - CON_REPEAT_
-     - 20
-     - OPTIONAL
-     - SHALL repeat last message(s) sent
-   * - CON_CONFIG_
-     - 21
-     - REQUIRED
-     - SHALL return current `Connection configuration`
-   * - CON_STATE_
-     - 22
-     - REQUIRED
-     - SHALL return current `Connection operational state`
-   * - CON_SET_CONFIG_
-     - 23
-     - OPTIONAL
-     - SHALL change current `Connection configuration`
-   * - CON_SET_STATE_
-     - 24
-     - OPTIONAL
-     - SHALL change current `Connection operational state`
-   * - CON_CONTROL_
-     - 25
-     - OPTIONAL
-     - SHALL perform `Connection Control Action`
-   * - 
-     - 26..999
-     - 
-     - Reserved
-
-.. important::
-
-   Service MUST support and properly handle all request codes marked as `required`. The status of implementation of `optional` request codes MUST be properly reported by the service in response to the SVC_ABILITIES_ request.
-     
-UNKNOWN
-"""""""
-
-UNKNOWN is an illegal request and the Service SHALL respond with ERROR_ message.
-
-SVC_ABILITIES
-"""""""""""""
-
-The `Service` SHALL reply with single REPLY_ message that describe its abilities in the data-frame_ that MUST conform to the protocol-buffer_ format defined for this `Request Code`.
-
-.. seealso::
-
-   `SVC_ABILITIES data`_
-
-SVC_CONFIG
-""""""""""
-
-The `Service` SHALL reply with single REPLY_ message that describe its current configuration in the data-frame_ that MUST conform to the protocol-buffer format defined for this `Request Code`.
-
-.. seealso::
-
-   `SVC_CONFIG data`_
-
-SVC_STATE
-"""""""""
-
-The `Service` SHALL reply with single REPLY_ message that describe its current operational state in the data-frame_ that MUST conform to the protocol-buffer_ format defined for this `Request Code`.
-
-.. seealso::
-
-   `SVC_STATE data`_
-
-SVC_SET_CONFIG
-""""""""""""""
-
-The `Service` SHALL reply with single REPLY_ message that describe its abilities in the data-frame_ that MUST conform to the protocol-buffer_ format defined for this `Request Code`.
-
-.. seealso::
-
-   `SVC_SET_CONFIG data`_
-
-SVC_SET_STATE
-"""""""""""""
-
-1. The `Service` SHALL change its operational state to the one described in data-frame_ passed in the received REQUEST_ message.
-2. The `Service` SHALL reply with single REPLY_ message that indicates the result in the data-frame_.
-3. Both REQUEST_ and REPLY_ data-frame_ MUST conform to the protocol-buffer_ format defined for this `Request Code`.
-
-.. seealso::
-
-   `SVC_SET_STATE data`_
-
-SVC_CONTROL
-"""""""""""
-
-1. The `Service` SHALL perform the `Service Control Action` described in data-frame_ passed in the received REQUEST_ message.
-2. The `Service` SHALL reply with single REPLY_ message that indicates the result in the data-frame_.
-3. Both REQUEST_ and REPLY_ data-frame_ MUST conform to the protocol-buffer_ format defined for this `Request Code`.
-
-.. seealso::
-
-   `SVC_CONTROL data`_
-
-CON_REPEAT
-""""""""""
-
-1. The `Client` MUST describe the requested messages in data-frame_ passed in the REQUEST_ message, that MUST conform to the protocol-buffer_ format defined for this `Request Code`.
-2. The `Service` SHALL reply with single REPLY_ message that indicates that request was accepted and Service will start sending requested messages.
-3. The `Service` SHALL send messages requested by `Client` as DATA_ messages related to original REQUEST_ with one or more data-frame_ parts that hold the requested message (the control-frame_ of the requested message is thus the first data-frame_ of DATA_ message sent to the `Client`).
-4. The requested messages SHALL be resent in original order.
-5. The `Service` SHALL use MORE flag to organize the DATA_ message stream for the `Client`.
-
-.. seealso::
-
-   `CON_REPEAT data`_
-
-CON_CONFIG
-""""""""""
-
-The `Service` SHALL reply with single REPLY_ message that describe the current configuration of active Connection_ in the data-frame_ that MUST conform to the protocol-buffer_ format defined for this `Request Code`.
-
-.. seealso::
-
-   `CON_CONFIG data`_
-
-CON_STATE
-"""""""""
-
-The `Service` SHALL reply with single REPLY_ message that describe the actual operational state of active Connection_ in the data-frame_ that MUST conform to the protocol-buffer_ format defined for this `Request Code`.
-
-.. seealso::
-
-   `CON_STATE data`_
-
-CON_SET_CONFIG
-""""""""""""""
-
-1. The `Service` SHALL change the configuration of the Connection_ to the one described in data-frame_ passed in the received REQUEST_ message.
-2. The `Service` SHALL reply with single REPLY_ message that indicates the result in the data-frame_.
-3. Both REQUEST_ and REPLY_ data-frame_ MUST conform to the protocol-buffer_ format defined for this `Request Code`.
-
-.. seealso::
-
-   `CON_SET_CONFIG data`_
-
-CON_SET_STATE
-"""""""""""""
-
-1. The `Service` SHALL change the operational state of the Connection_ to the one described in data-frame_ passed in the received REQUEST_ message.
-2. The `Service` SHALL reply with single REPLY_ message that indicates the result in the data-frame_.
-3. Both REQUEST_ and REPLY_ data-frame_ MUST conform to the protocol-buffer_ format defined for this `Request Code`.
-
-.. seealso::
-
-   `CON_SET_STATE data`_
-
-CON_CONTROL
-"""""""""""
-
-1. The `Service` SHALL perform the `Connection Control Action` described in data-frame_ passed in the received REQUEST_ message.
-2. The `Service` SHALL reply with single REPLY_ message that indicates the result in the data-frame_.
-3. Both REQUEST_ and REPLY_ data-frame_ MUST conform to the protocol-buffer_ format defined for this `Request Code`.
-
-.. seealso::
-
-   `CON_CONTROL data`_
 
 .. _protocol-buffer:
 
-2.7 Data frames
+2.6 Data frames
 ---------------
 
 Where control-frame_ contains semantic specification of the message, individual data-frame_ parts of the message carry data associated with given API call or response. 
 
 Number, content and structure of individual `data-frames` SHALL be defined by API specification for particular message-type_ and/or `Request Code`_.
 
-2.7.1 General rules
+2.6.1 General rules
 ^^^^^^^^^^^^^^^^^^^
 
 All API and other specifications that define data-frame_ contents SHALL conform to following rules:
@@ -731,7 +542,7 @@ All API and other specifications that define data-frame_ contents SHALL conform 
 4. All structured data in `data-frames` defined by this specification are serialized as single `Protocol Buffers`_ message.
 5. All API and other specifications that define rules for data-frame_ contents SHOULD use serialization to store structured data into data-frame_. The RECOMMENDED serialization methods are `Protocol Buffers`_ (preferred) or `Flat Buffers`_ (in case the direct access to parts of serialized data is required). It is NOT RECOMMENDED to use any verbose serialization format such as JSON or XML. The whole Service API SHOULD use only one serialization method. Serialization method MAY be negotiable between peers.
 
-2.7.2 Common protobuf specifications
+2.6.2 Common protobuf specifications
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 All Protocol Buffer specifications use `proto3` syntax. This syntax variant does not support required fields, and all fields are optional (basic types will have the default "empty" value when they are not serialized). However, some fields in FBSP specification are considered as mandatory (as "required" in `proto2`), and should be validated as such by receiver.
@@ -759,60 +570,10 @@ State enumeration
      STOPPED         = 4 ;
    }
 
-Service handler types
-"""""""""""""""""""""
-
-.. code-block:: protobuf
-
-   enum ServiceHandlerType {
-     ILLEGAL  = 0 ; // Default (0) is not supported
-     PROVIDER = 1 ; // Provides the service
-     CONSUMER = 2 ; // Uses the service
-   }
-
-Data handler types
-""""""""""""""""""
-
-.. code-block:: protobuf
-
-   enum DataHandlerType {
-     NONE       = 0 ; // Does not work with data
-     B_PROVIDER = 1 ; // Sends data via bind REP/ROUTER/DEALER/SERVER/STREAM socket
-     B_CONSUMER = 2 ; // Accepts data via bind REQ/ROUTER/DEALER/CLIENT/STREAM socket
-     C_PROVIDER = 3 ; // Sends data via connected REP/ROUTER/DEALER/SERVER/STREAM socket
-     C_CONSUMER = 4 ; // Accepts data via connected REQ/ROUTER/DEALER/CLIENT/STREAM socket
-     PUBLISHER  = 5 ; // Broadcasts data via PUB/XPUB/RADIO socket
-     SUBSCRIBER = 6 ; // Subscribes to data stream via SUB/XSUB/DISH socket
-     FAN_IN     = 7 ; // Collects data via PULL socket
-     FAN_OUT    = 8 ; // Distributes data via PUSH socket
-   }
-
-Protocol description
-""""""""""""""""""""
-
-.. code-block:: protobuf
-
-   message ProtocolDescription {
-      bytes  uid                = 1
-      string version            = 2
-      uint32 level              = 3
-      repeated string supports  = 4
-   }
-
-:uid:
-  MANDATORY unique protocol ID. It's RECOMMENDED to use FourCC of the protocol, or UUID of type 5.
-     
-:version:
-  MANDATORY protocol version. MUST conform to `major[.minor]` pattern, where `major` and `minor` are numbers.
-  
-:level:
-  Implemented protocol level.
-
-:supports:
-  List of implemented optional features. It's RECOMMENDED to use feature keywords.
-  
-Platform identification
+Platform Identification
 """""""""""""""""""""""
+
+A data structure that describes the Firebird Butler Development Platform used by Client or Service.
 
 .. code-block:: protobuf
 
@@ -827,7 +588,7 @@ Platform identification
 :version:
   MANDATORY platform version. MUST conform to `major[.minor[.build[-tag]]]` pattern, where `major`, `minor` and `build` are numbers, and `tag` is alphanumeric.
   
-Vendor identification
+Vendor Identification
 """""""""""""""""""""
 
 .. code-block:: protobuf
@@ -839,39 +600,34 @@ Vendor identification
 :uid:
   MANDATORY unique vendor ID. It's RECOMMENDED to use uuid version 5 - SHA1, namespace OID.
      
-Agent identification
+Agent Identification
 """"""""""""""""""""
 
 A data structure that describes the identity of the Client or Service.
 
 .. code-block:: protobuf
 
+   import "google/protobuf/any.proto";
+
    message AgentIdentification {
-     bytes  uid                   = 1 ;
-     string name                  = 2 ;
-     string version               = 3 ;
-     ProtocolDescription fbsp     = 4 ;
-     ProtocolDescription protocol = 5 ;
-     VendorId vendor              = 6 ;
-     PlatformId platform          = 7 ;
-     string classification        = 8 ;
+     bytes  uid                              = 1 ;
+     string name                             = 2 ;
+     string version                          = 3 ;
+     VendorId vendor                         = 4 ;
+     PlatformId platform                     = 5 ;
+     string classification                   = 6 ;
+     repeated google.protobuf.Any supplement = 7 ;
    }
 
 :uid:
   MANDATORY unique Agent ID. It's RECOMMENDED to use uuid version 5 - SHA1, namespace OID.
      
 :name:
-  MANDATORY agent name assigned by vendor. It's RECOMMENDED that `uid` and `name` make a stable pair, i.e. there should not be agents with the same name but different uid and vice versa.
+  MANDATORY agent name assigned by vendor. It's RECOMMENDED that `uid` and `name` make a stable pair, i.e. there should not be agents from the single vendor that have the same name but different uid and vice versa.
   
 :version:
   MANDATORY agent version. MUST conform to `major[.minor[.build[-tag]]]` pattern, where `major`, `minor` and `build` are numbers, and `tag` is alphanumeric.
   
-:fbsp:
-  MANDATORY FBSP description.
-  
-:protocol:
-  MANDATORY service protocol description. Service protocols are extensions to FBSP.
-
 :vendor:
   MANDATORY `Vendor identification`_.
 
@@ -881,11 +637,14 @@ A data structure that describes the identity of the Client or Service.
 :classification:
   Agent classification. It's RECOMMENDED to use `domain/category` schema, for example *database/backup*.
 
+:supplement:
+  Any additional information about Agent.
+
 
 Peer Identification
 """""""""""""""""""
 
-A data structure that describes the identity of the peer within the FBSP Connection_.
+A data structure that describes the peer within the FBSP Connection_.
 
 .. code-block:: protobuf
 
@@ -893,10 +652,9 @@ A data structure that describes the identity of the peer within the FBSP Connect
 
    message PeerIdentification {
      bytes  uid                              = 1 ;
-     string host                             = 2 ;
-     uint32 pid                              = 3 ;
-     AgentIdentification identity            = 4 ;
-     repeated google.protobuf.Any supplement = 5 ;
+     uint32 pid                              = 2 ;
+     string host {                           = 3 ;
+     repeated google.protobuf.Any supplement = 4 ;
    }
 
 :uid:
@@ -904,17 +662,33 @@ A data structure that describes the identity of the peer within the FBSP Connect
   
   .. seealso:: `2.2 Client and Service Identity`_
 
-:host:
-  MANDATORY host (network node) ID. It could be an IP (v4/v6) address, or a hostname that must be resolvable to an IP address. Peers that run on the same network node MUST have the same address/hostname.
-  
 :pid:
   MANDATORY process ID (PID of peer's process). 
   
-:identity:
-  MANDATORY `Agent identification`_
-
+:host:
+  MANDATORY host (network node) identification. It could be an IP (v4/v6) address, or a hostname that must be resolvable to an IP address. Peers that run on the same network node MUST have the same address/hostname.
+  
 :supplement:
   Any additional information about peer.
+
+Interface Specification
+"""""""""""""""""""""""
+
+A data structure that describes an Interface used by Service API.
+
+.. code-block:: protobuf
+
+   message InterfaceSpec {
+     uint32 number    = 1 ;
+     bytes  interface = 2 ;
+   }
+
+:number:
+  MANDATORY Interface Identification Number assigned by Service.
+  
+:interface:
+  MANDATORY Iterface UID.
+   
 
 Error Description
 """""""""""""""""
@@ -945,7 +719,7 @@ A data structure that describes an error.
 :annotation:
   Additional structured error information. Annotations are intended for debugging and other internal purposes and MAY be ignored by the `Client`.
 
-2.7.3 FBSP Data Frames for message types
+2.6.3 FBSP Data Frames for message types
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. _hello-dataframe:
@@ -953,14 +727,53 @@ A data structure that describes an error.
 HELLO data
 """"""""""
 
-Data Frame must contain `Peer Identification`_ message.
+.. code-block:: protobuf
 
+   import "google/protobuf/any.proto";
+
+   message HelloDataframe {
+     PeerIdentification instance             = 1 ;
+     AgentIdentification client              = 2 ;
+     repeated google.protobuf.Any supplement = 3 ;
+   }
+
+:instance:
+  MANDATORY information about peer.
+  
+:client:
+  MANDATORY information about Client.
+
+:supplement:
+  Any additional information about Client.
+   
 .. _welcome-dataframe:
 
 WELCOME data
 """"""""""""
 
-Data Frame must contain `Peer Identification`_ message.
+.. code-block:: protobuf
+
+   import "google/protobuf/any.proto";
+
+   message WelcomeDataframe {
+     PeerIdentification instance             = 1 ;
+     AgentIdentification service             = 2 ;
+     repeated InterfaceSpec api              = 3 ;
+     repeated google.protobuf.Any supplement = 4 ;
+   }
+
+:instance:
+  MANDATORY information about peer.
+  
+:service:
+  MANDATORY information about Service.
+
+:api:
+  MANDATORY information about Service API.
+  
+:supplement:
+  Any additional information about Service.
+   
 
 .. _cancel-dataframe:
 
@@ -1011,155 +824,19 @@ ERROR data
 
 Each Data Frame must contain `Error Description`_ message.
 
-2.7.4 FBSP Data Frames for Request Codes
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. _SVC-ABILITIES-data:
-
-SVC_ABILITIES data
-""""""""""""""""""
-
-.. code-block:: protobuf
-
-   message ReplySvcAbilities {
-     sint32 can_repeat_messages              = 1 ;
-     ProtocolDescription service_state       = 2 ; 
-     ProtocolDescription service_config      = 3 ;
-     ProtocolDescription service_control     = 4 ;
-     map<string, ServiceAbility> abilities   = 5 ;
-   }
-
-:can_repeat_messages:
-   Number of messages that service previously sent to the client that could be resend (see CON_REPEAT_ Request Code).
-   
-   +-----------+-----------------------------------------+
-   | **Value** | **Meaning**                             |
-   +-----------+-----------------------------------------+
-   | **0**     | Service can't resend any message        |
-   +-----------+-----------------------------------------+
-   | **X**     | Service can resend last X messages sent |
-   +-----------+-----------------------------------------+
-   | **-1**    | Service can resend all messages         |
-   +-----------+-----------------------------------------+
-
-:service_state:
-   MANDATORY description of the `Service State Protocol` supported by service.
-
-:service_config:
-   MANDATORY description of the `Service Configuration Protocol` supported by service.
-   
-:service_control:
-   MANDATORY description of the `Service Control Protocol` supported by service.
-
-:abilities:
-   Map of other abilities.
-   
-   Key = Ability ID. It’s RECOMMENDED to use uuid version 5 - SHA1, namespace OID.
-   
-   Value = Ability descriptor
-
-.. code-block:: protobuf
-
-   message ServiceAbility {
-     ServiceHandlerType service_type         = 1 ; 
-     repeated DataHandlerType data_handler   = 2 ;
-     repeated ProtocolDescription protocol   = 3 ;
-     repeated google.protobuf.Any supplement = 4 ;
-   }
-
-:service_type:
-   MANDATORY type of service (Provider / Consumer)
-
-:data_handler:
-   MANDATORY list of supported data I/O patterns
-
-:protocol:
-   MANDATORY list of supported protocols
-
-:supplement:
-   List of additional vendor-specific information about service ability
-
-SVC_CONFIG data
-"""""""""""""""
-
-The data-frame_ SHALL conform to :doc:`/rfc/7/RSCFG` specification.
-
-SVC_STATE data
-""""""""""""""
-
-The data-frame_ SHALL conform to :doc:`/rfc/6/SSTP` specification.
-
-SVC_SET_CONFIG data
-"""""""""""""""""""
-
-The data-frame_ SHALL conform to :doc:`/rfc/7/RSCFG` specification.
-
-SVC_SET_STATE data
-""""""""""""""""""
-
-The data-frame_ SHALL conform to :doc:`/rfc/6/SSTP` specification.
-
-SVC_CONTROL data
-""""""""""""""""
-
-The data-frame_ SHALL conform to :doc:`/rfc/8/RSCTRL` specification.
-
-CON_REPEAT data
-"""""""""""""""
-
-.. code-block:: protobuf
-
-   message ReqestConRepeat {
-     sint32 last = 1 ;
-   }
-
-:last:
-   MANDATORY number of last messages to resend.
-
-CON_CONFIG data
-"""""""""""""""
-
-The data-frame_ SHALL conform to :doc:`/rfc/7/RSCFG` specification.
-
-CON_STATE data
-""""""""""""""
-
-The data-frame_ SHALL conform to :doc:`/rfc/6/SSTP` specification.
-
-CON_SET_CONFIG data
-"""""""""""""""""""
-
-The data-frame_ SHALL conform to :doc:`/rfc/7/RSCFG` specification.
-
-CON_SET_STATE data
-""""""""""""""""""
-
-The data-frame_ SHALL conform to :doc:`/rfc/6/SSTP` specification.
-
-CON_CONTROL data
-""""""""""""""""
-
-The data-frame_ SHALL conform to :doc:`/rfc/8/RSCTRL` specification.
 
 .. _error codes:
 .. _error code:
 
-2.8 Error codes
+2.7 Error codes
 ---------------
 
-Errors are transmitted in type-data_ field of the ERROR_ message.
+Error codes are transmitted in type-data_ field of the ERROR_ message.
 
 1. The `Error Code` is a 11-bit unsigned integer number encoded in upper (leftmost) bits of the type-data_ field of ERROR_ message.
 2. Value 0 SHALL NOT be a valid `Error Code`. The `Error Code` is thus a value in range 1..2047.
 3. The lower (rightmost) 5 bits of type-data_ field encode the message-type_ this particular error relates to (the bitmask is 31). The "zero" value represents general, out-of-band error reported by `Service`.
-4. The `Error Code` range (1..2047) is divided into next categories::
 
-     1..999     : Reserved by FBSP for general errors indicating that particular request cannot be satisfied ("soft" errors)
-     1000..1999 : Reserved for use by Service API
-     2000..2047 : Reserved by FBSP for general errors indicating that connection would or should be terminated (severe errors)
-
-2.8.1 Error codes defined by FBSP
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. todo:: 
    :class: todo
@@ -1167,9 +844,9 @@ Errors are transmitted in type-data_ field of the ERROR_ message.
    Finalize the list of error codes.
 
 Errors indicating that particular request cannot be satisfied
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-:1 - Bad Request:
+:1 - Invalid Message:
 
   The service cannot or will not process the request due to something that is perceived to be a client error (e.g., malformed request syntax, invalid request message framing etc.).
 
@@ -1177,9 +854,9 @@ Errors indicating that particular request cannot be satisfied
 
   The server does not support the functionality required to fulfill the request.
 
-:3 - Protocol Version Not Supported:
+:3 - Bad Request:
 
-  The server does not support, or refuses to support, the version of protocol that was used in the request message. The protocol to which this error refers is any protocol used for a specific request, not the FBSP itself.
+  The Request Code in the received REQUEST_ message was not recognized as valid Service API call.
 
 :4 - Internal Service Error:
 
@@ -1215,7 +892,7 @@ Errors indicating that particular request cannot be satisfied
   
 :12 - Unauthorized:
 
-  The request has not been applied because it lacks valid authentication credentials for the target resource.
+  The request has not been applied because it lacks valid authentication credentials for action or the target resource.
 
 :13 - Payload Too Large:
 
@@ -1224,19 +901,14 @@ Errors indicating that particular request cannot be satisfied
 :14 - Insufficient Storage:
 
   The service is unable to store data needed to successfully complete the request.
-  
-:15 - Invalid Message:
-
-  The message is not a valid FBSP message.
-  
-:16 - Protocol violation:
+   
+:15 - Protocol violation:
 
   Received message is a valid FBSP message, but does not conform to the protocol. Typically, a message of this type or content is not allowed at a particular point in the conversation.
-
-  
+ 
   
 Fatal errors indicating that connection would/should be terminated
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 :2000 - Service Unavailable:
   The server is currently unable to handle the request due to a temporary overload or scheduled maintenance, which will likely be alleviated after some delay.

@@ -40,29 +40,6 @@ option objc_class_prefix = "FPB";
 import "google/protobuf/any.proto";
 import "google/protobuf/struct.proto";
 
-// Data Hanler Type
-
-enum DataHandlerType {
-  NONE       = 0 ; // Does not work with data
-  B_PROVIDER = 1 ; // Sends data via bind REP/ROUTER/DEALER/SERVER/STREAM socket
-  B_CONSUMER = 2 ; // Accepts data via bind REQ/ROUTER/DEALER/CLIENT/STREAM socket
-  C_PROVIDER = 3 ; // Sends data via connected REP/ROUTER/DEALER/SERVER/STREAM socket
-  C_CONSUMER = 4 ; // Accepts data via connected REQ/ROUTER/DEALER/CLIENT/STREAM socket
-  PUBLISHER  = 5 ; // Broadcasts data via PUB/XPUB/RADIO socket
-  SUBSCRIBER = 6 ; // Subscribes to data stream via SUB/XSUB/DISH socket
-  FAN_IN     = 7 ; // Collects data via PULL socket
-  FAN_OUT    = 8 ; // Distributes data via PUSH socket
-}
-
-// ServiceHandlerType
-
-enum ServiceHandlerType {
-  ILLEGAL  = 0 ; // Default (0) is not supported
-  PROVIDER = 1 ; // Provides the service
-  CONSUMER = 2 ; // Uses the service
-
-}
-
 // Universal state enumeration
 
 enum State {
@@ -83,58 +60,71 @@ enum State {
   STOPPED         = 4 ;
 }
 
-// Protocol Description
-
-message ProtocolDescription {
-   bytes  uid                = 1 ; // Protocol ID (OID, FourCC etc.)
-   string version            = 2 ; // <major>[.<minor>]
-   uint32 level              = 3 ; // Implemented protocol level
-   repeated string supports  = 4 ; // List of implemented optional features
-}
-
 // Butler Development Platform Identification
 
 message PlatformId {
-  bytes  uid     = 1 ;
+  bytes  uid     = 1 ; // Unique platform ID. It's RECOMMENDED to use uuid version 5 - SHA1, namespace OID.
   string version = 2 ; // <major>[.<minor>]
 }
 
 // Butler Service Vendor Identification
 
 message VendorId {
-  bytes uid = 1 ;
+  bytes uid = 1 ; // Unique vendor ID. It's RECOMMENDED to use uuid version 5 - SHA1, namespace OID.
 }
 
 // Butler Software Agent Identification (Service/Client Class)
 
 message AgentIdentification {
-  bytes  uid                   = 1 ;
-  string name                  = 2 ;
-  string version               = 3 ;
-  ProtocolDescription fbsp     = 4 ;
-  ProtocolDescription protocol = 5 ;
-  VendorId vendor              = 6 ;
-  PlatformId platform          = 7 ;
-  string classification        = 8 ;
+  bytes  uid                              = 1 ; // Unique Agent ID.
+  string name                             = 2 ; // Name assigned by vendor
+  string version                          = 3 ; // major[.minor[.build[-tag]]]
+  VendorId vendor                         = 4 ;
+  PlatformId platform                     = 5 ;
+  string classification                   = 6 ;
+  repeated google.protobuf.Any supplement = 7 ; // additional information about Agent
 }
 
 // Butler Peer Identification (Agent Instance)
 
 message PeerIdentification {
-  bytes  uid                              = 1 ;
-  string host                             = 2 ;
-  uint32 pid                              = 3 ;
-  AgentIdentification identity            = 4 ;
-  repeated google.protobuf.Any supplement = 5 ;
+  bytes  uid                              = 1 ; // Unique peer ID. It's RECOMMENDED to use uuid version 1.
+  uint32 pid                              = 2 ; // Peer's process ID
+  string host                             = 3 ; // host (network node) identification
+  repeated google.protobuf.Any supplement = 4 ; // additional information about Peer
 }
    
+// Interface Specification
+
+message InterfaceSpec {
+  uint32 number = 1 ; // Interface Identification Number assigned by Service
+  bytes  uid    = 2 ; // Iterface UID
+}
+
 // FBSP Service Error Description Record
 
 message ErrorDescription {
-  uint64 code                       = 1 ;
-  string description                = 2 ;
-  google.protobuf.Struct context    = 3 ;
-  google.protobuf.Struct annotation = 4 ;
+  uint64 code                       = 1 ;  // Service-specific error code
+  string description                = 2 ;  // Short text description of the error
+  google.protobuf.Struct context    = 3 ;  // Structured error context information
+  google.protobuf.Struct annotation = 4 ;  // Additional structured error information
+}
+
+// FBSP HELLO data frame
+
+message HelloDataframe {
+  PeerIdentification instance             = 1 ;
+  AgentIdentification client              = 2 ;
+  repeated google.protobuf.Any supplement = 3 ;
+}
+
+// FBSP WELCOME data frame
+
+message WelcomeDataframe {
+  PeerIdentification instance             = 1 ;
+  AgentIdentification service             = 2 ;
+  repeated InterfaceSpec api              = 3 ;
+  repeated google.protobuf.Any supplement = 4 ;
 }
 
 // FBSP CANCEL Message Data
@@ -149,28 +139,5 @@ message CancelRequests {
 message StateInformation {
   State state                             = 1 ;
   repeated google.protobuf.Any supplement = 2 ; // Additional vendor-specific information
-}
-
-// FBSP REQUEST:SVC_ABILITIES Message Data
-
-message ServiceAbility {
-  ServiceHandlerType service_type         = 1 ; // PROVIDER / CONSUMER
-  repeated DataHandlerType data_handler   = 2 ; // List of supported data I/O patterns
-  repeated ProtocolDescription protocol   = 3 ; // List of supported protocols
-  repeated google.protobuf.Any supplement = 4 ; // Additional vendor-specific information
-}
-
-message ReplySvcAbilities {
-  sint32 can_repeat_messages              = 1 ; // Number of messages service can resend
-  ProtocolDescription service_state       = 2 ; 
-  ProtocolDescription service_config      = 3 ;
-  ProtocolDescription service_control     = 4 ;
-  map<string, ServiceAbility> abilities   = 5 ; // Other abilities, map<name, description>
-}
-
-// FBSP REQUEST:CON_REPEAT Message Data
-
-message ReqestConRepeat {
-  sint32 last = 1 ; // Number of X last messages to resend
 }
 
