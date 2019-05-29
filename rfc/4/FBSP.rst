@@ -850,62 +850,66 @@ Errors indicating that particular request cannot be satisfied
 
   The service cannot or will not process the request due to something that is perceived to be a client error (e.g., malformed request syntax, invalid request message framing etc.).
 
-:2 - Not Implemented:
+:2 - Protocol violation:
 
-  The server does not support the functionality required to fulfill the request.
-
+  Received message is a valid FBSP message, but does not conform to the protocol. Typically, a message of this type or content is not allowed at a particular point in the conversation.
+ 
 :3 - Bad Request:
 
   The Request Code in the received REQUEST_ message was not recognized as valid Service API call.
 
-:4 - Internal Service Error:
+:4 - Not Implemented:
+
+  The server does not support the functionality required to fulfill the request.
+
+:5 - Error:
+
+  The server encountered a condition that prevented it from fulfilling the request.
+
+:6 - Internal Service Error:
 
   The server encountered an unexpected condition that prevented it from fulfilling the request.
   
-:5 - Too Many Requests:
-
-  The client has sent too many requests in a given amount of time ("rate limiting").
-  
-:6 - Failed Dependency:
-
-   The request could not be performed because the requested action depended on another action and that action failed.
-   
-:7 - Gone:
-
-  The target resource is no longer available and this condition is likely to be permanent.
-  
-:8 - Conflict:
-
-  The request could not be completed due to a conflict with the current state of the target resource. This code is used in situations where the user might be able to resolve the conflict and resubmit the request.
-
-:9 - Request Timeout:
+:7 - Request Timeout:
 
   The server cannot process the request within the time that it was prepared to work or wait for external resource.
   
-:10 - Not Found:
+:8 - Too Many Requests:
 
-  The service did not find the target resource or is not willing to disclose that one exists.
+  The client has sent too many requests in a given amount of time ("rate limiting").
   
-:11 - Forbidden:
+:9 - Failed Dependency:
+
+   The request could not be performed because the requested action depended on another action and that action failed.
+   
+:10 - Forbidden:
 
   The service understood the request but refuses to authorize it.
   
-:12 - Unauthorized:
+:11 - Unauthorized:
 
   The request has not been applied because it lacks valid authentication credentials for action or the target resource.
 
-:13 - Payload Too Large:
+:12 - Not Found:
+
+  The service did not find the target resource or is not willing to disclose that one exists.
+  
+:13 - Gone:
+
+  The target resource is no longer available and this condition is likely to be permanent.
+  
+:14 - Conflict:
+
+  The request could not be completed due to a conflict with the current state of the target resource. This code is used in situations where the user might be able to resolve the conflict and resubmit the request.
+
+:15 - Payload Too Large:
 
   The service is refusing to process a request because the request payload is larger than the service is willing or able to process.
   
-:14 - Insufficient Storage:
+:16 - Insufficient Storage:
 
   The service is unable to store data needed to successfully complete the request.
    
-:15 - Protocol violation:
-
-  Received message is a valid FBSP message, but does not conform to the protocol. Typically, a message of this type or content is not allowed at a particular point in the conversation.
- 
   
 Fatal errors indicating that connection would/should be terminated
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
