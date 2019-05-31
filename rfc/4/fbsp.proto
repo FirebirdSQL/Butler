@@ -58,6 +58,7 @@ enum State {
   CREATED         = 1 ;
   BLOCKED         = 3 ;
   STOPPED         = 4 ;
+  TERMINATED      = 6 ;
 }
 
 // Butler Development Platform Identification
