@@ -37,3 +37,10 @@ children:
     email: pcisar@users.sourceforge.net
     site: https://firebirdsql.org/en/saturnin/
     node-spec: leaf
+  - number: 3
+    name: firebird-log
+    description: Firebird Log Service
+    contact: Pavel Císař
+    email: pcisar@users.sourceforge.net
+    site: https://firebirdsql.org/en/saturnin/
+    node-spec: leaf

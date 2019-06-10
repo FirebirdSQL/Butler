@@ -29,13 +29,7 @@
 
 syntax = "proto3";
 
-package firebird.butler;
-
-option csharp_namespace = "Firebird.Butler.FBSP";
-option java_package = "org.firebird.butler";
-option java_outer_classname = "FBSPProto";
-option java_multiple_files = true;
-option objc_class_prefix = "FPB";
+package fbsp;
 
 import "google/protobuf/any.proto";
 import "google/protobuf/struct.proto";
@@ -45,7 +39,7 @@ import "google/protobuf/struct.proto";
 enum State {
   option allow_alias = true ;
    
-  UNKNOWN         = 0 ;
+  UNKNOWN_STATE   = 0 ;
   READY           = 1 ;
   RUNNING         = 2 ;
   WAITING         = 3 ;
