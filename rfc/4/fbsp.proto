@@ -32,93 +32,22 @@ syntax = "proto3";
 package fbsp;
 
 import "google/protobuf/any.proto";
-import "google/protobuf/struct.proto";
-
-// Universal state enumeration
-
-enum State {
-  option allow_alias = true ;
-   
-  UNKNOWN_STATE   = 0 ;
-  READY           = 1 ;
-  RUNNING         = 2 ;
-  WAITING         = 3 ;
-  SUSPENDED       = 4 ;
-  FINISHED        = 5 ;
-  ABORTED         = 6 ;
-     
-  // Aliases
-     
-  CREATED         = 1 ;
-  BLOCKED         = 3 ;
-  STOPPED         = 4 ;
-  TERMINATED      = 6 ;
-}
-
-// Butler Development Platform Identification
-
-message PlatformId {
-  bytes  uid     = 1 ; // Unique platform ID. It's RECOMMENDED to use uuid version 5 - SHA1, namespace OID.
-  string version = 2 ; // <major>[.<minor>]
-}
-
-// Butler Service Vendor Identification
-
-message VendorId {
-  bytes uid = 1 ; // Unique vendor ID. It's RECOMMENDED to use uuid version 5 - SHA1, namespace OID.
-}
-
-// Butler Software Agent Identification (Service/Client Class)
-
-message AgentIdentification {
-  bytes  uid                              = 1 ; // Unique Agent ID.
-  string name                             = 2 ; // Name assigned by vendor
-  string version                          = 3 ; // major[.minor[.build[-tag]]]
-  VendorId vendor                         = 4 ;
-  PlatformId platform                     = 5 ;
-  string classification                   = 6 ;
-  repeated google.protobuf.Any supplement = 7 ; // additional information about Agent
-}
-
-// Butler Peer Identification (Agent Instance)
-
-message PeerIdentification {
-  bytes  uid                              = 1 ; // Unique peer ID. It's RECOMMENDED to use uuid version 1.
-  uint32 pid                              = 2 ; // Peer's process ID
-  string host                             = 3 ; // host (network node) identification
-  repeated google.protobuf.Any supplement = 4 ; // additional information about Peer
-}
-   
-// Interface Specification
-
-message InterfaceSpec {
-  uint32 number = 1 ; // Interface Identification Number assigned by Service
-  bytes  uid    = 2 ; // Iterface UID
-}
-
-// FBSP Service Error Description Record
-
-message ErrorDescription {
-  uint64 code                       = 1 ;  // Service-specific error code
-  string description                = 2 ;  // Short text description of the error
-  google.protobuf.Struct context    = 3 ;  // Structured error context information
-  google.protobuf.Struct annotation = 4 ;  // Additional structured error information
-}
+import "fbsd.proto";
 
 // FBSP HELLO data frame
 
 message HelloDataframe {
-  PeerIdentification instance             = 1 ;
-  AgentIdentification client              = 2 ;
+  fbsd.PeerIdentification instance        = 1 ;
+  fbsd.AgentIdentification client         = 2 ;
   repeated google.protobuf.Any supplement = 3 ;
 }
 
 // FBSP WELCOME data frame
 
 message WelcomeDataframe {
-  PeerIdentification instance             = 1 ;
-  AgentIdentification service             = 2 ;
-  repeated InterfaceSpec api              = 3 ;
+  fbsd.PeerIdentification instance        = 1 ;
+  fbsd.AgentIdentification service        = 2 ;
+  repeated fbsd.InterfaceSpec api         = 3 ;
   repeated google.protobuf.Any supplement = 4 ;
 }
 
@@ -132,7 +61,7 @@ message CancelRequests {
 // FBSP STATE Message Data
 
 message StateInformation {
-  State state                             = 1 ;
+  fbsd.State state                        = 1 ;
   repeated google.protobuf.Any supplement = 2 ; // Additional vendor-specific information
 }
 

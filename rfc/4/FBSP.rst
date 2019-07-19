@@ -507,7 +507,7 @@ The `Service API` consists from `Interfaces` (API contracts) that consists from 
 3. An `Operation` MUST have numeric identification unique within the `Interface`, and with value in range 1..255. This identification is called `Interface operation code`.
 4. The `Service` MUST assign an unique `Interface identification number` in range 1..255 to each `Interface` it provides, and announce the Interface identification along with assigned number in the data-frame of the WELCOME_ message.
 5. The `Service` MUST provide at least one `Interface`, and MAY provide up to 255 individual `Interfaces`.
-6. The set of `Interfaces` that `Service` provides MUST be stable, which means that all `Service` instances with the same `Agent identification`_ MUST provide the same set of `Interfaces` to all `Clients`.
+6. The set of `Interfaces` that `Service` provides MUST be stable, which means that all `Service` instances with the same :ref:`Agent identification` MUST provide the same set of `Interfaces` to all `Clients`.
 
 
 .. _Request codes:
@@ -545,179 +545,9 @@ All API and other specifications that define data-frame_ contents SHALL conform 
 2.6.2 Common protobuf specifications
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+All Protocol Buffer specifications build on protocol buffers defined by :ref:`3/FBDS - 5.1 Common protobuf specifications <common-protobuf>`.
+
 All Protocol Buffer specifications use `proto3` syntax. This syntax variant does not support required fields, and all fields are optional (basic types will have the default "empty" value when they are not serialized). However, some fields in FBSP specification are considered as mandatory (as "required" in `proto2`), and should be validated as such by receiver.
-
-State enumeration
-"""""""""""""""""
-
-.. code-block:: protobuf
-
-   enum State {
-     option allow_alias = true ;
-     
-     UNKNOWN         = 0 ;
-     READY           = 1 ;
-     RUNNING         = 2 ;
-     WAITING         = 3 ;
-     SUSPENDED       = 4 ;
-     FINISHED        = 5 ;
-     ABORTED         = 6 ;
-     
-     // Aliases
-     
-     CREATED         = 1 ;
-     BLOCKED         = 3 ;
-     STOPPED         = 4 ;
-   }
-
-Platform Identification
-"""""""""""""""""""""""
-
-A data structure that describes the Firebird Butler Development Platform used by Client or Service.
-
-.. code-block:: protobuf
-
-   message PlatformId {
-     bytes  uid     = 1 ;
-     string version = 2 ;
-   }
-
-:uid:
-  MANDATORY unique platform ID. It's RECOMMENDED to use uuid version 5 - SHA1, namespace OID.
-     
-:version:
-  MANDATORY platform version. MUST conform to `major[.minor[.build[-tag]]]` pattern, where `major`, `minor` and `build` are numbers, and `tag` is alphanumeric.
-  
-Vendor Identification
-"""""""""""""""""""""
-
-.. code-block:: protobuf
-
-   message VendorId {
-     bytes uid = 1 ;
-   }
-
-:uid:
-  MANDATORY unique vendor ID. It's RECOMMENDED to use uuid version 5 - SHA1, namespace OID.
-     
-Agent Identification
-""""""""""""""""""""
-
-A data structure that describes the identity of the Client or Service.
-
-.. code-block:: protobuf
-
-   import "google/protobuf/any.proto";
-
-   message AgentIdentification {
-     bytes  uid                              = 1 ;
-     string name                             = 2 ;
-     string version                          = 3 ;
-     VendorId vendor                         = 4 ;
-     PlatformId platform                     = 5 ;
-     string classification                   = 6 ;
-     repeated google.protobuf.Any supplement = 7 ;
-   }
-
-:uid:
-  MANDATORY unique Agent ID. It's RECOMMENDED to use uuid version 5 - SHA1, namespace OID.
-     
-:name:
-  MANDATORY agent name assigned by vendor. It's RECOMMENDED that `uid` and `name` make a stable pair, i.e. there should not be agents from the single vendor that have the same name but different uid and vice versa.
-  
-:version:
-  MANDATORY agent version. MUST conform to `major[.minor[.build[-tag]]]` pattern, where `major`, `minor` and `build` are numbers, and `tag` is alphanumeric.
-  
-:vendor:
-  MANDATORY `Vendor identification`_.
-
-:platform:
-  MANDATORY `Platform identification`_.
-  
-:classification:
-  Agent classification. It's RECOMMENDED to use `domain/category` schema, for example *database/backup*.
-
-:supplement:
-  Any additional information about Agent.
-
-
-Peer Identification
-"""""""""""""""""""
-
-A data structure that describes the peer within the FBSP Connection_.
-
-.. code-block:: protobuf
-
-   import "google/protobuf/any.proto";
-
-   message PeerIdentification {
-     bytes  uid                              = 1 ;
-     uint32 pid                              = 2 ;
-     string host {                           = 3 ;
-     repeated google.protobuf.Any supplement = 4 ;
-   }
-
-:uid:
-  MANDATORY unique peer ID. It's RECOMMENDED to use uuid version 1.
-  
-  .. seealso:: `2.2 Client and Service Identity`_
-
-:pid:
-  MANDATORY process ID (PID of peer's process). 
-  
-:host:
-  MANDATORY host (network node) identification. It could be an IP (v4/v6) address, or a hostname that must be resolvable to an IP address. Peers that run on the same network node MUST have the same address/hostname.
-  
-:supplement:
-  Any additional information about peer.
-
-Interface Specification
-"""""""""""""""""""""""
-
-A data structure that describes an Interface used by Service API.
-
-.. code-block:: protobuf
-
-   message InterfaceSpec {
-     uint32 number    = 1 ;
-     bytes  interface = 2 ;
-   }
-
-:number:
-  MANDATORY Interface Identification Number assigned by Service.
-  
-:interface:
-  MANDATORY Iterface UID.
-   
-
-Error Description
-"""""""""""""""""
-
-A data structure that describes an error.
-
-.. code-block:: protobuf
-
-   import "google/protobuf/struct.proto";
-   
-   message ErrorDescription {
-     uint64 code                       = 1 ;
-     string description                = 2 ;
-     google.protobuf.Struct context    = 3 ;
-     google.protobuf.Struct annotation = 4 ;
-   }
-
-
-:code: 
-  Service-specific error code.
-
-:description: 
-  MANDATORY short text description of the error.
-
-:context: 
-  Structured error context information. The context is for information that accurately identifies the source of the error by the `Client`.
-
-:annotation:
-  Additional structured error information. Annotations are intended for debugging and other internal purposes and MAY be ignored by the `Client`.
 
 2.6.3 FBSP Data Frames for message types
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -730,10 +560,11 @@ HELLO data
 .. code-block:: protobuf
 
    import "google/protobuf/any.proto";
+   import "fbsd.proto";
 
    message HelloDataframe {
-     PeerIdentification instance             = 1 ;
-     AgentIdentification client              = 2 ;
+     fbsd.PeerIdentification instance        = 1 ;
+     fbsd.AgentIdentification client         = 2 ;
      repeated google.protobuf.Any supplement = 3 ;
    }
 
@@ -754,11 +585,12 @@ WELCOME data
 .. code-block:: protobuf
 
    import "google/protobuf/any.proto";
+   import "fbsd.proto";
 
    message WelcomeDataframe {
-     PeerIdentification instance             = 1 ;
-     AgentIdentification service             = 2 ;
-     repeated InterfaceSpec api              = 3 ;
+     fbsd.PeerIdentification instance        = 1 ;
+     fbsd.AgentIdentification service        = 2 ;
+     repeated fbsd.InterfaceSpec api         = 3 ;
      repeated google.protobuf.Any supplement = 4 ;
    }
 
@@ -804,14 +636,15 @@ STATE data
 .. code-block:: protobuf
 
    import "google/protobuf/any.proto";
+   import "fbsd.proto";
 
    message StateInformation {
-     State state                             = 1 ;
+     fbsd.State state                        = 1 ;
      repeated google.protobuf.Any supplement = 2 ;
    }
 
 :state:
-  MANDATORY `State enumeration`_
+  MANDATORY :ref:`State enumeration`
 
 :supplement:
   Any additional state information supported by Service API specification.
@@ -822,7 +655,7 @@ STATE data
 ERROR data
 """"""""""
 
-Each Data Frame must contain `Error Description`_ message.
+Each Data Frame must contain :ref:`3/FBSD - Error Description <error-description>` message.
 
 
 .. _error codes:

@@ -109,7 +109,7 @@ The method of implementation of the Service Client is not specifically defined o
 
 Both the `Service` and the `Client` can run in the same or different context, the context being the process `thread` or the separate `process`, or a separate process on another `network node`.
 
-When using different ZeroMQ protocols, the following combinations can be achieved:
+The following table shows the possible combinations of execution contexts and the optimal ZeroMQ communication protocols for a given combination:
 
 .. list-table:: Client and Service Link Scenarios
    :widths: 5 40 40 15
@@ -137,37 +137,17 @@ When using different ZeroMQ protocols, the following combinations can be achieve
      - `tcp`_
 
 .. [1] This scenario requires an `ioloop` supported and shared by both, the `Client` and the `Service`. It is NOT RECOMMENDED to mix this context scenario with others.
-.. [2] `inproc` is the most efficient, but other protocols could be used as well, especially when the same Service Socket should be used in multiple contexts scenarios.
+.. [2] `inproc` is the most efficient, but other protocols could be used if inproc couldn't be used for some reson.
 .. [3] `ipc` is the most effective option but may not be available on all platforms. In such a case, use of `tcp` through local loopback is the RECOMMENDED option.
 
 Service could work with Clients using multiple scenarios at once. However, the following recommendations should be taken into account:
 
-#. The Service SHOULD use the minimum necessary number of `Service Sockets`. 
-#. The Service SHOULD use the most efficient protocol for each used scenario.
-
-Taking into account the previous recommendations, it is advised to use one of the following recipes for combined scenarios:
-
-.. list-table:: Client and Service Combined Scenarios
-   :widths: 30 70
-   :header-rows: 1
-   
-   * - Supported scenarios
-     - Service Sockets
-   * - **3.** and **4.**
-     - Efficiency and Simplicity: One socket using `tcp`_ transport
-   * - **2.** and **3.**
-     - - Efficiency: Two sockets, one using `inproc`_ for Clients from context **2.**, and one using `ipc`_ transport for Clients from context **3.**
-       - Simplicity: One socket using `tcp`_ transport for Clients from all contexts.
-   * - **2.**, **3.** and **4.**
-     - - Efficiency: Two sockets, one using `tcp`_ for Clients from context **3.** and **4.**, and one using `inproc`_ transport for Clients from context **2.**
-       - Simplicity: One socket using `tcp`_ transport for Clients from all contexts.
-   * - **2.** and **4.**
-     - - Efficiency: Two sockets, one using `tcp`_ for Clients from context **4.**, and one using `inproc`_ transport for Clients from context **2.**
-       - Simplicity: One socket using `tcp`_ transport for Clients from all contexts.
+#. The Service SHOULD use the minimum necessary number of `Service Sockets`. The ZeroMQ library allows you to bind a socket to multiple addresses using multiple protocols. However, some ZMQ implementations may not allow this, and it may be necessary to use multiple `Service Sockets` to provide the most efficient connections for all supported scenarios.
+#. The Service SHOULD use the most efficient protocol for each used/supported scenario.
 
 .. tip::
 
-   When implementing `Services`, it is RECOMMENDED to use a procedure that allows the same service code to be used in different contexts through adapters or containers. Most typically, the Service could be implemented as a `Class`, that accepts `Service Socket` specification (`protocol` and `address`, or already bound 0MQ socket instance) as a `constructor` parameter.
+   When implementing `Services`, it is RECOMMENDED to use a procedure that allows the same service code to be used in different contexts through adapters or containers. Most typically, the Service could be implemented as a `Class`, that accepts and uses externally defined `Service Socket` specification (`protocol` and `address`, or already bound 0MQ socket instance etc.).
    
    Alternatively, it is possible to encapsulate the service into another service that would act as a `router` or `bridge` to Clients or Services in another contexts.
 
@@ -176,11 +156,13 @@ Taking into account the previous recommendations, it is advised to use one of th
 
 One of the main goals of this specification is to enable the creation of services that do not work in isolation according to the client / server schema, but function as integral components of a larger integrated entity. To achieve this goal, it is essential for services to use other available services themselves.
 
+The RECOMMENDED method of integration is an indirect link between services through `Data Pipes`_, where individual services act as producers and / or consumers of data for / from other services. However, it is also possible to integrate services directly, that is, when the service as a client calls another service.
+
 When implementing Services that are also Clients of other services, the following recommendations should be taken into account:
 
 #. The Client connection to other Service SHOULD be handled asynchronously.
 #. The Service SHOULD use the minimum necessary number of `Client Sockets`. This could be achieved by using a ROUTER socket for connecting to multiple, even different Services.
-#. The Service SHOULD open the `Client Socket` to another service as soon as possible, preferably during its initialization, so that information about the availability and operating parameters of another service is known prior to processing the first request of the Service clients, where a Client request is a REQUEST message with a request code other than the code reserved for the |FBSP| protocol.
+#. The Service SHOULD open the `Client Socket` to another service as soon as possible, preferably during its initialization, so that information about the availability and operating parameters of another service is known prior to processing the first request of the Service clients, where a Client request is a REQUEST message as defined by |FBSP| protocol.
 #. The client connection to another service SHOULD be kept open until the Service is terminated.
 #. Information about client connections to other services SHOULD be part of the status information provided in accordance with :ref:`Recommendation 7, Section 2.1 <svc-recommendation>`.
 #. Configuration and management of client connections to other services SHOULD be part of the remote configuration and control provided in accordance with :ref:`Recommendation 8, Section 2.1 <svc-recommendation>`.
@@ -195,15 +177,320 @@ When implementing Services that are also Clients of other services, the followin
 
 
 3.3 Security
-============
+------------
 
 FBSD does not specify any authentication, encryption or access control mechanisms, and fully relies on security measures provided by ZeroMQ, or other means.
 
-4. Reference Implementations
+.. _data pipes:
+
+4. Data Pipes
+=============
+
+5. Structured data in messages
+==============================
+
+All structured user data passed trough `Data Pipes`_ or between `Services` and `Clients` SHOULD use  serialization method. The RECOMMENDED serialization methods are `Protocol Buffers`_ (preferred) or `Flat Buffers`_ (in case the direct access to parts of serialized data is required). It is NOT RECOMMENDED to use any verbose serialization format such as JSON or XML. The whole Service API SHOULD use only one serialization method. Serialization method MAY be negotiable between peers.
+
+.. _common-protobuf:
+
+5.1 Common protobuf specifications
+----------------------------------
+
+This specification defines set of common `Protocol Buffers`_ types and messages that SHOULD be used where applicable.
+
+All `protobuf` specifications use `proto3` syntax. This syntax variant does not support required fields, and all fields are optional (basic types will have the default "empty" value when they are not serialized). However, some fields in FBSD specification are considered as mandatory (as "required" in `proto2`), and should be validated as such by receiver.
+
+5.1.1 Enumeration types
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. _state enumeration:
+
+Process State
+"""""""""""""
+
+Universal enumeration type for process state.
+
+.. code-block:: protobuf
+
+   enum State {
+     option allow_alias = true ;
+     
+     UNKNOWN_STATE   = 0 ;
+     READY           = 1 ;
+     RUNNING         = 2 ;
+     WAITING         = 3 ;
+     SUSPENDED       = 4 ;
+     FINISHED        = 5 ;
+     ABORTED         = 6 ;
+     
+     // Aliases
+     
+     CREATED         = 1 ;
+     BLOCKED         = 3 ;
+     STOPPED         = 4 ;
+   }
+
+Address domain
+""""""""""""""
+
+Enumeration for identification of address domain (scope).
+
+.. code-block:: protobuf
+
+   enum AddressDomain {
+     UNKNOWN_DOMAIN = 0 ; // Not a valid option, defined only to handle undefined values
+     LOCAL          = 1 ; // Within process (inproc)
+     NODE           = 2 ; // On single node (ipc or tcp loopback)
+     NETWORK        = 3 ; // Network-wide (ip address or domain name)
+   }
+   
+Transport protocol
+""""""""""""""""""
+
+Enumeration for transport protocol identification.
+
+.. code-block:: protobuf
+
+   enum TransportProtocol {
+     UNKNOWN_PROTOCOL = 0 ; // Not a valid option, defined only to handle undefined values
+     INPROC           = 1 ;
+     IPC              = 2 ;
+     TCP              = 3 ;
+     PGM              = 4 ;
+     EPGM             = 5 ;
+     VMCI             = 6 ;
+   }
+
+Socket type
+"""""""""""
+
+Enumeration for ZeroMQ socket types.
+
+.. code-block:: protobuf
+
+   enum SocketType {
+     UNKNOWN_TYPE = 0 ; // Not a valid option, defined only to handle undefined values
+     DEALER       = 1 ;
+     ROUTER       = 2 ;
+     PUB          = 3 ;
+     SUB          = 4 ;
+     XPUB         = 5 ;
+     XSUB         = 6 ;
+     PUSH         = 7 ;
+     PULL         = 8 ;
+     STREAM       = 9 ;
+     PAIR         = 10 ;
+   }
+
+Socket use
+""""""""""
+
+Enumeration for ZeroMQ socket usage type.
+
+.. code-block:: protobuf
+
+   enum SocketUse {
+     UNKNOWN_USE = 0 ; // Not a valid option, defined only to handle undefined values
+     PRODUCER    = 1 ; // Socket used to provide data to peers
+     CONSUMER    = 2 ; // Socket used to get data prom peers
+     EXCHANGE    = 3 ; // Socket used for data exchange
+   }
+
+Dependency type
+"""""""""""""""
+
+Enumeration for definition of dependency type.
+
+.. code-block:: protobuf
+
+   enum DependencyType {
+     UNKNOWN_DEPTYPE = 0 ; // Not a valid option, defined only to handle undefined values
+     REQUIRED        = 1 ; // Resource MUST be available
+     PREFERRED       = 2 ; // Resource SHOULD be provided if available
+     OPTIONAL        = 3 ; // Resource MAY be provided if available
+   }
+
+5.1.2 Data structures (messages)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   
+ZeroMQ endpoint address
+"""""""""""""""""""""""
+
+A data structure that describes ZeroMQ endpoint address.
+
+.. code-block:: protobuf
+
+   message EndpointAddress {
+     AddressDomain domain       = 1 ;
+     TransportProtocol protocol = 2 ;
+     string address             = 3 ;
+   }
+   
+:domain:
+  MANDATORY address domain.
+  
+:protocol:
+  MANDATORY protocol identification.
+  
+:address:
+  MANDATORY address specification.
+   
+Platform Identification
+"""""""""""""""""""""""
+
+A data structure that describes the Firebird Butler Development Platform used by Client or Service.
+
+.. code-block:: protobuf
+
+   message PlatformId {
+     bytes  uid     = 1 ;
+     string version = 2 ;
+   }
+
+:uid:
+  MANDATORY unique platform ID. It's RECOMMENDED to use uuid version 5 - SHA1, namespace OID.
+     
+:version:
+  MANDATORY platform version. MUST conform to `major[.minor[.build[-tag]]]` pattern, where `major`, `minor` and `build` are numbers, and `tag` is alphanumeric.
+  
+Vendor Identification
+"""""""""""""""""""""
+
+A data structure that identifies a vendor of Client or Service.
+
+.. code-block:: protobuf
+
+   message VendorId {
+     bytes uid = 1 ;
+   }
+
+:uid:
+  MANDATORY unique vendor ID. It's RECOMMENDED to use uuid version 5 - SHA1, namespace OID.
+
+.. _agent identification:
+  
+Agent Identification
+""""""""""""""""""""
+
+A data structure that describes the identity of the Client or Service.
+
+.. code-block:: protobuf
+
+   import "google/protobuf/any.proto";
+
+   message AgentIdentification {
+     bytes  uid                              = 1 ;
+     string name                             = 2 ;
+     string version                          = 3 ;
+     VendorId vendor                         = 4 ;
+     PlatformId platform                     = 5 ;
+     string classification                   = 6 ;
+     repeated google.protobuf.Any supplement = 7 ;
+   }
+
+:uid:
+  MANDATORY unique Agent ID. It's RECOMMENDED to use uuid version 5 - SHA1, namespace OID.
+     
+:name:
+  MANDATORY agent name assigned by vendor. It's RECOMMENDED that `uid` and `name` make a stable pair, i.e. there should not be agents from the single vendor that have the same name but different uid and vice versa.
+  
+:version:
+  MANDATORY agent version. MUST conform to `major[.minor[.build[-tag]]]` pattern, where `major`, `minor` and `build` are numbers, and `tag` is alphanumeric.
+  
+:vendor:
+  MANDATORY `Vendor identification`_.
+
+:platform:
+  MANDATORY `Platform identification`_.
+  
+:classification:
+  Agent classification. It's RECOMMENDED to use `domain/category` schema, for example *database/backup*.
+
+:supplement:
+  Any additional information about Agent.
+
+Peer Identification
+"""""""""""""""""""
+
+A data structure that describes the peer within the Connection.
+
+.. code-block:: protobuf
+
+   import "google/protobuf/any.proto";
+
+   message PeerIdentification {
+     bytes  uid                              = 1 ;
+     uint32 pid                              = 2 ;
+     string host                             = 3 ;
+     repeated google.protobuf.Any supplement = 4 ;
+   }
+
+:uid:
+  MANDATORY unique peer ID. It's RECOMMENDED to use uuid version 1.
+  
+:pid:
+  MANDATORY process ID (PID of peer's process). 
+  
+:host:
+  MANDATORY host (network node) identification. It could be an IP (v4/v6) address, or a hostname that must be resolvable to an IP address. Peers that run on the same network node MUST have the same address/hostname.
+  
+:supplement:
+  Any additional information about peer.
+
+Interface Specification
+"""""""""""""""""""""""
+
+A data structure that describes an Interface used by Service API.
+
+.. code-block:: protobuf
+
+   message InterfaceSpec {
+     uint32 number    = 1 ;
+     bytes  interface = 2 ;
+   }
+
+:number:
+  MANDATORY Interface Identification Number assigned by Service.
+  
+:interface:
+  MANDATORY Iterface UID.
+   
+.. _error-description:
+
+Error Description
+"""""""""""""""""
+
+A data structure that describes an error.
+
+.. code-block:: protobuf
+
+   import "google/protobuf/struct.proto";
+   
+   message ErrorDescription {
+     uint64 code                       = 1 ;
+     string description                = 2 ;
+     google.protobuf.Struct context    = 3 ;
+     google.protobuf.Struct annotation = 4 ;
+   }
+
+
+:code: 
+  Service-specific error code.
+
+:description: 
+  MANDATORY short text description of the error.
+
+:context: 
+  Structured error context information. The context is for information that accurately identifies the source of the error by the `Client`.
+
+:annotation:
+  Additional structured error information. Annotations are intended for debugging and other internal purposes and MAY be ignored by the `Client`.
+
+6. Reference Implementations
 ============================
 
-None at this time. In future, the :ref:`Saturnin` and :ref:`Saturnin-SDK <saturnin-sdk>` will act as the prime reference implementation for FBSD.
-   
+The :ref:`Saturnin` and :ref:`Saturnin-SDK <saturnin-sdk>` projects act as the prime reference implementation for FBSD.
+
 |
 |
 
@@ -217,3 +504,5 @@ None at this time. In future, the :ref:`Saturnin` and :ref:`Saturnin-SDK <saturn
 .. _inproc: http://api.zeromq.org/4-2:zmq-inproc
 .. _ipc: http://api.zeromq.org/3-2:zmq-ipc
 .. _tcp: http://api.zeromq.org/3-2:zmq-tcp
+.. _Protocol Buffers: https://developers.google.com/protocol-buffers/
+.. _Flat Buffers: https://github.com/google/flatbuffers
