@@ -54,8 +54,8 @@ Firebird Butler `Service` is any software unit that performs an activity require
 
 The `Service` MUST meet the following criteria:
 
-#. Service MUST bind to at least one ZeroMQ `ROUTER` socket, referred to as `Service Socket`. 
-#. Service MAY use additional ZeroMQ sockets for internal purposes or as part of its public API, that are not `Service Sockets`. All such additional ZeroMQ sockets that are part of the Service public API MUST be detectable using the API available through `Service Sockets`.
+#. Service MUST bind to at least one ZeroMQ `ROUTER` socket, referred to as `Service Socket`.
+#. Service MAY use additional ZeroMQ sockets for internal purposes or as part of its public API, that are not `Service Sockets`, referred to as `Data Pipes`. All such `Data Pipes` that are part of the Service public API MUST be detectable using the API available through `Service Sockets`.
 #. Services MUST assign an identity on `Service Socket`. If there are multiple Service Sockets, they MUST use the same identity. This socket identity SHALL be the same as `Unique Service Instance ID` defined by |FBSP|.
 #. If Service uses multiple `Service Sockets`, all of them MUST provide the same functionality to the Clients. It means that from Client perspective there shall be no difference in service **abilities** available and **methods** how they are accessible between different `Service Sockets`. However, Service MAY have different **operational** characteristics when responsing to request coming from different Service Sockets.
 #. All messages coming through `Service Socket` MUST be processed as |FBSP| protocol messages.
@@ -183,24 +183,21 @@ FBSD does not specify any authentication, encryption or access control mechanism
 
 .. _data pipes:
 
-4. Data Pipes
-=============
-
-5. Structured data in messages
+4. Structured data in messages
 ==============================
 
-All structured user data passed trough `Data Pipes`_ or between `Services` and `Clients` SHOULD use  serialization method. The RECOMMENDED serialization methods are `Protocol Buffers`_ (preferred) or `Flat Buffers`_ (in case the direct access to parts of serialized data is required). It is NOT RECOMMENDED to use any verbose serialization format such as JSON or XML. The whole Service API SHOULD use only one serialization method. Serialization method MAY be negotiable between peers.
+All structured user data passed trough `Data Pipes`_ or `Service Sockets` between `Services` and `Clients` SHOULD use  serialization method. The RECOMMENDED serialization methods are `Protocol Buffers`_ (preferred) or `Flat Buffers`_ (in case the direct access to parts of serialized data is required). It is NOT RECOMMENDED to use any verbose serialization format such as JSON or XML. The whole Service API SHOULD use only one serialization method. Serialization method MAY be negotiable between peers.
 
 .. _common-protobuf:
 
-5.1 Common protobuf specifications
+4.1 Common protobuf specifications
 ----------------------------------
 
 This specification defines set of common `Protocol Buffers`_ types and messages that SHOULD be used where applicable.
 
 All `protobuf` specifications use `proto3` syntax. This syntax variant does not support required fields, and all fields are optional (basic types will have the default "empty" value when they are not serialized). However, some fields in FBSD specification are considered as mandatory (as "required" in `proto2`), and should be validated as such by receiver.
 
-5.1.1 Enumeration types
+4.1.1 Enumeration types
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 .. _state enumeration:
@@ -310,7 +307,7 @@ Enumeration for definition of dependency type.
      OPTIONAL        = 3 ; // Resource MAY be provided if available
    }
 
-5.1.2 Data structures (messages)
+4.1.2 Data structures (messages)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    
 ZeroMQ endpoint address
@@ -486,7 +483,55 @@ A data structure that describes an error.
 :annotation:
   Additional structured error information. Annotations are intended for debugging and other internal purposes and MAY be ignored by the `Client`.
 
-6. Reference Implementations
+Data Pipe
+"""""""""
+
+A data structure that describes a ZeroMQ socket that is not used as `Service Socket`.
+
+.. code-block:: protobuf
+
+   import "google/protobuf/any.proto";
+   
+   message DataPipe {
+     string name                             = 1 ;
+     SocketType socket_type                  = 2 ;
+     SocketUse use                           = 3 ;
+     string protocol                         = 4 ;
+     bytes owner                             = 5 ;
+     uint32 pid                              = 6 ; 
+     string host                             = 7 ; 
+     repeated EndpointAddress endpoints      = 8 ; 
+     repeated google.protobuf.Any supplement = 9 ; 
+   }
+
+:name:
+  MANDATORY pipe name
+
+:socket_type:
+  MANDATORY identification of ZeroMQ socket type
+
+:use:
+  MANDATORY identification of pipe usage type
+
+:protocol:
+  Description of the protocol used for message traffic through this pipe
+
+:owner:
+  Identification of the peer that owns the pipe
+
+:pid:
+  MANDATORY ID of the process that manages the pipe
+
+:host:
+  MANDATORY host (network node) identification where the pipe resides
+
+:endpoints:
+  MANDATORY list of binded endpoints.
+
+:supplement:
+  Any additional information about data pipe.
+   
+5. Reference Implementations
 ============================
 
 The :ref:`Saturnin` and :ref:`Saturnin-SDK <saturnin-sdk>` projects act as the prime reference implementation for FBSD.
