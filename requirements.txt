@@ -1,2 +1,2 @@
-sphinx-bootstrap-theme==0.6.5
+sphinx-bootstrap-theme>=0.6.5
 aafigure>=0.6
