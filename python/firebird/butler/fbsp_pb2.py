@@ -21,36 +21,36 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='firebird/butler/fbsp.proto',
   package='firebird.butler',
   syntax='proto3',
-  serialized_pb=_b('\n\x1a\x66irebird/butler/fbsp.proto\x12\x0f\x66irebird.butler\x1a\x19google/protobuf/any.proto\x1a\x1a\x66irebird/butler/fbsd.proto\"\xa7\x01\n\x0eHelloDataframe\x12\x35\n\x08instance\x18\x01 \x01(\x0b\x32#.firebird.butler.PeerIdentification\x12\x34\n\x06\x63lient\x18\x02 \x01(\x0b\x32$.firebird.butler.AgentIdentification\x12(\n\nsupplement\x18\x03 \x03(\x0b\x32\x14.google.protobuf.Any\"\xd7\x01\n\x10WelcomeDataframe\x12\x35\n\x08instance\x18\x01 \x01(\x0b\x32#.firebird.butler.PeerIdentification\x12\x35\n\x07service\x18\x02 \x01(\x0b\x32$.firebird.butler.AgentIdentification\x12+\n\x03\x61pi\x18\x03 \x03(\x0b\x32\x1e.firebird.butler.InterfaceSpec\x12(\n\nsupplement\x18\x04 \x03(\x0b\x32\x14.google.protobuf.Any\"I\n\x0e\x43\x61ncelRequests\x12\r\n\x05token\x18\x01 \x01(\x0c\x12(\n\nsupplement\x18\x02 \x03(\x0b\x32\x14.google.protobuf.Any\"c\n\x10StateInformation\x12%\n\x05state\x18\x01 \x01(\x0e\x32\x16.firebird.butler.State\x12(\n\nsupplement\x18\x02 \x03(\x0b\x32\x14.google.protobuf.Anyb\x06proto3')
+  serialized_pb=_b('\n\x1a\x66irebird/butler/fbsp.proto\x12\x0f\x66irebird.butler\x1a\x19google/protobuf/any.proto\x1a\x1a\x66irebird/butler/fbsd.proto\"\xab\x01\n\x12\x46\x42SPHelloDataframe\x12\x35\n\x08instance\x18\x01 \x01(\x0b\x32#.firebird.butler.PeerIdentification\x12\x34\n\x06\x63lient\x18\x02 \x01(\x0b\x32$.firebird.butler.AgentIdentification\x12(\n\nsupplement\x18\x03 \x03(\x0b\x32\x14.google.protobuf.Any\"\xdb\x01\n\x14\x46\x42SPWelcomeDataframe\x12\x35\n\x08instance\x18\x01 \x01(\x0b\x32#.firebird.butler.PeerIdentification\x12\x35\n\x07service\x18\x02 \x01(\x0b\x32$.firebird.butler.AgentIdentification\x12+\n\x03\x61pi\x18\x03 \x03(\x0b\x32\x1e.firebird.butler.InterfaceSpec\x12(\n\nsupplement\x18\x04 \x03(\x0b\x32\x14.google.protobuf.Any\"M\n\x12\x46\x42SPCancelRequests\x12\r\n\x05token\x18\x01 \x01(\x0c\x12(\n\nsupplement\x18\x02 \x03(\x0b\x32\x14.google.protobuf.Any\"k\n\x14\x46\x42SPStateInformation\x12)\n\x05state\x18\x01 \x01(\x0e\x32\x1a.firebird.butler.StateEnum\x12(\n\nsupplement\x18\x02 \x03(\x0b\x32\x14.google.protobuf.Anyb\x06proto3')
   ,
   dependencies=[google_dot_protobuf_dot_any__pb2.DESCRIPTOR,firebird_dot_butler_dot_fbsd__pb2.DESCRIPTOR,])
 
 
 
 
-_HELLODATAFRAME = _descriptor.Descriptor(
-  name='HelloDataframe',
-  full_name='firebird.butler.HelloDataframe',
+_FBSPHELLODATAFRAME = _descriptor.Descriptor(
+  name='FBSPHelloDataframe',
+  full_name='firebird.butler.FBSPHelloDataframe',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='instance', full_name='firebird.butler.HelloDataframe.instance', index=0,
+      name='instance', full_name='firebird.butler.FBSPHelloDataframe.instance', index=0,
       number=1, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='client', full_name='firebird.butler.HelloDataframe.client', index=1,
+      name='client', full_name='firebird.butler.FBSPHelloDataframe.client', index=1,
       number=2, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='supplement', full_name='firebird.butler.HelloDataframe.supplement', index=2,
+      name='supplement', full_name='firebird.butler.FBSPHelloDataframe.supplement', index=2,
       number=3, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
@@ -69,40 +69,40 @@ _HELLODATAFRAME = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=103,
-  serialized_end=270,
+  serialized_end=274,
 )
 
 
-_WELCOMEDATAFRAME = _descriptor.Descriptor(
-  name='WelcomeDataframe',
-  full_name='firebird.butler.WelcomeDataframe',
+_FBSPWELCOMEDATAFRAME = _descriptor.Descriptor(
+  name='FBSPWelcomeDataframe',
+  full_name='firebird.butler.FBSPWelcomeDataframe',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='instance', full_name='firebird.butler.WelcomeDataframe.instance', index=0,
+      name='instance', full_name='firebird.butler.FBSPWelcomeDataframe.instance', index=0,
       number=1, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='service', full_name='firebird.butler.WelcomeDataframe.service', index=1,
+      name='service', full_name='firebird.butler.FBSPWelcomeDataframe.service', index=1,
       number=2, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='api', full_name='firebird.butler.WelcomeDataframe.api', index=2,
+      name='api', full_name='firebird.butler.FBSPWelcomeDataframe.api', index=2,
       number=3, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='supplement', full_name='firebird.butler.WelcomeDataframe.supplement', index=3,
+      name='supplement', full_name='firebird.butler.FBSPWelcomeDataframe.supplement', index=3,
       number=4, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
@@ -120,27 +120,27 @@ _WELCOMEDATAFRAME = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=273,
-  serialized_end=488,
+  serialized_start=277,
+  serialized_end=496,
 )
 
 
-_CANCELREQUESTS = _descriptor.Descriptor(
-  name='CancelRequests',
-  full_name='firebird.butler.CancelRequests',
+_FBSPCANCELREQUESTS = _descriptor.Descriptor(
+  name='FBSPCancelRequests',
+  full_name='firebird.butler.FBSPCancelRequests',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='token', full_name='firebird.butler.CancelRequests.token', index=0,
+      name='token', full_name='firebird.butler.FBSPCancelRequests.token', index=0,
       number=1, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='supplement', full_name='firebird.butler.CancelRequests.supplement', index=1,
+      name='supplement', full_name='firebird.butler.FBSPCancelRequests.supplement', index=1,
       number=2, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
@@ -158,27 +158,27 @@ _CANCELREQUESTS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=490,
-  serialized_end=563,
+  serialized_start=498,
+  serialized_end=575,
 )
 
 
-_STATEINFORMATION = _descriptor.Descriptor(
-  name='StateInformation',
-  full_name='firebird.butler.StateInformation',
+_FBSPSTATEINFORMATION = _descriptor.Descriptor(
+  name='FBSPStateInformation',
+  full_name='firebird.butler.FBSPStateInformation',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='state', full_name='firebird.butler.StateInformation.state', index=0,
+      name='state', full_name='firebird.butler.FBSPStateInformation.state', index=0,
       number=1, type=14, cpp_type=8, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='supplement', full_name='firebird.butler.StateInformation.supplement', index=1,
+      name='supplement', full_name='firebird.butler.FBSPStateInformation.supplement', index=1,
       number=2, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
@@ -196,53 +196,53 @@ _STATEINFORMATION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=565,
-  serialized_end=664,
+  serialized_start=577,
+  serialized_end=684,
 )
 
-_HELLODATAFRAME.fields_by_name['instance'].message_type = firebird_dot_butler_dot_fbsd__pb2._PEERIDENTIFICATION
-_HELLODATAFRAME.fields_by_name['client'].message_type = firebird_dot_butler_dot_fbsd__pb2._AGENTIDENTIFICATION
-_HELLODATAFRAME.fields_by_name['supplement'].message_type = google_dot_protobuf_dot_any__pb2._ANY
-_WELCOMEDATAFRAME.fields_by_name['instance'].message_type = firebird_dot_butler_dot_fbsd__pb2._PEERIDENTIFICATION
-_WELCOMEDATAFRAME.fields_by_name['service'].message_type = firebird_dot_butler_dot_fbsd__pb2._AGENTIDENTIFICATION
-_WELCOMEDATAFRAME.fields_by_name['api'].message_type = firebird_dot_butler_dot_fbsd__pb2._INTERFACESPEC
-_WELCOMEDATAFRAME.fields_by_name['supplement'].message_type = google_dot_protobuf_dot_any__pb2._ANY
-_CANCELREQUESTS.fields_by_name['supplement'].message_type = google_dot_protobuf_dot_any__pb2._ANY
-_STATEINFORMATION.fields_by_name['state'].enum_type = firebird_dot_butler_dot_fbsd__pb2._STATE
-_STATEINFORMATION.fields_by_name['supplement'].message_type = google_dot_protobuf_dot_any__pb2._ANY
-DESCRIPTOR.message_types_by_name['HelloDataframe'] = _HELLODATAFRAME
-DESCRIPTOR.message_types_by_name['WelcomeDataframe'] = _WELCOMEDATAFRAME
-DESCRIPTOR.message_types_by_name['CancelRequests'] = _CANCELREQUESTS
-DESCRIPTOR.message_types_by_name['StateInformation'] = _STATEINFORMATION
+_FBSPHELLODATAFRAME.fields_by_name['instance'].message_type = firebird_dot_butler_dot_fbsd__pb2._PEERIDENTIFICATION
+_FBSPHELLODATAFRAME.fields_by_name['client'].message_type = firebird_dot_butler_dot_fbsd__pb2._AGENTIDENTIFICATION
+_FBSPHELLODATAFRAME.fields_by_name['supplement'].message_type = google_dot_protobuf_dot_any__pb2._ANY
+_FBSPWELCOMEDATAFRAME.fields_by_name['instance'].message_type = firebird_dot_butler_dot_fbsd__pb2._PEERIDENTIFICATION
+_FBSPWELCOMEDATAFRAME.fields_by_name['service'].message_type = firebird_dot_butler_dot_fbsd__pb2._AGENTIDENTIFICATION
+_FBSPWELCOMEDATAFRAME.fields_by_name['api'].message_type = firebird_dot_butler_dot_fbsd__pb2._INTERFACESPEC
+_FBSPWELCOMEDATAFRAME.fields_by_name['supplement'].message_type = google_dot_protobuf_dot_any__pb2._ANY
+_FBSPCANCELREQUESTS.fields_by_name['supplement'].message_type = google_dot_protobuf_dot_any__pb2._ANY
+_FBSPSTATEINFORMATION.fields_by_name['state'].enum_type = firebird_dot_butler_dot_fbsd__pb2._STATEENUM
+_FBSPSTATEINFORMATION.fields_by_name['supplement'].message_type = google_dot_protobuf_dot_any__pb2._ANY
+DESCRIPTOR.message_types_by_name['FBSPHelloDataframe'] = _FBSPHELLODATAFRAME
+DESCRIPTOR.message_types_by_name['FBSPWelcomeDataframe'] = _FBSPWELCOMEDATAFRAME
+DESCRIPTOR.message_types_by_name['FBSPCancelRequests'] = _FBSPCANCELREQUESTS
+DESCRIPTOR.message_types_by_name['FBSPStateInformation'] = _FBSPSTATEINFORMATION
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
-HelloDataframe = _reflection.GeneratedProtocolMessageType('HelloDataframe', (_message.Message,), dict(
-  DESCRIPTOR = _HELLODATAFRAME,
+FBSPHelloDataframe = _reflection.GeneratedProtocolMessageType('FBSPHelloDataframe', (_message.Message,), dict(
+  DESCRIPTOR = _FBSPHELLODATAFRAME,
   __module__ = 'firebird.butler.fbsp_pb2'
-  # @@protoc_insertion_point(class_scope:firebird.butler.HelloDataframe)
+  # @@protoc_insertion_point(class_scope:firebird.butler.FBSPHelloDataframe)
   ))
-_sym_db.RegisterMessage(HelloDataframe)
+_sym_db.RegisterMessage(FBSPHelloDataframe)
 
-WelcomeDataframe = _reflection.GeneratedProtocolMessageType('WelcomeDataframe', (_message.Message,), dict(
-  DESCRIPTOR = _WELCOMEDATAFRAME,
+FBSPWelcomeDataframe = _reflection.GeneratedProtocolMessageType('FBSPWelcomeDataframe', (_message.Message,), dict(
+  DESCRIPTOR = _FBSPWELCOMEDATAFRAME,
   __module__ = 'firebird.butler.fbsp_pb2'
-  # @@protoc_insertion_point(class_scope:firebird.butler.WelcomeDataframe)
+  # @@protoc_insertion_point(class_scope:firebird.butler.FBSPWelcomeDataframe)
   ))
-_sym_db.RegisterMessage(WelcomeDataframe)
+_sym_db.RegisterMessage(FBSPWelcomeDataframe)
 
-CancelRequests = _reflection.GeneratedProtocolMessageType('CancelRequests', (_message.Message,), dict(
-  DESCRIPTOR = _CANCELREQUESTS,
+FBSPCancelRequests = _reflection.GeneratedProtocolMessageType('FBSPCancelRequests', (_message.Message,), dict(
+  DESCRIPTOR = _FBSPCANCELREQUESTS,
   __module__ = 'firebird.butler.fbsp_pb2'
-  # @@protoc_insertion_point(class_scope:firebird.butler.CancelRequests)
+  # @@protoc_insertion_point(class_scope:firebird.butler.FBSPCancelRequests)
   ))
-_sym_db.RegisterMessage(CancelRequests)
+_sym_db.RegisterMessage(FBSPCancelRequests)
 
-StateInformation = _reflection.GeneratedProtocolMessageType('StateInformation', (_message.Message,), dict(
-  DESCRIPTOR = _STATEINFORMATION,
+FBSPStateInformation = _reflection.GeneratedProtocolMessageType('FBSPStateInformation', (_message.Message,), dict(
+  DESCRIPTOR = _FBSPSTATEINFORMATION,
   __module__ = 'firebird.butler.fbsp_pb2'
-  # @@protoc_insertion_point(class_scope:firebird.butler.StateInformation)
+  # @@protoc_insertion_point(class_scope:firebird.butler.FBSPStateInformation)
   ))
-_sym_db.RegisterMessage(StateInformation)
+_sym_db.RegisterMessage(FBSPStateInformation)
 
 
 # @@protoc_insertion_point(module_scope)

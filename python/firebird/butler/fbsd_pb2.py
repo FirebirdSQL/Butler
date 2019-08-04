@@ -22,305 +22,305 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='firebird/butler/fbsd.proto',
   package='firebird.butler',
   syntax='proto3',
-  serialized_pb=_b('\n\x1a\x66irebird/butler/fbsd.proto\x12\x0f\x66irebird.butler\x1a\x19google/protobuf/any.proto\x1a\x1cgoogle/protobuf/struct.proto\"\x88\x01\n\x0f\x45ndpointAddress\x12.\n\x06\x64omain\x18\x01 \x01(\x0e\x32\x1e.firebird.butler.AddressDomain\x12\x34\n\x08protocol\x18\x02 \x01(\x0e\x32\".firebird.butler.TransportProtocol\x12\x0f\n\x07\x61\x64\x64ress\x18\x03 \x01(\t\"*\n\nPlatformId\x12\x0b\n\x03uid\x18\x01 \x01(\x0c\x12\x0f\n\x07version\x18\x02 \x01(\t\"\x17\n\x08VendorId\x12\x0b\n\x03uid\x18\x01 \x01(\x0c\"\xdd\x01\n\x13\x41gentIdentification\x12\x0b\n\x03uid\x18\x01 \x01(\x0c\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x0f\n\x07version\x18\x03 \x01(\t\x12)\n\x06vendor\x18\x04 \x01(\x0b\x32\x19.firebird.butler.VendorId\x12-\n\x08platform\x18\x05 \x01(\x0b\x32\x1b.firebird.butler.PlatformId\x12\x16\n\x0e\x63lassification\x18\x06 \x01(\t\x12(\n\nsupplement\x18\x07 \x03(\x0b\x32\x14.google.protobuf.Any\"f\n\x12PeerIdentification\x12\x0b\n\x03uid\x18\x01 \x01(\x0c\x12\x0b\n\x03pid\x18\x02 \x01(\r\x12\x0c\n\x04host\x18\x03 \x01(\t\x12(\n\nsupplement\x18\x04 \x03(\x0b\x32\x14.google.protobuf.Any\",\n\rInterfaceSpec\x12\x0e\n\x06number\x18\x01 \x01(\r\x12\x0b\n\x03uid\x18\x02 \x01(\x0c\"\x8c\x01\n\x10\x45rrorDescription\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x04\x12\x13\n\x0b\x64\x65scription\x18\x02 \x01(\t\x12(\n\x07\x63ontext\x18\x03 \x01(\x0b\x32\x17.google.protobuf.Struct\x12+\n\nannotation\x18\x04 \x01(\x0b\x32\x17.google.protobuf.Struct\"\x8e\x02\n\x08\x44\x61taPipe\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x30\n\x0bsocket_type\x18\x02 \x01(\x0e\x32\x1b.firebird.butler.SocketType\x12\'\n\x03use\x18\x03 \x01(\x0e\x32\x1a.firebird.butler.SocketUse\x12\x10\n\x08protocol\x18\x04 \x01(\t\x12\r\n\x05owner\x18\x05 \x01(\x0c\x12\x0b\n\x03pid\x18\x06 \x01(\r\x12\x0c\n\x04host\x18\x07 \x01(\t\x12\x33\n\tendpoints\x18\x08 \x03(\x0b\x32 .firebird.butler.EndpointAddress\x12(\n\nsupplement\x18\t \x03(\x0b\x32\x14.google.protobuf.Any*\xa4\x01\n\x05State\x12\x11\n\rUNKNOWN_STATE\x10\x00\x12\t\n\x05READY\x10\x01\x12\x0b\n\x07RUNNING\x10\x02\x12\x0b\n\x07WAITING\x10\x03\x12\r\n\tSUSPENDED\x10\x04\x12\x0c\n\x08\x46INISHED\x10\x05\x12\x0b\n\x07\x41\x42ORTED\x10\x06\x12\x0b\n\x07\x43REATED\x10\x01\x12\x0b\n\x07\x42LOCKED\x10\x03\x12\x0b\n\x07STOPPED\x10\x04\x12\x0e\n\nTERMINATED\x10\x06\x1a\x02\x10\x01*E\n\rAddressDomain\x12\x12\n\x0eUNKNOWN_DOMAIN\x10\x00\x12\t\n\x05LOCAL\x10\x01\x12\x08\n\x04NODE\x10\x02\x12\x0b\n\x07NETWORK\x10\x03*d\n\x11TransportProtocol\x12\x14\n\x10UNKNOWN_PROTOCOL\x10\x00\x12\n\n\x06INPROC\x10\x01\x12\x07\n\x03IPC\x10\x02\x12\x07\n\x03TCP\x10\x03\x12\x07\n\x03PGM\x10\x04\x12\x08\n\x04\x45PGM\x10\x05\x12\x08\n\x04VMCI\x10\x06*\x86\x01\n\nSocketType\x12\x10\n\x0cUNKNOWN_TYPE\x10\x00\x12\n\n\x06\x44\x45\x41LER\x10\x01\x12\n\n\x06ROUTER\x10\x02\x12\x07\n\x03PUB\x10\x03\x12\x07\n\x03SUB\x10\x04\x12\x08\n\x04XPUB\x10\x05\x12\x08\n\x04XSUB\x10\x06\x12\x08\n\x04PUSH\x10\x07\x12\x08\n\x04PULL\x10\x08\x12\n\n\x06STREAM\x10\t\x12\x08\n\x04PAIR\x10\n*F\n\tSocketUse\x12\x0f\n\x0bUNKNOWN_USE\x10\x00\x12\x0c\n\x08PRODUCER\x10\x01\x12\x0c\n\x08\x43ONSUMER\x10\x02\x12\x0c\n\x08\x45XCHANGE\x10\x03*P\n\x0e\x44\x65pendencyType\x12\x13\n\x0fUNKNOWN_DEPTYPE\x10\x00\x12\x0c\n\x08REQUIRED\x10\x01\x12\r\n\tPREFERRED\x10\x02\x12\x0c\n\x08OPTIONAL\x10\x03\x62\x06proto3')
+  serialized_pb=_b('\n\x1a\x66irebird/butler/fbsd.proto\x12\x0f\x66irebird.butler\x1a\x19google/protobuf/any.proto\x1a\x1cgoogle/protobuf/struct.proto\"\x90\x01\n\x0f\x45ndpointAddress\x12\x32\n\x06\x64omain\x18\x01 \x01(\x0e\x32\".firebird.butler.AddressDomainEnum\x12\x38\n\x08protocol\x18\x02 \x01(\x0e\x32&.firebird.butler.TransportProtocolEnum\x12\x0f\n\x07\x61\x64\x64ress\x18\x03 \x01(\t\"*\n\nPlatformId\x12\x0b\n\x03uid\x18\x01 \x01(\x0c\x12\x0f\n\x07version\x18\x02 \x01(\t\"\x17\n\x08VendorId\x12\x0b\n\x03uid\x18\x01 \x01(\x0c\"\xdd\x01\n\x13\x41gentIdentification\x12\x0b\n\x03uid\x18\x01 \x01(\x0c\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x0f\n\x07version\x18\x03 \x01(\t\x12)\n\x06vendor\x18\x04 \x01(\x0b\x32\x19.firebird.butler.VendorId\x12-\n\x08platform\x18\x05 \x01(\x0b\x32\x1b.firebird.butler.PlatformId\x12\x16\n\x0e\x63lassification\x18\x06 \x01(\t\x12(\n\nsupplement\x18\x07 \x03(\x0b\x32\x14.google.protobuf.Any\"f\n\x12PeerIdentification\x12\x0b\n\x03uid\x18\x01 \x01(\x0c\x12\x0b\n\x03pid\x18\x02 \x01(\r\x12\x0c\n\x04host\x18\x03 \x01(\t\x12(\n\nsupplement\x18\x04 \x03(\x0b\x32\x14.google.protobuf.Any\",\n\rInterfaceSpec\x12\x0e\n\x06number\x18\x01 \x01(\r\x12\x0b\n\x03uid\x18\x02 \x01(\x0c\"\x8c\x01\n\x10\x45rrorDescription\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x04\x12\x13\n\x0b\x64\x65scription\x18\x02 \x01(\t\x12(\n\x07\x63ontext\x18\x03 \x01(\x0b\x32\x17.google.protobuf.Struct\x12+\n\nannotation\x18\x04 \x01(\x0b\x32\x17.google.protobuf.Struct*\xe4\x01\n\tStateEnum\x12\x11\n\rSTATE_UNKNOWN\x10\x00\x12\x0f\n\x0bSTATE_READY\x10\x01\x12\x11\n\rSTATE_RUNNING\x10\x02\x12\x11\n\rSTATE_WAITING\x10\x03\x12\x13\n\x0fSTATE_SUSPENDED\x10\x04\x12\x12\n\x0eSTATE_FINISHED\x10\x05\x12\x11\n\rSTATE_ABORTED\x10\x06\x12\x11\n\rSTATE_CREATED\x10\x01\x12\x11\n\rSTATE_BLOCKED\x10\x03\x12\x11\n\rSTATE_STOPPED\x10\x04\x12\x14\n\x10STATE_TERMINATED\x10\x06\x1a\x02\x10\x01*^\n\x11\x41\x64\x64ressDomainEnum\x12\x12\n\x0e\x44OMAIN_UNKNOWN\x10\x00\x12\x10\n\x0c\x44OMAIN_LOCAL\x10\x01\x12\x0f\n\x0b\x44OMAIN_NODE\x10\x02\x12\x12\n\x0e\x44OMAIN_NETWORK\x10\x03*\x9e\x01\n\x15TransportProtocolEnum\x12\x14\n\x10PROTOCOL_UNKNOWN\x10\x00\x12\x13\n\x0fPROTOCOL_INPROC\x10\x01\x12\x10\n\x0cPROTOCOL_IPC\x10\x02\x12\x10\n\x0cPROTOCOL_TCP\x10\x03\x12\x10\n\x0cPROTOCOL_PGM\x10\x04\x12\x11\n\rPROTOCOL_EPGM\x10\x05\x12\x11\n\rPROTOCOL_VMCI\x10\x06*\x89\x02\n\x0eSocketTypeEnum\x12\x17\n\x13SOCKET_TYPE_UNKNOWN\x10\x00\x12\x16\n\x12SOCKET_TYPE_DEALER\x10\x01\x12\x16\n\x12SOCKET_TYPE_ROUTER\x10\x02\x12\x13\n\x0fSOCKET_TYPE_PUB\x10\x03\x12\x13\n\x0fSOCKET_TYPE_SUB\x10\x04\x12\x14\n\x10SOCKET_TYPE_XPUB\x10\x05\x12\x14\n\x10SOCKET_TYPE_XSUB\x10\x06\x12\x14\n\x10SOCKET_TYPE_PUSH\x10\x07\x12\x14\n\x10SOCKET_TYPE_PULL\x10\x08\x12\x16\n\x12SOCKET_TYPE_STREAM\x10\t\x12\x14\n\x10SOCKET_TYPE_PAIR\x10\n*r\n\rSocketUseEnum\x12\x16\n\x12SOCKET_USE_UNKNOWN\x10\x00\x12\x17\n\x13SOCKET_USE_PRODUCER\x10\x01\x12\x17\n\x13SOCKET_USE_CONSUMER\x10\x02\x12\x17\n\x13SOCKET_USE_EXCHANGE\x10\x03*l\n\x12\x44\x65pendencyTypeEnum\x12\x13\n\x0f\x44\x45PTYPE_UNKNOWN\x10\x00\x12\x14\n\x10\x44\x45PTYPE_REQUIRED\x10\x01\x12\x15\n\x11\x44\x45PTYPE_PREFERRED\x10\x02\x12\x14\n\x10\x44\x45PTYPE_OPTIONAL\x10\x03\x62\x06proto3')
   ,
   dependencies=[google_dot_protobuf_dot_any__pb2.DESCRIPTOR,google_dot_protobuf_dot_struct__pb2.DESCRIPTOR,])
 
-_STATE = _descriptor.EnumDescriptor(
-  name='State',
-  full_name='firebird.butler.State',
+_STATEENUM = _descriptor.EnumDescriptor(
+  name='StateEnum',
+  full_name='firebird.butler.StateEnum',
   filename=None,
   file=DESCRIPTOR,
   values=[
     _descriptor.EnumValueDescriptor(
-      name='UNKNOWN_STATE', index=0, number=0,
+      name='STATE_UNKNOWN', index=0, number=0,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='READY', index=1, number=1,
+      name='STATE_READY', index=1, number=1,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='RUNNING', index=2, number=2,
+      name='STATE_RUNNING', index=2, number=2,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='WAITING', index=3, number=3,
+      name='STATE_WAITING', index=3, number=3,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='SUSPENDED', index=4, number=4,
+      name='STATE_SUSPENDED', index=4, number=4,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='FINISHED', index=5, number=5,
+      name='STATE_FINISHED', index=5, number=5,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='ABORTED', index=6, number=6,
+      name='STATE_ABORTED', index=6, number=6,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='CREATED', index=7, number=1,
+      name='STATE_CREATED', index=7, number=1,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='BLOCKED', index=8, number=3,
+      name='STATE_BLOCKED', index=8, number=3,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='STOPPED', index=9, number=4,
+      name='STATE_STOPPED', index=9, number=4,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='TERMINATED', index=10, number=6,
+      name='STATE_TERMINATED', index=10, number=6,
       options=None,
       type=None),
   ],
   containing_type=None,
   options=_descriptor._ParseOptions(descriptor_pb2.EnumOptions(), _b('\020\001')),
-  serialized_start=1103,
-  serialized_end=1267,
+  serialized_start=838,
+  serialized_end=1066,
 )
-_sym_db.RegisterEnumDescriptor(_STATE)
+_sym_db.RegisterEnumDescriptor(_STATEENUM)
 
-State = enum_type_wrapper.EnumTypeWrapper(_STATE)
-_ADDRESSDOMAIN = _descriptor.EnumDescriptor(
-  name='AddressDomain',
-  full_name='firebird.butler.AddressDomain',
+StateEnum = enum_type_wrapper.EnumTypeWrapper(_STATEENUM)
+_ADDRESSDOMAINENUM = _descriptor.EnumDescriptor(
+  name='AddressDomainEnum',
+  full_name='firebird.butler.AddressDomainEnum',
   filename=None,
   file=DESCRIPTOR,
   values=[
     _descriptor.EnumValueDescriptor(
-      name='UNKNOWN_DOMAIN', index=0, number=0,
+      name='DOMAIN_UNKNOWN', index=0, number=0,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='LOCAL', index=1, number=1,
+      name='DOMAIN_LOCAL', index=1, number=1,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='NODE', index=2, number=2,
+      name='DOMAIN_NODE', index=2, number=2,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='NETWORK', index=3, number=3,
+      name='DOMAIN_NETWORK', index=3, number=3,
       options=None,
       type=None),
   ],
   containing_type=None,
   options=None,
-  serialized_start=1269,
-  serialized_end=1338,
+  serialized_start=1068,
+  serialized_end=1162,
 )
-_sym_db.RegisterEnumDescriptor(_ADDRESSDOMAIN)
+_sym_db.RegisterEnumDescriptor(_ADDRESSDOMAINENUM)
 
-AddressDomain = enum_type_wrapper.EnumTypeWrapper(_ADDRESSDOMAIN)
-_TRANSPORTPROTOCOL = _descriptor.EnumDescriptor(
-  name='TransportProtocol',
-  full_name='firebird.butler.TransportProtocol',
+AddressDomainEnum = enum_type_wrapper.EnumTypeWrapper(_ADDRESSDOMAINENUM)
+_TRANSPORTPROTOCOLENUM = _descriptor.EnumDescriptor(
+  name='TransportProtocolEnum',
+  full_name='firebird.butler.TransportProtocolEnum',
   filename=None,
   file=DESCRIPTOR,
   values=[
     _descriptor.EnumValueDescriptor(
-      name='UNKNOWN_PROTOCOL', index=0, number=0,
+      name='PROTOCOL_UNKNOWN', index=0, number=0,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='INPROC', index=1, number=1,
+      name='PROTOCOL_INPROC', index=1, number=1,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='IPC', index=2, number=2,
+      name='PROTOCOL_IPC', index=2, number=2,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='TCP', index=3, number=3,
+      name='PROTOCOL_TCP', index=3, number=3,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='PGM', index=4, number=4,
+      name='PROTOCOL_PGM', index=4, number=4,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='EPGM', index=5, number=5,
+      name='PROTOCOL_EPGM', index=5, number=5,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='VMCI', index=6, number=6,
+      name='PROTOCOL_VMCI', index=6, number=6,
       options=None,
       type=None),
   ],
   containing_type=None,
   options=None,
-  serialized_start=1340,
-  serialized_end=1440,
+  serialized_start=1165,
+  serialized_end=1323,
 )
-_sym_db.RegisterEnumDescriptor(_TRANSPORTPROTOCOL)
+_sym_db.RegisterEnumDescriptor(_TRANSPORTPROTOCOLENUM)
 
-TransportProtocol = enum_type_wrapper.EnumTypeWrapper(_TRANSPORTPROTOCOL)
-_SOCKETTYPE = _descriptor.EnumDescriptor(
-  name='SocketType',
-  full_name='firebird.butler.SocketType',
+TransportProtocolEnum = enum_type_wrapper.EnumTypeWrapper(_TRANSPORTPROTOCOLENUM)
+_SOCKETTYPEENUM = _descriptor.EnumDescriptor(
+  name='SocketTypeEnum',
+  full_name='firebird.butler.SocketTypeEnum',
   filename=None,
   file=DESCRIPTOR,
   values=[
     _descriptor.EnumValueDescriptor(
-      name='UNKNOWN_TYPE', index=0, number=0,
+      name='SOCKET_TYPE_UNKNOWN', index=0, number=0,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='DEALER', index=1, number=1,
+      name='SOCKET_TYPE_DEALER', index=1, number=1,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='ROUTER', index=2, number=2,
+      name='SOCKET_TYPE_ROUTER', index=2, number=2,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='PUB', index=3, number=3,
+      name='SOCKET_TYPE_PUB', index=3, number=3,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='SUB', index=4, number=4,
+      name='SOCKET_TYPE_SUB', index=4, number=4,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='XPUB', index=5, number=5,
+      name='SOCKET_TYPE_XPUB', index=5, number=5,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='XSUB', index=6, number=6,
+      name='SOCKET_TYPE_XSUB', index=6, number=6,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='PUSH', index=7, number=7,
+      name='SOCKET_TYPE_PUSH', index=7, number=7,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='PULL', index=8, number=8,
+      name='SOCKET_TYPE_PULL', index=8, number=8,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='STREAM', index=9, number=9,
+      name='SOCKET_TYPE_STREAM', index=9, number=9,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='PAIR', index=10, number=10,
+      name='SOCKET_TYPE_PAIR', index=10, number=10,
       options=None,
       type=None),
   ],
   containing_type=None,
   options=None,
-  serialized_start=1443,
-  serialized_end=1577,
+  serialized_start=1326,
+  serialized_end=1591,
 )
-_sym_db.RegisterEnumDescriptor(_SOCKETTYPE)
+_sym_db.RegisterEnumDescriptor(_SOCKETTYPEENUM)
 
-SocketType = enum_type_wrapper.EnumTypeWrapper(_SOCKETTYPE)
-_SOCKETUSE = _descriptor.EnumDescriptor(
-  name='SocketUse',
-  full_name='firebird.butler.SocketUse',
+SocketTypeEnum = enum_type_wrapper.EnumTypeWrapper(_SOCKETTYPEENUM)
+_SOCKETUSEENUM = _descriptor.EnumDescriptor(
+  name='SocketUseEnum',
+  full_name='firebird.butler.SocketUseEnum',
   filename=None,
   file=DESCRIPTOR,
   values=[
     _descriptor.EnumValueDescriptor(
-      name='UNKNOWN_USE', index=0, number=0,
+      name='SOCKET_USE_UNKNOWN', index=0, number=0,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='PRODUCER', index=1, number=1,
+      name='SOCKET_USE_PRODUCER', index=1, number=1,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='CONSUMER', index=2, number=2,
+      name='SOCKET_USE_CONSUMER', index=2, number=2,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='EXCHANGE', index=3, number=3,
+      name='SOCKET_USE_EXCHANGE', index=3, number=3,
       options=None,
       type=None),
   ],
   containing_type=None,
   options=None,
-  serialized_start=1579,
-  serialized_end=1649,
+  serialized_start=1593,
+  serialized_end=1707,
 )
-_sym_db.RegisterEnumDescriptor(_SOCKETUSE)
+_sym_db.RegisterEnumDescriptor(_SOCKETUSEENUM)
 
-SocketUse = enum_type_wrapper.EnumTypeWrapper(_SOCKETUSE)
-_DEPENDENCYTYPE = _descriptor.EnumDescriptor(
-  name='DependencyType',
-  full_name='firebird.butler.DependencyType',
+SocketUseEnum = enum_type_wrapper.EnumTypeWrapper(_SOCKETUSEENUM)
+_DEPENDENCYTYPEENUM = _descriptor.EnumDescriptor(
+  name='DependencyTypeEnum',
+  full_name='firebird.butler.DependencyTypeEnum',
   filename=None,
   file=DESCRIPTOR,
   values=[
     _descriptor.EnumValueDescriptor(
-      name='UNKNOWN_DEPTYPE', index=0, number=0,
+      name='DEPTYPE_UNKNOWN', index=0, number=0,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='REQUIRED', index=1, number=1,
+      name='DEPTYPE_REQUIRED', index=1, number=1,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='PREFERRED', index=2, number=2,
+      name='DEPTYPE_PREFERRED', index=2, number=2,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='OPTIONAL', index=3, number=3,
+      name='DEPTYPE_OPTIONAL', index=3, number=3,
       options=None,
       type=None),
   ],
   containing_type=None,
   options=None,
-  serialized_start=1651,
-  serialized_end=1731,
+  serialized_start=1709,
+  serialized_end=1817,
 )
-_sym_db.RegisterEnumDescriptor(_DEPENDENCYTYPE)
+_sym_db.RegisterEnumDescriptor(_DEPENDENCYTYPEENUM)
 
-DependencyType = enum_type_wrapper.EnumTypeWrapper(_DEPENDENCYTYPE)
-UNKNOWN_STATE = 0
-READY = 1
-RUNNING = 2
-WAITING = 3
-SUSPENDED = 4
-FINISHED = 5
-ABORTED = 6
-CREATED = 1
-BLOCKED = 3
-STOPPED = 4
-TERMINATED = 6
-UNKNOWN_DOMAIN = 0
-LOCAL = 1
-NODE = 2
-NETWORK = 3
-UNKNOWN_PROTOCOL = 0
-INPROC = 1
-IPC = 2
-TCP = 3
-PGM = 4
-EPGM = 5
-VMCI = 6
-UNKNOWN_TYPE = 0
-DEALER = 1
-ROUTER = 2
-PUB = 3
-SUB = 4
-XPUB = 5
-XSUB = 6
-PUSH = 7
-PULL = 8
-STREAM = 9
-PAIR = 10
-UNKNOWN_USE = 0
-PRODUCER = 1
-CONSUMER = 2
-EXCHANGE = 3
-UNKNOWN_DEPTYPE = 0
-REQUIRED = 1
-PREFERRED = 2
-OPTIONAL = 3
+DependencyTypeEnum = enum_type_wrapper.EnumTypeWrapper(_DEPENDENCYTYPEENUM)
+STATE_UNKNOWN = 0
+STATE_READY = 1
+STATE_RUNNING = 2
+STATE_WAITING = 3
+STATE_SUSPENDED = 4
+STATE_FINISHED = 5
+STATE_ABORTED = 6
+STATE_CREATED = 1
+STATE_BLOCKED = 3
+STATE_STOPPED = 4
+STATE_TERMINATED = 6
+DOMAIN_UNKNOWN = 0
+DOMAIN_LOCAL = 1
+DOMAIN_NODE = 2
+DOMAIN_NETWORK = 3
+PROTOCOL_UNKNOWN = 0
+PROTOCOL_INPROC = 1
+PROTOCOL_IPC = 2
+PROTOCOL_TCP = 3
+PROTOCOL_PGM = 4
+PROTOCOL_EPGM = 5
+PROTOCOL_VMCI = 6
+SOCKET_TYPE_UNKNOWN = 0
+SOCKET_TYPE_DEALER = 1
+SOCKET_TYPE_ROUTER = 2
+SOCKET_TYPE_PUB = 3
+SOCKET_TYPE_SUB = 4
+SOCKET_TYPE_XPUB = 5
+SOCKET_TYPE_XSUB = 6
+SOCKET_TYPE_PUSH = 7
+SOCKET_TYPE_PULL = 8
+SOCKET_TYPE_STREAM = 9
+SOCKET_TYPE_PAIR = 10
+SOCKET_USE_UNKNOWN = 0
+SOCKET_USE_PRODUCER = 1
+SOCKET_USE_CONSUMER = 2
+SOCKET_USE_EXCHANGE = 3
+DEPTYPE_UNKNOWN = 0
+DEPTYPE_REQUIRED = 1
+DEPTYPE_PREFERRED = 2
+DEPTYPE_OPTIONAL = 3
 
 
 
@@ -365,7 +365,7 @@ _ENDPOINTADDRESS = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=105,
-  serialized_end=241,
+  serialized_end=249,
 )
 
 
@@ -402,8 +402,8 @@ _PLATFORMID = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=243,
-  serialized_end=285,
+  serialized_start=251,
+  serialized_end=293,
 )
 
 
@@ -433,8 +433,8 @@ _VENDORID = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=287,
-  serialized_end=310,
+  serialized_start=295,
+  serialized_end=318,
 )
 
 
@@ -506,8 +506,8 @@ _AGENTIDENTIFICATION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=313,
-  serialized_end=534,
+  serialized_start=321,
+  serialized_end=542,
 )
 
 
@@ -558,8 +558,8 @@ _PEERIDENTIFICATION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=536,
-  serialized_end=638,
+  serialized_start=544,
+  serialized_end=646,
 )
 
 
@@ -596,8 +596,8 @@ _INTERFACESPEC = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=640,
-  serialized_end=684,
+  serialized_start=648,
+  serialized_end=692,
 )
 
 
@@ -648,109 +648,18 @@ _ERRORDESCRIPTION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=687,
-  serialized_end=827,
+  serialized_start=695,
+  serialized_end=835,
 )
 
-
-_DATAPIPE = _descriptor.Descriptor(
-  name='DataPipe',
-  full_name='firebird.butler.DataPipe',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='name', full_name='firebird.butler.DataPipe.name', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='socket_type', full_name='firebird.butler.DataPipe.socket_type', index=1,
-      number=2, type=14, cpp_type=8, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='use', full_name='firebird.butler.DataPipe.use', index=2,
-      number=3, type=14, cpp_type=8, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='protocol', full_name='firebird.butler.DataPipe.protocol', index=3,
-      number=4, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='owner', full_name='firebird.butler.DataPipe.owner', index=4,
-      number=5, type=12, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b(""),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='pid', full_name='firebird.butler.DataPipe.pid', index=5,
-      number=6, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='host', full_name='firebird.butler.DataPipe.host', index=6,
-      number=7, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='endpoints', full_name='firebird.butler.DataPipe.endpoints', index=7,
-      number=8, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='supplement', full_name='firebird.butler.DataPipe.supplement', index=8,
-      number=9, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None, file=DESCRIPTOR),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=830,
-  serialized_end=1100,
-)
-
-_ENDPOINTADDRESS.fields_by_name['domain'].enum_type = _ADDRESSDOMAIN
-_ENDPOINTADDRESS.fields_by_name['protocol'].enum_type = _TRANSPORTPROTOCOL
+_ENDPOINTADDRESS.fields_by_name['domain'].enum_type = _ADDRESSDOMAINENUM
+_ENDPOINTADDRESS.fields_by_name['protocol'].enum_type = _TRANSPORTPROTOCOLENUM
 _AGENTIDENTIFICATION.fields_by_name['vendor'].message_type = _VENDORID
 _AGENTIDENTIFICATION.fields_by_name['platform'].message_type = _PLATFORMID
 _AGENTIDENTIFICATION.fields_by_name['supplement'].message_type = google_dot_protobuf_dot_any__pb2._ANY
 _PEERIDENTIFICATION.fields_by_name['supplement'].message_type = google_dot_protobuf_dot_any__pb2._ANY
 _ERRORDESCRIPTION.fields_by_name['context'].message_type = google_dot_protobuf_dot_struct__pb2._STRUCT
 _ERRORDESCRIPTION.fields_by_name['annotation'].message_type = google_dot_protobuf_dot_struct__pb2._STRUCT
-_DATAPIPE.fields_by_name['socket_type'].enum_type = _SOCKETTYPE
-_DATAPIPE.fields_by_name['use'].enum_type = _SOCKETUSE
-_DATAPIPE.fields_by_name['endpoints'].message_type = _ENDPOINTADDRESS
-_DATAPIPE.fields_by_name['supplement'].message_type = google_dot_protobuf_dot_any__pb2._ANY
 DESCRIPTOR.message_types_by_name['EndpointAddress'] = _ENDPOINTADDRESS
 DESCRIPTOR.message_types_by_name['PlatformId'] = _PLATFORMID
 DESCRIPTOR.message_types_by_name['VendorId'] = _VENDORID
@@ -758,13 +667,12 @@ DESCRIPTOR.message_types_by_name['AgentIdentification'] = _AGENTIDENTIFICATION
 DESCRIPTOR.message_types_by_name['PeerIdentification'] = _PEERIDENTIFICATION
 DESCRIPTOR.message_types_by_name['InterfaceSpec'] = _INTERFACESPEC
 DESCRIPTOR.message_types_by_name['ErrorDescription'] = _ERRORDESCRIPTION
-DESCRIPTOR.message_types_by_name['DataPipe'] = _DATAPIPE
-DESCRIPTOR.enum_types_by_name['State'] = _STATE
-DESCRIPTOR.enum_types_by_name['AddressDomain'] = _ADDRESSDOMAIN
-DESCRIPTOR.enum_types_by_name['TransportProtocol'] = _TRANSPORTPROTOCOL
-DESCRIPTOR.enum_types_by_name['SocketType'] = _SOCKETTYPE
-DESCRIPTOR.enum_types_by_name['SocketUse'] = _SOCKETUSE
-DESCRIPTOR.enum_types_by_name['DependencyType'] = _DEPENDENCYTYPE
+DESCRIPTOR.enum_types_by_name['StateEnum'] = _STATEENUM
+DESCRIPTOR.enum_types_by_name['AddressDomainEnum'] = _ADDRESSDOMAINENUM
+DESCRIPTOR.enum_types_by_name['TransportProtocolEnum'] = _TRANSPORTPROTOCOLENUM
+DESCRIPTOR.enum_types_by_name['SocketTypeEnum'] = _SOCKETTYPEENUM
+DESCRIPTOR.enum_types_by_name['SocketUseEnum'] = _SOCKETUSEENUM
+DESCRIPTOR.enum_types_by_name['DependencyTypeEnum'] = _DEPENDENCYTYPEENUM
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 EndpointAddress = _reflection.GeneratedProtocolMessageType('EndpointAddress', (_message.Message,), dict(
@@ -816,14 +724,7 @@ ErrorDescription = _reflection.GeneratedProtocolMessageType('ErrorDescription', 
   ))
 _sym_db.RegisterMessage(ErrorDescription)
 
-DataPipe = _reflection.GeneratedProtocolMessageType('DataPipe', (_message.Message,), dict(
-  DESCRIPTOR = _DATAPIPE,
-  __module__ = 'firebird.butler.fbsd_pb2'
-  # @@protoc_insertion_point(class_scope:firebird.butler.DataPipe)
-  ))
-_sym_db.RegisterMessage(DataPipe)
 
-
-_STATE.has_options = True
-_STATE._options = _descriptor._ParseOptions(descriptor_pb2.EnumOptions(), _b('\020\001'))
+_STATEENUM.has_options = True
+_STATEENUM._options = _descriptor._ParseOptions(descriptor_pb2.EnumOptions(), _b('\020\001'))
 # @@protoc_insertion_point(module_scope)

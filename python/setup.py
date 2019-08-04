@@ -22,7 +22,7 @@ with open(path.join(HERE, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='firebird-butler-protobuf',
-    version='0.1',
+    version='0.1.0',
     description='Firebird Butler protocol buffers',
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/x-rst",
@@ -48,8 +48,8 @@ setup(
         'Topic :: Software Development',
         ],
     keywords='Firebird Butler protobuf Saturnin SDK',
-    packages=find_packages(),  # Required
-#    zip_safe=True,
+    packages=['firebird.butler'],
+    zip_safe=False,
     install_requires=['protobuf>=3.9.0'],
     python_requires='>=3.6, <4',
     test_suite='nose.collector',
