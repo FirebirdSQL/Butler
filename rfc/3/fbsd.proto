@@ -29,100 +29,100 @@
 
 syntax = "proto3";
 
-package fbsd;
+package firebird.butler;
 
 import "google/protobuf/any.proto";
 import "google/protobuf/struct.proto";
 
 // Universal state enumeration
 
-enum State {
+enum StateEnum {
   option allow_alias = true ;
    
-  UNKNOWN_STATE   = 0 ;
-  READY           = 1 ;
-  RUNNING         = 2 ;
-  WAITING         = 3 ;
-  SUSPENDED       = 4 ;
-  FINISHED        = 5 ;
-  ABORTED         = 6 ;
+  STATE_UNKNOWN    = 0 ;
+  STATE_READY      = 1 ;
+  STATE_RUNNING    = 2 ;
+  STATE_WAITING    = 3 ;
+  STATE_SUSPENDED  = 4 ;
+  STATE_FINISHED   = 5 ;
+  STATE_ABORTED    = 6 ;
      
   // Aliases
      
-  CREATED         = 1 ;
-  BLOCKED         = 3 ;
-  STOPPED         = 4 ;
-  TERMINATED      = 6 ;
+  STATE_CREATED    = 1 ;
+  STATE_BLOCKED    = 3 ;
+  STATE_STOPPED    = 4 ;
+  STATE_TERMINATED = 6 ;
 }
 
 // Address domain enumeration
 
-enum AddressDomain {
-  UNKNOWN_DOMAIN = 0 ; // Not a valid option, defined only to handle undefined values
-  LOCAL = 1 ;          // Within process (inproc)
-  NODE = 2 ;           // On single node (ipc or tcp loopback)
-  NETWORK = 3 ;        // Network-wide (ip address or domain name)
+enum AddressDomainEnum {
+  DOMAIN_UNKNOWN = 0 ; // Not a valid option, defined only to handle undefined values
+  DOMAIN_LOCAL   = 1 ; // Within process (inproc)
+  DOMAIN_NODE    = 2 ; // On single node (ipc or tcp loopback)
+  DOMAIN_NETWORK = 3 ; // Network-wide (ip address or domain name)
 }
 
-// Transport protocol
+// Transport protocol enumeration
 
-enum TransportProtocol {
-  UNKNOWN_PROTOCOL = 0 ; // Not a valid option, defined only to handle undefined values
-  INPROC = 1 ;
-  IPC = 2 ;
-  TCP = 3 ;
-  PGM = 4 ;
-  EPGM = 5 ;
-  VMCI = 6 ;
+enum TransportProtocolEnum {
+  PROTOCOL_UNKNOWN = 0 ; // Not a valid option, defined only to handle undefined values
+  PROTOCOL_INPROC  = 1 ;
+  PROTOCOL_IPC     = 2 ;
+  PROTOCOL_TCP     = 3 ;
+  PROTOCOL_PGM     = 4 ;
+  PROTOCOL_EPGM    = 5 ;
+  PROTOCOL_VMCI    = 6 ;
 }
 
-// Socket type
+// Socket type enumeration
 
-enum SocketType {
-  UNKNOWN_TYPE = 0 ; // Not a valid option, defined only to handle undefined values
-  DEALER = 1 ;
-  ROUTER = 2 ;
-  PUB = 3 ;
-  SUB = 4 ;
-  XPUB = 5 ;
-  XSUB = 6 ;
-  PUSH = 7 ;
-  PULL = 8 ;
-  STREAM = 9 ;
-  PAIR = 10 ;
+enum SocketTypeEnum {
+  SOCKET_TYPE_UNKNOWN = 0 ; // Not a valid option, defined only to handle undefined values
+  SOCKET_TYPE_DEALER  = 1 ;
+  SOCKET_TYPE_ROUTER  = 2 ;
+  SOCKET_TYPE_PUB     = 3 ;
+  SOCKET_TYPE_SUB     = 4 ;
+  SOCKET_TYPE_XPUB    = 5 ;
+  SOCKET_TYPE_XSUB    = 6 ;
+  SOCKET_TYPE_PUSH    = 7 ;
+  SOCKET_TYPE_PULL    = 8 ;
+  SOCKET_TYPE_STREAM  = 9 ;
+  SOCKET_TYPE_PAIR    = 10 ;
 }
 
-// Socket use
+// Socket use enumeration
 
-enum SocketUse {
-  UNKNOWN_USE = 0 ; // Not a valid option, defined only to handle undefined values
-  PRODUCER = 1 ;    // Socket used to provide data to peers
-  CONSUMER = 2 ;    // Socket used to get data prom peers
-  EXCHANGE = 3 ;    // Socket used for data exchange
+enum SocketUseEnum {
+  SOCKET_USE_UNKNOWN  = 0 ; // Not a valid option, defined only to handle undefined values
+  SOCKET_USE_PRODUCER = 1 ; // Socket used to provide data to peers
+  SOCKET_USE_CONSUMER = 2 ; // Socket used to get data prom peers
+  SOCKET_USE_EXCHANGE = 3 ; // Socket used for data exchange
 }
 
 // Dependency type enumeration
 
-enum DependencyType {
-  UNKNOWN_DEPTYPE = 0 ; // Not a valid option, defined only to handle undefined values
-  REQUIRED = 1 ;
-  PREFERRED = 2 ;
-  OPTIONAL = 3 ;
+enum DependencyTypeEnum {
+  DEPTYPE_UNKNOWN   = 0 ; // Not a valid option, defined only to handle undefined values
+  DEPTYPE_REQUIRED  = 1 ; // The resource MUST be provided
+  DEPTYPE_PREFERRED = 2 ; // The resource SHOULD be provided if available
+  DEPTYPE_OPTIONAL  = 3 ; // The resource MAY be provided if available
 }
 
 // ZMQ endpoint address
 
 message EndpointAddress {
-  AddressDomain domain = 1 ;       // [required]
-  TransportProtocol protocol = 2 ; // [required]
-  string address = 3 ;             // [required]
+  AddressDomainEnum     domain   = 1 ;
+  TransportProtocolEnum protocol = 2 ;
+  string                address  = 3 ;
 }
 
 // Butler Development Platform Identification
 
 message PlatformId {
   bytes  uid     = 1 ; // Unique platform ID. It's RECOMMENDED to use uuid version 5 - SHA1, namespace OID.
-  string version = 2 ; // <major>[.<minor>]
+  string version = 2 ; // major[.minor[.patch[-tag]]].
 }
 
 // Butler Service Vendor Identification
@@ -134,21 +134,21 @@ message VendorId {
 // Butler Software Agent Identification (Service/Client Class)
 
 message AgentIdentification {
-  bytes  uid                              = 1 ; // Unique Agent ID.
-  string name                             = 2 ; // Name assigned by vendor
-  string version                          = 3 ; // major[.minor[.build[-tag]]]
-  VendorId vendor                         = 4 ;
-  PlatformId platform                     = 5 ;
-  string classification                   = 6 ;
-  repeated google.protobuf.Any supplement = 7 ; // additional information about Agent
+  bytes                        uid            = 1 ; // Unique Agent ID.
+  string                       name           = 2 ; // Name assigned by vendor
+  string                       version        = 3 ; // major[.minor[.patch[-tag]]]
+  VendorId                     vendor         = 4 ;
+  PlatformId                   platform       = 5 ;
+  string                       classification = 6 ;
+  repeated google.protobuf.Any supplement     = 7 ; // additional information about Agent
 }
 
 // Butler Peer Identification (Agent Instance)
 
 message PeerIdentification {
-  bytes  uid                              = 1 ; // Unique peer ID. It's RECOMMENDED to use uuid version 1.
-  uint32 pid                              = 2 ; // Peer's process ID
-  string host                             = 3 ; // host (network node) identification
+  bytes                        uid        = 1 ; // Unique peer ID. It's RECOMMENDED to use uuid version 1.
+  uint32                       pid        = 2 ; // Peer's process ID
+  string                       host       = 3 ; // host (network node) identification
   repeated google.protobuf.Any supplement = 4 ; // additional information about Peer
 }
    
@@ -159,26 +159,12 @@ message InterfaceSpec {
   bytes  uid    = 2 ; // Iterface UID
 }
 
-// FBSP Service Error Description Record
+// Error Description Record
 
 message ErrorDescription {
-  uint64 code                       = 1 ;  // Service-specific error code
-  string description                = 2 ;  // Short text description of the error
-  google.protobuf.Struct context    = 3 ;  // Structured error context information
-  google.protobuf.Struct annotation = 4 ;  // Additional structured error information
+  uint64                 code        = 1 ;  // Service-specific error code
+  string                 description = 2 ;  // Short text description of the error
+  google.protobuf.Struct context     = 3 ;  // Structured error context information
+  google.protobuf.Struct annotation  = 4 ;  // Additional structured error information
 }
 
-// Data pipe
-
-message DataPipe {
-  string name                             = 1 ; // [required] Pipe name
-  SocketType socket_type                  = 2 ; // [required] Socket type
-  SocketUse use                           = 3 ; // [required] PRODUCER/CONSUMER
-  string protocol                         = 4 ; // [required] Protocol description
-  bytes owner                             = 5 ; // [required] if pipe is owned by Saturnin service
-                                                // ID of the peer that owns the pipe
-  uint32 pid                              = 6 ; // [required] ID of the process that manages the pipe
-  string host                             = 7 ; // [required] host (network node) identification where the pipe resides
-  repeated EndpointAddress endpoints      = 8 ; // [required] Binded endpoints
-  repeated google.protobuf.Any supplement = 9 ; // additional information about pipe
-}
