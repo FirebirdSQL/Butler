@@ -29,39 +29,39 @@
 
 syntax = "proto3";
 
-package fbsp;
+package firebird.butler;
 
 import "google/protobuf/any.proto";
-import "fbsd.proto";
+import "firebird/butler/fbsd.proto";
 
 // FBSP HELLO data frame
 
-message HelloDataframe {
-  fbsd.PeerIdentification instance        = 1 ;
-  fbsd.AgentIdentification client         = 2 ;
+message FBSPHelloDataframe {
+  PeerIdentification           instance   = 1 ;
+  AgentIdentification          client     = 2 ;
   repeated google.protobuf.Any supplement = 3 ;
 }
 
 // FBSP WELCOME data frame
 
-message WelcomeDataframe {
-  fbsd.PeerIdentification instance        = 1 ;
-  fbsd.AgentIdentification service        = 2 ;
-  repeated fbsd.InterfaceSpec api         = 3 ;
+message FBSPWelcomeDataframe {
+  PeerIdentification           instance   = 1 ;
+  AgentIdentification          service    = 2 ;
+  repeated InterfaceSpec       api        = 3 ;
   repeated google.protobuf.Any supplement = 4 ;
 }
 
 // FBSP CANCEL Message Data
 
-message CancelRequests {
-  bytes token                             = 1 ;
+message FBSPCancelRequests {
+  bytes                        token      = 1 ;
   repeated google.protobuf.Any supplement = 2 ; // Additional vendor-specific information
 }
 
 // FBSP STATE Message Data
 
-message StateInformation {
-  fbsd.State state                        = 1 ;
+message FBSPStateInformation {
+  StateEnum                    state      = 1 ;
   repeated google.protobuf.Any supplement = 2 ; // Additional vendor-specific information
 }
 

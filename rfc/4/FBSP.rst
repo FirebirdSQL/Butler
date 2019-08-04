@@ -8,12 +8,12 @@
 :status: raw
 :editor: Pavel Císař <pcisar@users.sourceforge.net>
 
-The Firebird Butler Service Protocol (FBSP) defines formal rules for exchanging messages between Butler Service and its Client.
+The Firebird Butler Service Protocol (FBSP) defines formal rules for exchanging messages between Butler Service and its Client over Service Sockets as they are defined in |FBSD|.
 
 License
 =======
 
-Copyright (c) 2018 The Firebird Butler Project.
+Copyright (c) 2018, 2019 The Firebird Butler Project.
 
 This Specification is distributed under Creative Commons Attribution-ShareAlike 4.0 International license.
 
@@ -42,10 +42,6 @@ Related Specifications
 ======================
 
 #. :doc:`/rfc/3/FBSD`
-#. :doc:`/rfc/5/FBLP`
-#. :doc:`/rfc/6/SSTP`
-#. :doc:`/rfc/7/RSCFG`
-#. :doc:`/rfc/8/RSCTRL`
 
 1. Goals
 ========
@@ -53,9 +49,8 @@ Related Specifications
 The purpose of this specification is to define formal rules for exchanging messages between Butler Service and its Client. Its goals are:
 
 #. Define the uniform structure of messages passed between the service and its client.
-#. Define a uniform method and the minimum scope of integration of separate components (acting as services and clients) into an adaptable and reliable integrated system.
 #. Standardize the format of the application interface between otherwise independent components.
-#. Provide the resources necessary to implement efficient asynchronous communication between components with both tight and loose bindings in diverse operating environments.
+#. Provide the resources necessary to implement efficient and reliable synchronous and asynchronous communication between components with both tight and loose bindings in diverse operating environments.
 
 
 2. Implementation
@@ -559,12 +554,14 @@ HELLO data
 
 .. code-block:: protobuf
 
+   package firebird.butler;
+   
    import "google/protobuf/any.proto";
-   import "fbsd.proto";
+   import "firebird/butler/fbsd.proto";
 
-   message HelloDataframe {
-     fbsd.PeerIdentification instance        = 1 ;
-     fbsd.AgentIdentification client         = 2 ;
+   message FBSPHelloDataframe {
+     PeerIdentification           instance   = 1 ;
+     AgentIdentification          client     = 2 ;
      repeated google.protobuf.Any supplement = 3 ;
    }
 
@@ -584,13 +581,15 @@ WELCOME data
 
 .. code-block:: protobuf
 
+   package firebird.butler;
+   
    import "google/protobuf/any.proto";
-   import "fbsd.proto";
+   import "firebird/butler/fbsd.proto";
 
-   message WelcomeDataframe {
-     fbsd.PeerIdentification instance        = 1 ;
-     fbsd.AgentIdentification service        = 2 ;
-     repeated fbsd.InterfaceSpec api         = 3 ;
+   message FBSPWelcomeDataframe {
+     PeerIdentification           instance   = 1 ;
+     AgentIdentification          service    = 2 ;
+     repeated InterfaceSpec       api        = 3 ;
      repeated google.protobuf.Any supplement = 4 ;
    }
 
@@ -614,10 +613,12 @@ CANCEL data
 
 .. code-block:: protobuf
  
+   package firebird.butler;
+   
    import "google/protobuf/any.proto";
 
-   message CancelRequests {
-     bytes token                             = 1 ;
+   message FBSPCancelRequests {
+     bytes                        token      = 1 ;
      repeated google.protobuf.Any supplement = 2 ;
    }
 
@@ -635,11 +636,13 @@ STATE data
 
 .. code-block:: protobuf
 
+   package firebird.butler;
+   
    import "google/protobuf/any.proto";
-   import "fbsd.proto";
+   import "firebird/butler/fbsd.proto";
 
-   message StateInformation {
-     fbsd.State state                        = 1 ;
+   message FBSPStateInformation {
+     StateEnum                    state      = 1 ;
      repeated google.protobuf.Any supplement = 2 ;
    }
 
