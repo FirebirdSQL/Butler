@@ -1,0 +1,52 @@
+// Protocol Buffers for Firebird Butler Data Pipe Protocol v1
+// Copyright 2019 Firebird Project.  All rights reserved.
+// https://www.firebirdsql.org/
+// https://firebird-butler.rtfd.io
+//
+// License: The MIT License
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom
+// the Software is furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+syntax = "proto3";
+
+package firebird.butler;
+
+import "google/protobuf/any.proto";
+import "google/protobuf/struct.proto";
+
+// Data Pipe Socket enumeration
+
+enum PipeSocketEnum {
+  UNKNOWN_PIPE_SOCKET = 0 ; // Not a valid option, defined only to handle undefined values
+  PIPE_INPUT          = 1 ;
+  PIPE_OUTPUT         = 2 ;
+  PIPE_MONITOR        = 3 ;
+
+// FBDP OPEN data frame
+
+message FBDPOpenDataframe {
+  string                 pipe_name   = 1 ; // [required] Pipe name
+  PipeSocketEnum         socket_type = 2 ; // [required] Socket type
+  string                 data_format = 3 ; // [required] Data format description
+  google.protobuf.Struct parameters  = 4 ; // Additional connection parameters
+}

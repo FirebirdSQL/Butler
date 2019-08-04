@@ -11,4 +11,5 @@ Firebird Butler RFC Index
 - :doc:`/rfc/6/SSTP`
 - :doc:`/rfc/7/RSCFG`
 - :doc:`/rfc/8/RSCTRL`
+- :doc:`/rfc/9/FBDP`
 
