@@ -76,7 +76,7 @@ The `Client` is any software unit that meets the following criteria:
 
 The method of implementation of the Service is not specifically defined or limited, but the following recommendations should be taken into account:
 
-#. The Service SHOULD have exactly defined boundaries (API) and SHOULD use only ZeroMQ sockets to communicate across this boundary (i.e. use ZeroMQ as its only API). 
+#. The Service SHOULD have exactly defined boundaries (API) and SHOULD use only ZeroMQ sockets to communicate across this boundary (i.e. use ZeroMQ as its only API).
 #. The Service could bind `Service Sockets` using any ZeroMQ transport protocol on any address. However, Service implementations SHOULD allow configuration of these parameters whenever and as much possible.
 #. The Service SHOULD handle `Client` requests asynchronously.
 #. The functionality provided by the Service to `Clients` via both the |FBSP| protocol and other channels SHOULD be defined by an open standard. See |FBDP| for examples.
@@ -100,7 +100,7 @@ The method of implementation of the Service Client is not specifically defined o
 
    Any violation of these recommendations SHOULD be clearly specified in Client documentation.
 
-   
+
 3. Operation of services
 ========================
 
@@ -114,7 +114,7 @@ The following table shows the possible combinations of execution contexts and th
 .. list-table:: Client and Service Link Scenarios
    :widths: 5 40 40 15
    :header-rows: 1
-   
+
    * - Scenario
      - Service Context
      - Client Context
@@ -148,7 +148,7 @@ Service could work with Clients using multiple scenarios at once. However, the f
 .. tip::
 
    When implementing `Services`, it is RECOMMENDED to use a procedure that allows the same service code to be used in different contexts through adapters or containers. Most typically, the Service could be implemented as a `Class`, that accepts and uses externally defined `Service Socket` specification (`protocol` and `address`, or already bound 0MQ socket instance etc.).
-   
+
    Alternatively, it is possible to encapsulate the service into another service that would act as a `router` or `bridge` to Clients or Services in another contexts.
 
 3.2 Services that use other Services
@@ -169,10 +169,10 @@ When implementing Services that are also Clients of other services, the followin
 
 .. important::
 
-   For the successful creation of interconnected systems, due attention needs to be paid to the initialization and termination of Services, especially due to possible dependencies between Services. 
-   
+   For the successful creation of interconnected systems, due attention needs to be paid to the initialization and termination of Services, especially due to possible dependencies between Services.
+
    For systems built from components made up of separate processes or network nodes, due consideration should also be given to the mechanism of continuous monitoring and maintenance of the link between Services.
-   
+
    It is RECOMMENDED to use standardized methods and protocols for these purposes.
 
 
@@ -186,19 +186,19 @@ FBSD does not specify any authentication, encryption or access control mechanism
 4. Data Pipes
 =============
 
-A `Data Pipe` is a one-way communication channel for transferring `user data` between at least two software components through message exchange via ZeroMQ sockets.
+A `Data Pipe` is a one-way communication channel for transferring `user data` between **exactly two** software components through message exchange via ZeroMQ sockets.
 
 The `Data Pipe` MUST meet the following criteria:
 
 #. The Data Pipe MUST have separately defined `input` and `output` abstract endpoints.
-#. Messages that carry **user data** SHALL be accepted only from peers connected to `input` endpoint, and routed to peers connected to `output` endpoint.
+#. Messages that carry **user data** SHALL be accepted only from **exactly one** peer connected to `input` endpoint, and routed to **exactly one** peer connected to `output` endpoint.
 
 |
 
 *Basic diagram of user data transmission via Data Pipe:*
 
 .. aafig::
-   
+
     +---------------+ Pipe Input +-----------+ Pipe Output +---------------+
     | Data Producer +----------->+ Data Pipe +------------>+ Data Consumer |
     +---------------+            +-----------+             +---------------+
@@ -239,10 +239,10 @@ Universal enumeration type for process state.
 .. code-block:: protobuf
 
    package firebird.butler;
-   
+
    enum StateEnum {
      option allow_alias = true ;
-   
+
      STATE_UNKNOWN    = 0 ;
      STATE_READY      = 1 ;
      STATE_RUNNING    = 2 ;
@@ -250,9 +250,9 @@ Universal enumeration type for process state.
      STATE_STOPPED    = 4 ;
      STATE_FINISHED   = 5 ;
      STATE_TERMINATED = 6 ;
-     
+
      // Aliases
-     
+
      STATE_CREATED    = 1 ;
      STATE_BLOCKED    = 3 ;
      STATE_SUSPENDED  = 4 ;
@@ -267,14 +267,14 @@ Enumeration for identification of address domain (scope).
 .. code-block:: protobuf
 
    package firebird.butler;
-   
+
    enum AddressDomainEnum {
      DOMAIN_UNKNOWN = 0 ; // Not a valid option, defined only to handle undefined values
      DOMAIN_LOCAL   = 1 ; // Within process (inproc)
      DOMAIN_NODE    = 2 ; // On single node (ipc or tcp loopback)
      DOMAIN_NETWORK = 3 ; // Network-wide (ip address or domain name)
    }
-   
+
 Transport protocol
 """"""""""""""""""
 
@@ -283,7 +283,7 @@ Enumeration for transport protocol identification.
 .. code-block:: protobuf
 
    package firebird.butler;
-   
+
    enum TransportProtocolEnum {
      PROTOCOL_UNKNOWN = 0 ; // Not a valid option, defined only to handle undefined values
      PROTOCOL_INPROC  = 1 ;
@@ -302,7 +302,7 @@ Enumeration for ZeroMQ socket types.
 .. code-block:: protobuf
 
    package firebird.butler;
-   
+
    enum SocketTypeEnum {
      SOCKET_TYPE_UNKNOWN = 0 ; // Not a valid option, defined only to handle undefined values
      SOCKET_TYPE_DEALER  = 1 ;
@@ -325,7 +325,7 @@ Enumeration for ZeroMQ socket usage type.
 .. code-block:: protobuf
 
    package firebird.butler;
-   
+
    enum SocketUseEnum {
      SOCKET_USE_UNKNOWN  = 0 ; // Not a valid option, defined only to handle undefined values
      SOCKET_USE_PRODUCER = 1 ; // Socket used to provide data to peers
@@ -341,7 +341,7 @@ Enumeration for definition of dependency type.
 .. code-block:: protobuf
 
    package firebird.butler;
-   
+
    enum DependencyTypeEnum {
      DEPTYPE_UNKNOWN   = 0 ; // Not a valid option, defined only to handle undefined values
      DEPTYPE_REQUIRED  = 1 ; // The resource MUST be provided
@@ -351,7 +351,7 @@ Enumeration for definition of dependency type.
 
 5.1.2 Data structures (messages)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-   
+
 ZeroMQ endpoint address
 """""""""""""""""""""""
 
@@ -360,22 +360,22 @@ A data structure that describes ZeroMQ endpoint address.
 .. code-block:: protobuf
 
    package firebird.butler;
-   
+
    message EndpointAddress {
      AddressDomainEnum     domain   = 1 ;
      TransportProtocolEnum protocol = 2 ;
      string                address  = 3 ;
    }
-   
+
 :domain:
   MANDATORY address domain.
-  
+
 :protocol:
   MANDATORY protocol identification.
-  
+
 :address:
   MANDATORY address specification.
-   
+
 Platform Identification
 """""""""""""""""""""""
 
@@ -384,7 +384,7 @@ A data structure that describes the Firebird Butler Development Platform used by
 .. code-block:: protobuf
 
    package firebird.butler;
-   
+
    message PlatformId {
      bytes  uid     = 1 ;
      string version = 2 ;
@@ -392,10 +392,10 @@ A data structure that describes the Firebird Butler Development Platform used by
 
 :uid:
   MANDATORY unique platform ID. It's RECOMMENDED to use uuid version 5 - SHA1, namespace OID.
-     
+
 :version:
   MANDATORY platform version. MUST conform to `major[.minor[.patch[-tag]]]` pattern, where `major`, `minor` and `patch` are numbers, and `tag` is alphanumeric. It's RECOMMENDED to use `semantic versioning`_.
-  
+
 Vendor Identification
 """""""""""""""""""""
 
@@ -404,7 +404,7 @@ A data structure that identifies a vendor of Client or Service.
 .. code-block:: protobuf
 
    package firebird.butler;
-   
+
    message VendorId {
      bytes uid = 1 ;
    }
@@ -413,7 +413,7 @@ A data structure that identifies a vendor of Client or Service.
   MANDATORY unique vendor ID. It's RECOMMENDED to use uuid version 5 - SHA1, namespace OID.
 
 .. _agent identification:
-  
+
 Agent Identification
 """"""""""""""""""""
 
@@ -422,7 +422,7 @@ A data structure that describes the identity of the Client or Service.
 .. code-block:: protobuf
 
    package firebird.butler;
-   
+
    import "google/protobuf/any.proto";
 
    message AgentIdentification {
@@ -437,19 +437,19 @@ A data structure that describes the identity of the Client or Service.
 
 :uid:
   MANDATORY unique Agent ID. It's RECOMMENDED to use uuid version 5 - SHA1, namespace OID.
-     
+
 :name:
   MANDATORY agent name assigned by vendor. It's RECOMMENDED that `uid` and `name` make a stable pair, i.e. there should not be agents from the single vendor that have the same name but different uid and vice versa.
-  
+
 :version:
   MANDATORY agent version. MUST conform to `major[.minor[.patch[-tag]]]` pattern, where `major`, `minor` and `patch` are numbers, and `tag` is alphanumeric. It's RECOMMENDED to use `semantic versioning`_.
-  
+
 :vendor:
   MANDATORY `Vendor identification`_.
 
 :platform:
   MANDATORY `Platform identification`_.
-  
+
 :classification:
   Agent classification. It's RECOMMENDED to use `domain/category` schema, for example *database/backup*.
 
@@ -464,7 +464,7 @@ A data structure that describes the peer within the Connection.
 .. code-block:: protobuf
 
    package firebird.butler;
-   
+
    import "google/protobuf/any.proto";
 
    message PeerIdentification {
@@ -476,13 +476,13 @@ A data structure that describes the peer within the Connection.
 
 :uid:
   MANDATORY unique peer ID. It's RECOMMENDED to use uuid version 1.
-  
+
 :pid:
-  MANDATORY process ID (PID of peer's process). 
-  
+  MANDATORY process ID (PID of peer's process).
+
 :host:
   MANDATORY host (network node) identification. It could be an IP (v4/v6) address, or a hostname that must be resolvable to an IP address. Peers that run on the same network node MUST have the same address/hostname.
-  
+
 :supplement:
   Any additional information about peer.
 
@@ -494,7 +494,7 @@ A data structure that describes an Interface used by Service API.
 .. code-block:: protobuf
 
    package firebird.butler;
-   
+
    message InterfaceSpec {
      uint32 number    = 1 ;
      bytes  interface = 2 ;
@@ -502,10 +502,10 @@ A data structure that describes an Interface used by Service API.
 
 :number:
   MANDATORY Interface Identification Number assigned by Service.
-  
+
 :interface:
   MANDATORY Iterface UID.
-   
+
 .. _error-description:
 
 Error Description
@@ -516,9 +516,9 @@ A data structure that describes an error.
 .. code-block:: protobuf
 
    package firebird.butler;
-   
+
    import "google/protobuf/struct.proto";
-   
+
    message ErrorDescription {
      uint64                 code        = 1 ;
      string                 description = 2 ;
@@ -527,19 +527,19 @@ A data structure that describes an error.
    }
 
 
-:code: 
+:code:
   Service-specific error code.
 
-:description: 
+:description:
   MANDATORY short text description of the error.
 
-:context: 
+:context:
   Structured error context information. The context is for information that accurately identifies the source of the error by the `Client`.
 
 :annotation:
   Additional structured error information. Annotations are intended for debugging and other internal purposes and MAY be ignored by the `Client`.
 
-   
+
 6. Reference Implementations
 ============================
 

@@ -112,7 +112,7 @@ html_theme_options = {
     #'navbar_title': "Firebird Butler",
 
     # Tab name for entire site. (Default: "Site")
-    'navbar_site_name': "Site content",
+    #'navbar_site_name': "Site content",
 
     # A list of tuples containing pages or urls to link to.
     # Valid tuples should be in the following forms:

@@ -26,16 +26,16 @@ The road to solution
 
 One of the key values on which the Firebird Project is built is the preservation of the philosophy inherited (through InterBase) from Borland, which can be described as *"clever engineering"*. One of the many examples of the realization of this philosophy was Borland Delphi, and the way it revolutionized the development of applications using components. While the concept was not completely new, the way it was used and implemented was clever and innovative. The Delphi Component Library was (and still is) a great example of a solid *"Solution Construction Kit"*. The Butler project builds on this basic idea but tries to translate it into the context of modern times.
 
-The IT world has changed a lot since 1995 when Delphi first appeared. Multi-platform, multi-device, distributed, scalability - those are the key words today. Today we build systems with such high levels of complexity, processing such astonishing  amounts of data, that we have had to resort to AI and adaptive self-learning systems to cope with the issues raised. Almost everything is interconnected, and what is not yet soon will be. Today's components are no longer just classes but whole applications or systems connected through web technologies. The software component's paradigm has transformed itself into a service-oriented and messaging architecture. Unfortunately, due to stormy development, two unpleasant things happened. First, linking services using web technologies (primarily HTTP, JSON, etc.) was the result of giving priority to a path of lesser resistance rather than the effectiveness of these technologies. This has led to the tearing of the worlds of large and small software components. So now we have separate "component systems" for small solutions and the big ones, with no easy way to bridge the gap. 
+The IT world has changed a lot since 1995 when Delphi first appeared. Multi-platform, multi-device, distributed, scalability - those are the key words today. Today we build systems with such high levels of complexity, processing such astonishing  amounts of data, that we have had to resort to AI and adaptive self-learning systems to cope with the issues raised. Almost everything is interconnected, and what is not yet soon will be. Today's components are no longer just classes but whole applications or systems connected through web technologies. The software component's paradigm has transformed itself into a service-oriented and messaging architecture. Unfortunately, due to stormy development, two unpleasant things happened. First, linking services using web technologies (primarily HTTP, JSON, etc.) was the result of giving priority to a path of lesser resistance rather than the effectiveness of these technologies. This has led to the tearing of the worlds of large and small software components. So now we have separate "component systems" for small solutions and the big ones, with no easy way to bridge the gap.
 
 .. admonition:: Our answer
 
    **The Firebird "Butler" Project** is a **serious** attempt to address this problem - in line with the Firebird's scalability doctrine **"from embedded to enterprise".**
-   
+
    So, once again in Firebird's history [1]_, **We Boldly Go Where No Man Has Gone Before**.
 
-.. note::   
-   
+.. note::
+
    The **Firebird Butler Development Platform** (a multi-platform library core similar to TComponent+TModule from Delphi VCL) is the *heart* of the Butler Project. The second layer built on top of it is the **Firebird Butler Service Library**, which is a *repository* of various (mostly Firebird-related) services. The outer layer is the **Firebird Butler** itself (*the product*), which should be a distribution (or set of purpose-tailored distributions) for direct deployment.
 
 |
@@ -54,7 +54,7 @@ Let's look at the key properties closely.
 Direct method calls vs. TCP/IP
 ----------------------------------
 
-Direct method calls are most effective, but while they are easy within single thread, they are impossible between threads or processes. The closest thing to it that you can do is remote procedure calling (RPC). Although RPC is easy today, it's also a killer of performance and scalability, especially when it is synchronous. 
+Direct method calls are most effective, but while they are easy within single thread, they are impossible between threads or processes. The closest thing to it that you can do is remote procedure calling (RPC). Although RPC is easy today, it's also a killer of performance and scalability, especially when it is synchronous.
 
 Raw TCP/IP communication is easy today, and the same applies for using it in the context of web-related technologies (HTTP etc.). But using it for communication between threads (or even between objects in a single thread) is cumbersome and not very effective. The advantage is that you can easily go asynchronous.
 
@@ -67,7 +67,7 @@ So it's clear that if you want scaleable solution, you have to give up the direc
 Tight vs. loose coupling
 ------------------------
 
-In a distributed environment, connecting between components via signals or event attributes and calling methods directly is equivalent to a stable TCP/IP connection - the connection is always present and open and you can always make a call. Tight coupling between connected components enables the most effective ways to do things. Doing the same with TCP/IP within single application is easy, since the connection can is unlikely break by itself. However, it is not so simple for connections between processes or over a network - they can break any time. Because nodes can disappear from the network, it's not always possible to achieve tight coupling efficiently and reliably over a network. That is why network services mostly use stateless protocols and communication. In the current state of affairs, the services are loosely coupled when integrated using some Service Integration Solution, such as  Zato_, or by direct communication between the services.
+In a distributed environment, connecting between components via signals or event attributes and calling methods directly is equivalent to a stable TCP/IP connection - the connection is always present and open and you can always make a call. Tight coupling between connected components enables the most effective ways to do things. Doing the same with TCP/IP within single application is easy, since the connection can unlikely break by itself. However, it is not so simple for connections between processes or over a network - they can break any time. Because nodes can disappear from the network, it's not always possible to achieve tight coupling efficiently and reliably over a network. That is why network services mostly use stateless protocols and communication. In the current state of affairs, the services are loosely coupled when integrated using some Service Integration Solution, such as  Zato_, or by direct communication between the services.
 
 The truth is, that using loose coupling is a hard tradeoff. It makes no sense to stick to it for deployments on a single computer nor for small or reliable corporate networks. It's a "better" solution only for integrations over unreliable or external sources, or with services that can't do better. These integration solutions merely opt for implementation simplicity over effectiveness, providing classic examples of one-size-fits-all syndrome gone wrong.
 
@@ -93,7 +93,7 @@ ZeroMQ is an elegant, small yet powerful library that handles the messaging fund
 
 It provides services and patterns to do brokered or broker-less systems, sync and async messaging, various request/reply conversations, push/pull pipes, publisher/subscriber multicasts, workload pipelines, authentication, CURVE security, and various protocols (tcp, ipc, inproc, pgm/epgm, vmci). It significantly simplifies the development of viable custom systems with load balancing, high availability or reliability features, dynamic mashups, cloud architectures etc. It does not do these things for you, as other systems try to do, but you can do it yourself reliably without too much effort, in a way and to the extent that fits your needs. And as a cherry on top, ZeroMQ helps with reliable multi-thread applications using inproc sockets for fast and safe pipelines, or multi-process ones with ipc sockets.
 
-Of course it's not perfect.  It will have limits, issues and dark corners like any piece of software out there, but we think that it provides everything we would need at a level that is good enough. 
+Of course it's not perfect.  It will have limits, issues and dark corners like any piece of software out there, but we think that it provides everything we would need at a level that is good enough.
 
 You can learn more about ZeroMQ_ from the excellent ZGuide_, that includes many `examples in about 30 programming languages <https://github.com/booksbyus/zguide/tree/master/examples>`_.
 
@@ -110,7 +110,7 @@ The Firebird Butler Development Platform defines basic features of Butler Servic
 - communication negotiation (security, protocol version, communication channels, data format, sync/async patterns etc.)
 - feature and configuration discovery
 - service control
-- message exchange methods (request/reply, push/pull, produce/subscribe etc.) 
+- message exchange methods (request/reply, push/pull, produce/subscribe etc.)
 
 The specification DOES NOT describe how individual services should do their jobs. For example if you are looking to create a service that does database backups, the specification defines how one should find it, connect to it, negotiate communication details (common patterns), discover its features, exchange messages, error handling and codes, some common messaging patterns like presence verification (ping), addressing, control messages etc. But what messages, data and formats your service uses to do its job, what features it would have and how it would do its work is up to you. You can create a dumb backup service that is just a thin wrapper around the backup provided by Firebird service API that can handle only one database at a time and does not report back, or you can create a complex backup service that can handle many databases simultaneously, on a regular basis (has a scheduler), uses a global resource registry for server, database and backup specification, uses a logging service, can do proximity-based load balancing to fellow backup services and will send information about its status and progress to some messaging pipe, and **either service would be a first-class well-behaving citizen in a Butler deployment**.
 
@@ -138,9 +138,9 @@ A Butler Service is basically a piece of software that uses `ZeroMQ socket` and 
 - `Processing` services, that take data on input, do something (on them) and have some data on output. This general category includes services that perform analytics, data transformation, brokers, bridges, routers, aggregators, load balancers etc.
 - `Provider` services, that do things on request. For example perform a database backup.
 - `Control` services, that manage other services.
-  
 
-Planned services 
+
+Planned services
 ----------------
 
 .. note::
@@ -171,8 +171,8 @@ We plan to create **at least** the following set of services in this category:
 - Scheduler service to run jobs on a regular basis
 - Extensible storage service (it will provide at least file-based storage)
 - Services for Firebird-related tasks like: backup & restore (gbak and nbackup), sweep and other tasks provided by gfix, cancellation of connections and transactions, user defined SQL commands and scripts
-- Service to run user defined action -> external program or script 
-   
+- Service to run user defined action -> external program or script
+
 *Control* services
 ^^^^^^^^^^^^^^^^^^
 

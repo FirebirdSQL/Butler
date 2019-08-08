@@ -30,7 +30,7 @@ This Specification is a free and open standard and is governed by the Consensus-
 
 ..
    Unfinished parts:
-   
+
    .. todolist::
 
 Language
@@ -74,7 +74,7 @@ The specification requires the existence of a transport channel capable of async
 Exchange of messages on the `Transport Channel` is implemented as a `Connection` between the `Service` and the `Client` where the connection has the following stages:
 
 1. The `Client` MUST initiate the connection by sending the HELLO_ message.
-2. The `Service` MUST reply to the HELLO_ message by sending a WELCOME_ message to confirm the connection. If the Service can not receive the connection, it MUST send the ERROR_ message instead.
+2. The `Service` MUST reply to the HELLO_ message by sending a WELCOME_ message to confirm the connection. If the Service cannot accept the connection, it MUST send the ERROR_ message instead.
 3. After confirming a successful `Connection`, the `Client` can start sending messages to which the `Service` responds by sending one or more messages of its own.
 4. The `Client` or `Service` can terminate the `Connection` at any time by sending a CLOSE_ message, or by closing the `Transport Channel`. However, the peer initiating the connection termination SHOULD send the CLOSE_ message before it closes the Transport Channel to the other peer.
 
@@ -114,7 +114,7 @@ A single `Transport channel`_ MAY be used for message transmission for several c
 .. note::
 
    For example, if transmission is implemented using ZeroMQ ROUTER_ socket, all FBSP messages flowing through it are / must be prefixed with extra `Data Frame` with routing address.
-   
+
 
 2.3.2 Bound and unbound Connections
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -151,27 +151,27 @@ The following ABNF grammar defines the message format used by FBSP protocol::
 
   ; The message consists of a control frame, and zero or more data frames
   message       = control-frame *data-frame
-  
+
   ; The control frame consists of a signature, control byte, flags, message-type data, and message token
-  control-frame = signature control-byte flags type-data token 
-  
+  control-frame = signature control-byte flags type-data token
+
   ; The protocol signature is a FourCC
   signature     = "FBSP" ; %x46 %x42 %x53 %x50
-  
+
   ; The control byte encodes a message type, and protocol version. Both are decimal numbers.
   ; msg-type on upper (leftmost) 5 bits, version on lower (rightmost) 3 bits
-  control-byte  = 1OCTET  
-  
+  control-byte  = 1OCTET
+
   ; Flags consists of a single octet containing various control flags as individual bits.
   ; Bit 0 is the least significant bit (rightmost bit)
   flags         = 1OCTET
-  
+
   ; Message-type specific data are two bytes
   type-data     = 2OCTET
-  
+
   ; Message token is 8 bytes
   token         = 8OCTET
-  
+
   ; A data frame consists from zero or more octets
   data-frame    = *OCTETS
 
@@ -194,7 +194,7 @@ Processing of the token is governed by the following rules:
    This specification does not define in any way how the `Client` should use the `Message Token`, nor does it prescribe that it should be used at all. However, the `Message Token` SHOULD be used by the `Client` whenever there is a need to assign messages sent by the `Service` to the original request source (for example for internal routing purposes or reliable implementation of parallel `Client` requests).
 
 .. _message-type:
-   
+
 2.4.3 Message types
 ^^^^^^^^^^^^^^^^^^^
 
@@ -353,7 +353,7 @@ The STATE message is sent by `Service` to report its operating state to the `Cli
 CLOSE
 """""
 
-The CLOSE message notifies the receiver that sender is going to close the Connection_. 
+The CLOSE message notifies the receiver that sender is going to close the Connection_.
 
 1. The receiver SHALL NOT respond to this message.
 2. The receiver SHALL NOT use the Connection_ to send further messages to the sender.
@@ -381,7 +381,7 @@ Flags are encoded as individual bits in flags_ field of the control-frame_.
 .. list-table:: Flags
    :widths: 20 10 70
    :header-rows: 1
-   
+
    * - Name
      - Bit
      - Mask
@@ -440,7 +440,7 @@ General rules
 
 All revisions of this specification SHALL conform to following rules:
 
-1. All revisions SHALL preserve next parts of this revision: 
+1. All revisions SHALL preserve next parts of this revision:
 
    a) reqirements defined for `Transport Channel`_
    b) the existence of control-frame_
@@ -458,15 +458,15 @@ Version negotiation
 
 1. Both the `Client` and the `Service` SHALL use the same protocol version for all messages transmitted as part of a single Connection_.
 2. The protocol version used for the Connection_ is defined by the `Client` in his HELLO_ message sent to the `Service`.
-3. The `Service` SHALL use the same protocol version as the `Client`. 
+3. The `Service` SHALL use the same protocol version as the `Client`.
 4. If `Service` cannot handle Connection_ in protocol version used by the `Client`, it SHOULD respond with appropriate ERROR_ message in format defined by this revision. The `Service` MAY respond to this condition by closing the `Transport Connection` associated with the Connection_ request.
-5. The `Client` using different revision of this protocol than revision 1 SHOULD be able to handle ERROR_ message in format defined by this revision that would be send as response to his HELLO_ message. 
+5. The `Client` using different revision of this protocol than revision 1 SHOULD be able to handle ERROR_ message in format defined by this revision that would be send as response to his HELLO_ message.
 6. The `Client` SHALL eventually interpret the closing of the `Transport Channel`_ to the `Service` without response to his HELLO_ message as rejection of his request to create the Connection_.
 
 2.5 Handling of client requests
 -------------------------------
 
-The `Client` SHALL send its requests to the `Service` as REQUEST_ messages with `Request Code`_ indicating the required functionality (an API call). 
+The `Client` SHALL send its requests to the `Service` as REQUEST_ messages with `Request Code`_ indicating the required functionality (an API call).
 
 2.5.1 General rules
 ^^^^^^^^^^^^^^^^^^^
@@ -478,7 +478,7 @@ The handling of Client request has following general rules:
    a. Send the ERROR_ message describing the error status detected by the `Service` that prevents successful completion of the request.
    b. Send the REPLY_ message as an indication of successful completion of the request, or as indication that `Service` started to fulfill the request. The actual meaning of this reply is defined by `Service API`_.
 2. An ERROR_ message sent to the `Client` SHALL always end the processing of the request.
-3. The fulfillment of particular request MAY require multiple messages to be sent by `Service`. In such a case, service MUST send the REPLY_ message first, before any additional message would be sent. 
+3. The fulfillment of particular request MAY require multiple messages to be sent by `Service`. In such a case, service MUST send the REPLY_ message first, before any additional message would be sent.
 4. The subsequent messages after REPLY_ message SHALL be only of message-type_ DATA_, STATE_ or ERROR_.
 5. The `Service API`_ for particular `Request Code`_ that requires multiple messages to be send by `Service` SHALL use one from the following methods to indicate the end of request processing to the `Client`:
 
@@ -487,7 +487,7 @@ The handling of Client request has following general rules:
    c. Continuous processing terminated on `Client` request by CANCEL_ message or until Connection_ is not closed.
 6. The service MAY accept a new request from the client before the initial request has been fully processed. However, all parallel request messages MUST have different (unique) :ref:`Message token <message-token>` value.
 7. The processing of any active request can be terminated prematurely at the client's request via the CANCEL_ message.
-      
+
 .. _Service API:
 .. _Interface:
 .. _Interfaces:
@@ -513,7 +513,7 @@ The `Service API` consists from `Interfaces` (API contracts) that consists from 
 
 The `Request Code` uniquely identifies the `Service` functionality (an API call). This specification define following rules for request codes:
 
-1. The first (more significant) byte of type-data_ field SHALL contain the `Interface identification number` assigned by `Service` to particular `Interface` it supports (see :ref:`Data frames - WELCOME <welcome-dataframe>`). 
+1. The first (more significant) byte of type-data_ field SHALL contain the `Interface identification number` assigned by `Service` to particular `Interface` it supports (see :ref:`Data frames - WELCOME <welcome-dataframe>`).
 2. The second (less significant byte) byte of type-data_ field SHALL contain the `Interface operation code`.
 
 
@@ -522,7 +522,7 @@ The `Request Code` uniquely identifies the `Service` functionality (an API call)
 2.6 Data frames
 ---------------
 
-Where control-frame_ contains semantic specification of the message, individual data-frame_ parts of the message carry data associated with given API call or response. 
+Where control-frame_ contains semantic specification of the message, individual data-frame_ parts of the message carry data associated with given API call or response.
 
 Number, content and structure of individual `data-frames` SHALL be defined by API specification for particular message-type_ and/or `Request Code`_.
 
@@ -555,7 +555,7 @@ HELLO data
 .. code-block:: protobuf
 
    package firebird.butler;
-   
+
    import "google/protobuf/any.proto";
    import "firebird/butler/fbsd.proto";
 
@@ -567,13 +567,13 @@ HELLO data
 
 :instance:
   MANDATORY information about peer.
-  
+
 :client:
   MANDATORY information about Client.
 
 :supplement:
   Any additional information about Client.
-   
+
 .. _welcome-dataframe:
 
 WELCOME data
@@ -582,7 +582,7 @@ WELCOME data
 .. code-block:: protobuf
 
    package firebird.butler;
-   
+
    import "google/protobuf/any.proto";
    import "firebird/butler/fbsd.proto";
 
@@ -595,16 +595,16 @@ WELCOME data
 
 :instance:
   MANDATORY information about peer.
-  
+
 :service:
   MANDATORY information about Service.
 
 :api:
   MANDATORY information about Service API.
-  
+
 :supplement:
   Any additional information about Service.
-   
+
 
 .. _cancel-dataframe:
 
@@ -612,9 +612,9 @@ CANCEL data
 """""""""""
 
 .. code-block:: protobuf
- 
+
    package firebird.butler;
-   
+
    import "google/protobuf/any.proto";
 
    message FBSPCancelRequests {
@@ -637,7 +637,7 @@ STATE data
 .. code-block:: protobuf
 
    package firebird.butler;
-   
+
    import "google/protobuf/any.proto";
    import "firebird/butler/fbsd.proto";
 
@@ -674,7 +674,7 @@ Error codes are transmitted in type-data_ field of the ERROR_ message.
 3. The lower (rightmost) 5 bits of type-data_ field encode the message-type_ this particular error relates to (the bitmask is 31). The "zero" value represents general, out-of-band error reported by `Service`.
 
 
-.. todo:: 
+.. todo::
    :class: todo
 
    Finalize the list of error codes.
@@ -689,7 +689,7 @@ Errors indicating that particular request cannot be satisfied
 :2 - Protocol violation:
 
   Received message is a valid FBSP message, but does not conform to the protocol. Typically, a message of this type or content is not allowed at a particular point in the conversation.
- 
+
 :3 - Bad Request:
 
   The Request Code in the received REQUEST_ message was not recognized as valid Service API call.
@@ -705,23 +705,23 @@ Errors indicating that particular request cannot be satisfied
 :6 - Internal Service Error:
 
   The server encountered an unexpected condition that prevented it from fulfilling the request.
-  
+
 :7 - Request Timeout:
 
   The server cannot process the request within the time that it was prepared to work or wait for external resource.
-  
+
 :8 - Too Many Requests:
 
   The client has sent too many requests in a given amount of time ("rate limiting").
-  
+
 :9 - Failed Dependency:
 
    The request could not be performed because the requested action depended on another action and that action failed.
-   
+
 :10 - Forbidden:
 
   The service understood the request but refuses to authorize it.
-  
+
 :11 - Unauthorized:
 
   The request has not been applied because it lacks valid authentication credentials for action or the target resource.
@@ -729,11 +729,11 @@ Errors indicating that particular request cannot be satisfied
 :12 - Not Found:
 
   The service did not find the target resource or is not willing to disclose that one exists.
-  
+
 :13 - Gone:
 
   The target resource is no longer available and this condition is likely to be permanent.
-  
+
 :14 - Conflict:
 
   The request could not be completed due to a conflict with the current state of the target resource. This code is used in situations where the user might be able to resolve the conflict and resubmit the request.
@@ -741,12 +741,12 @@ Errors indicating that particular request cannot be satisfied
 :15 - Payload Too Large:
 
   The service is refusing to process a request because the request payload is larger than the service is willing or able to process.
-  
+
 :16 - Insufficient Storage:
 
   The service is unable to store data needed to successfully complete the request.
-   
-  
+
+
 Fatal errors indicating that connection would/should be terminated
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -761,7 +761,7 @@ Fatal errors indicating that connection would/should be terminated
 ============================
 
 None at this time. In future, the :ref:`Saturnin-SDK <saturnin-sdk>` will act as the prime reference implementation for FBSP.
-   
+
 
 |
 |
@@ -773,7 +773,7 @@ Keep alive
 ----------
 
 .. aafig::
-   
+
     +---------+              +----------+
     |  Sender |              | Receiver |
     +----+----+              +-----+----+
@@ -787,7 +787,7 @@ Peer availability check
 -----------------------
 
 .. aafig::
-         
+
     +---------+              +----------+
     |  Sender |              | Receiver |
     +----+----+              +-----+----+
@@ -799,12 +799,12 @@ Peer availability check
          |        "NOOP/ACK-REPLY" X
          X<------------------------X
          X                         |
-   
+
 Failed Client request
 ---------------------
 
 .. aafig::
-         
+
     +---------+              +----------+
     |  Client |              |  Service |
     +----+----+              +-----+----+
@@ -816,7 +816,7 @@ Failed Client request
          |        "ERROR"          X
          X<------------------------X
          X                         |
-   
+
     +---------+              +----------+
     |  Client |              |  Service |
     +----+----+              +-----+----+
@@ -830,12 +830,12 @@ Failed Client request
          |        "ERROR"          X
          X<------------------------X
          X                         |
-   
+
 Simple Client request
 ---------------------
 
 .. aafig::
-         
+
     +---------+              +----------+
     |  Client |              |  Service |
     +----+----+              +-----+----+
@@ -847,14 +847,14 @@ Simple Client request
          |         REPLY           X
          X<------------------------X
          X                         |
-   
+
 Client request with message stream
 ----------------------------------
 
 Using MORE_ flag for `Service` -> `Client` transfer:
 
 .. aafig::
-         
+
     +---------+              +----------+
     |  Client |              |  Service |
     +----+----+              +-----+----+
@@ -881,7 +881,7 @@ Using MORE_ flag for `Service` -> `Client` transfer:
 Using MORE_ flag for `Client` -> `Service` transfer:
 
 .. aafig::
-         
+
     +---------+              +----------+
     |  Client |              |  Service |
     +----+----+              +-----+----+
@@ -911,7 +911,7 @@ Using MORE_ flag for `Client` -> `Service` transfer:
 Using STATE_ message (only for `Service` -> `Client` transfer):
 
 .. aafig::
-         
+
     +---------+              +----------+
     |  Client |              |  Service |
     +----+----+              +-----+----+
@@ -938,7 +938,7 @@ Using STATE_ message (only for `Service` -> `Client` transfer):
 Using CANCEL_ message (only for `Service` -> `Client` transfer):
 
 .. aafig::
-         
+
     +---------+              +----------+
     |  Client |              |  Service |
     +----+----+              +-----+----+
@@ -972,7 +972,7 @@ Using CANCEL_ message (only for `Service` -> `Client` transfer):
 Synchronous `Service` -> `Client` data transfer using ACK-REQUEST/ACK-REPLY flags:
 
 .. aafig::
-         
+
     +---------+                 +----------+
     |  Client |                 |  Service |
     +----+----+                 +-----+----+
@@ -1002,7 +1002,7 @@ Synchronous `Service` -> `Client` data transfer using ACK-REQUEST/ACK-REPLY flag
 Synchronous `Client` -> `Service` data transfer using ACK-REQUEST/ACK-REPLY flags:
 
 .. aafig::
-         
+
     +---------+                 +----------+
     |  Client |                 |  Service |
     +----+----+                 +-----+----+
@@ -1026,7 +1026,7 @@ Synchronous `Client` -> `Service` data transfer using ACK-REQUEST/ACK-REPLY flag
          X<---------------------------X
          X                            |
 
-.. todo:: 
+.. todo::
    :class: todo
 
    Describe additional transmission patterns.
