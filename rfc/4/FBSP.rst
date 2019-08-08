@@ -760,7 +760,7 @@ Fatal errors indicating that connection would/should be terminated
 3. Reference Implementations
 ============================
 
-None at this time. In future, the :ref:`Saturnin-SDK <saturnin-sdk>` will act as the prime reference implementation for FBSP.
+The :ref:`Saturnin-SDK <saturnin-sdk>` is the prime reference implementation for FBSP.
 
 
 |
