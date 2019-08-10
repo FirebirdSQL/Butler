@@ -14,7 +14,7 @@ from setuptools import setup, find_packages
 HERE = path.abspath(path.dirname(__file__))
 
 # Get the long description from the README file
-with open(path.join(HERE, 'README.rst'), encoding='utf-8') as f:
+with open(path.join(HERE, 'README.md'), encoding='utf-8') as f:
     LONG_DESCRIPTION = f.read()
 
 # Arguments marked as "Required" below must be included for upload to PyPI.
@@ -28,7 +28,7 @@ setup(
     long_description_content_type="text/x-rst",
     url='https://github.com/FirebirdSQL/Butler',
     author='Pavel Císař',
-    author_email='pcisar@ibphoenix.cz',
+    author_email='pcisar@users.sourceforge.net',
     license='MIT',
     classifiers=[
         'Development Status :: 3 - Alpha',

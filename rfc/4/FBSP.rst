@@ -235,7 +235,7 @@ The `Service` SHALL send only messages of following types::
 HELLO
 """""
 
-The `HELLO` message is a `Client` request to open a Connection_ to the `Service`. The message includes basic information about the `Client` and Connection_ parameters required by the `Client`.
+The HELLO message is a `Client` request to open a Connection_ to the `Service`. The message includes basic information about the `Client` and Connection_ parameters required by the `Client`.
 
 1. This message MUST be the first message sent by the `Client`.
 2. The `Service` MUST reply to this message with WELCOME_ or ERROR_ message.
@@ -366,7 +366,7 @@ ERROR
 The ERROR message notifies the `Client` about error condition detected by `Service`.
 
 1. The type-data_ field of the control-frame_ MUST contain the `Error Code`_.
-2. The message MAY contain one or more data-frame_ that MUST conform to the API defined for reporting `Service` errors. Those data-frame_ parts MAY be ignored by `Client`.
+2. The message MAY contain one or more data-frame_ that describe the error condition. Those data-frame_ parts MAY be ignored by `Client`.
 3. The `Client` SHALL NOT respond to this message.
 
 .. seealso::
@@ -540,9 +540,9 @@ All API and other specifications that define data-frame_ contents SHALL conform 
 2.6.2 Common protobuf specifications
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-All Protocol Buffer specifications build on protocol buffers defined by :ref:`3/FBDS - 5.1 Common protobuf specifications <common-protobuf>`.
+All Protocol Buffer definitions in this specifications build on protocol buffers defined by :ref:`3/FBDS - 5.1 Common protobuf specifications <common-protobuf>`.
 
-All Protocol Buffer specifications use `proto3` syntax. This syntax variant does not support required fields, and all fields are optional (basic types will have the default "empty" value when they are not serialized). However, some fields in FBSP specification are considered as mandatory (as "required" in `proto2`), and should be validated as such by receiver.
+All Protocol Buffer definitions in this specifications use `proto3` syntax. This syntax variant does not support required fields, and all fields are optional (basic types will have the default "empty" value when they are not serialized). However, some fields in FBSP specification are considered as mandatory (as "required" in `proto2`), and should be validated as such by receiver.
 
 2.6.3 FBSP Data Frames for message types
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -658,7 +658,7 @@ STATE data
 ERROR data
 """"""""""
 
-Each Data Frame must contain :ref:`3/FBSD - Error Description <error-description>` message.
+Each Data Frame must contain :ref:`3/FBSD - Error Description <error-description>` protobuf message.
 
 
 .. _error codes:
@@ -681,6 +681,8 @@ Error codes are transmitted in type-data_ field of the ERROR_ message.
 
 Errors indicating that particular request cannot be satisfied
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. rst-class:: long-field
 
 :1 - Invalid Message:
 
@@ -750,6 +752,8 @@ Errors indicating that particular request cannot be satisfied
 Fatal errors indicating that connection would/should be terminated
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+.. rst-class:: long-field
+
 :2000 - Service Unavailable:
   The server is currently unable to handle the request due to a temporary overload or scheduled maintenance, which will likely be alleviated after some delay.
 
@@ -760,7 +764,7 @@ Fatal errors indicating that connection would/should be terminated
 3. Reference Implementations
 ============================
 
-The :ref:`Saturnin-SDK <saturnin-sdk>` is the prime reference implementation for FBSP.
+The :ref:`Saturnin-SDK <saturnin-sdk>` provides the prime reference implementation for FBSP.
 
 
 |
