@@ -1007,7 +1007,7 @@ Batch sizes:
       +----+----+      +----+----+    +----+----+      +----+----+
            |                |              |                |
            |                X bind F       X bind F         |
-           |                X await conn   X awaint conn    |
+           |                X await conn   X await conn     |
            | connect F      X              X                |
            |                X              X                |          
            |   OPEN(IN)     X              X                |
