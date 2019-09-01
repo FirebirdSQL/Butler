@@ -1047,7 +1047,7 @@ Batch sizes:
            
            |                X              |                X
            |    CLOSE(rP)   X              |    CLOSE(rB)   X
-           X--------------->X------------->X--------------->X
+           +--------------->X------------->X--------------->X
            | disconnect     X await conn   X await conn     | disconnect
            
       "alternative B - CLOSE from Consumer"
@@ -1055,7 +1055,7 @@ Batch sizes:
            
            |                X              |                X
            |    CLOSE(rP)   X              |    CLOSE(rB)   X
-           X<---------------X<-------------X<---------------X
+           +<---------------X<-------------X<---------------X
            | disconnect     X await conn   X await conn     | disconnect
 
 
