@@ -124,7 +124,7 @@ html_theme_options = {
     'navbar_links': [
         ("Introduction", "introduction"),
         ("RFCs", "specifications"),
-        ("Project", "organization"),
+        ("Projects", "organization"),
         # ("Index", "genindex"),
     ],
 

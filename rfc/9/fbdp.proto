@@ -31,7 +31,6 @@ syntax = "proto3";
 
 package firebird.butler;
 
-import "google/protobuf/any.proto";
 import "google/protobuf/struct.proto";
 
 // FBDP OPEN data frame

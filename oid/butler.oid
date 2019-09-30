@@ -58,4 +58,11 @@ children:
     email: pcisar@users.sourceforge.net
     site: https://firebird-butler.rtfd.io
     node-spec: https://raw.githubusercontent.com/FirebirdSQL/Butler/master/protocols.oid
+  - number: 6
+    name: microservice
+    description: Root node for registered Firebird Butler Microservices
+    contact: Pavel Císař
+    email: pcisar@users.sourceforge.net
+    site: https://firebird-butler.rtfd.io
+    node-spec: https://raw.githubusercontent.com/FirebirdSQL/Butler/master/oid/micros.oid
    

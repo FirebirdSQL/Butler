@@ -55,7 +55,7 @@ The main objectives are:
 2.1 The Data Pipe Architecture
 ------------------------------
 
-The Data Pipe is an abstract device that transfers user data from `virtual input` to `virtual output` through a `Transport Channel` between exactly two peers.
+The Data Pipe is an abstract device that transfers user data from `virtual input` to `virtual output` through a `Transport Channel` between exactly two peers. Virtual input and output are referred to as Data Pipe input and output `Sockets`.
 
 .. _fbdp-transport-channel:
 
@@ -79,8 +79,14 @@ The specification defines following peer roles:
 
 - The peer that **binds** to the `Transport Channel` endpoint is referred to as a `Server`.
 - The peer that **connects** to the `Transport Channel` endpoint is referred to as a `Client`.
-- The peer that attaches itself to the `virual input` of the Data Pipe to **send** user data is referred to as a `Producer`.
-- The peer that attaches itself to the `virual output` of the Data Pipe to **receive** user data is referred to as a `Consumer`.
+- The peer that attaches itself to the **input** socket of the Data Pipe to **send** user data is referred to as a `Producer`.
+- The peer that attaches itself to the **output** socket of the Data Pipe to **receive** user data is referred to as a `Consumer`.
+
+The data pipe is **always** routed from the `Server` to the `Client`, and in this sense the `Server` is its **owner**.
+
+The `Client` always connects to one from the virtual sockets of the data pipe owned by `Server`. By accepting a connection from the `Client` on the specified virtual pipe Socket, the `Server` automatically establishes the connection to the `Client` on the corresponding complementary virtual pipe Socket, assuming the corresponding role.
+
+The above means that the `Client` connected to the data pipe **input** assumes the `Producer's` role (with Server as a Consumer), and the `Client` connected to the data pipe **output** assumes the `Consumer's` role (with the Server as a Producer).
 
 2.1.3 Pipe attributes
 ^^^^^^^^^^^^^^^^^^^^^
@@ -96,12 +102,12 @@ The specification defines following peer roles:
 
 Exchange of messages on the `Transport Channel` is implemented as a `Connection` between the `Server` and the `Client` where the connection has the following stages:
 
-1. The `Client` MUST initiate the connection by sending the OPEN_ message to the `Server`. The OPEN_ message MUST contain Data Pipe and endpoint `Identification`, and MAY contain specification of the user data format and additional implementation-specific attributes.
+1. The `Client` MUST initiate the connection by sending the OPEN_ message to the `Server`. The OPEN_ message MUST contain Data Pipe and Socket `Identification`, and MAY contain specification of the user data format and additional implementation-specific attributes.
 2. The `Server` MUST reply to the OPEN_ message by sending a READY_ message to confirm the connection, and to start the data transmission loop (see step 3.1). If the `Server` cannot accept the connection, it MUST send a CLOSE_ message with appropriate |error-code| instead.
 3. After a successful connection is confirmed, the transmission enters a loop that carries DATA_ messages in `N` message blocks and consists of the following steps:
 
    1. The `Client` SHALL wait for READY_ message from `Server` with non-zero value of the message count. The `Server` SHALL send READY_ message with non-zero message count when is ready to send/receive at least one DATA_ message.
-   2. The `Client` SHALL reply to received READY_ message with non-zero message cout `X` by sending READY_ message to the `Server` with message cout `Y`, where `X` >= `Y` >= 0. The `Client` MUST be prepared to receive up to `Y` DATA_ messages.
+   2. The `Client` SHALL reply to received READY_ message with non-zero message count `X` by sending READY_ message to the `Server` with message cout `Y`, where `X` >= `Y` >= 0. The `Client` MUST be prepared to send/receive up to `Y` DATA_ messages.
    3. If the message count `Y` received by `Server` is greater than zero, the `Server` that acts as `Producer` SHOULD send DATA_ messages to the `Client`, and `Server` that acts as `Consumer` SHOULD receive DATA_ messages from the `Client`. The total number of DATA_ messages sent/received SHALL NOT exceed the `Y`. If the message count `Y` received by `Server` is zero, the `Server` SHALL send the READY_ message with non-zero message count again some time later.
    4. The `Client` that acts as `Consumer` SHOULD receive DATA_ messages, while `Client` that acts as `Producer` SHOULD send DATA_ messages to the `Server`.
    5. When `Y` DATA_ messages are transferred, both `Server` and `Client` continue at step 1.
@@ -209,6 +215,7 @@ READY
 A READY message indicates that the sender is available to transmit user data and is ready to send / receive a specified number of DATA_ messages.
 
 1. The |type-data| field must contain number of DATA_ messages that could be transmitted. Zero is an acceptable value to indicate that the sender wishes to continue transmission but is not ready to transmit any data at this time.
+2. This message SHALL NOT have any |data-frame|.
 
 NOOP
 """"
@@ -398,6 +405,9 @@ General errors
   
 :5 - Invalid data:
   Data received in DATA_ message does not conform to the data format specification (if sender is a `Consumer`), or cannot be converted to the required data format (if sender is a `Producer`).
+  
+:6 - Timeout:
+  Sender's waiting time has expired.
 
 Errors that prevent the connection from opening
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -741,8 +751,12 @@ Example transmission patterns send user data from `Producer <P>` through `Filter
 - The `Filter` consumes two DATA packets from `Producer` to produce one data packet to `Consumer`.
 - The `Consumer` accepts data in batch of 8 DATA messages if possible.
 - The `Producer` sends data in batch of 5 DATA messages if possible.
-- The `Filter` adapts data batch sizes to `Producer` and `Consumer` according to particular pattern. 
+- The `Filter` adapts data batch sizes to `Producer` and `Consumer` according to particular pattern.
 - For the sake of clarity, NOOP messages and ACK-REQUEST flag messages are not used.
+
+.. note::
+
+   The same patterns apply to `Filters` that simply pass messages between `Producer` and `Consumer` as pure `Router`.
 
 
 Client - Server/Client - Server
@@ -939,7 +953,7 @@ Batch sizes:
            X                |              |                X
            X                | connect P    | connect C      X
            X                |              |                X
-           X   OPEN(OUT)    |              |   OPEN(OUT)    X
+           X   OPEN(OUT)    |              |   OPEN(IN)     X
            X<---------------X              X--------------->X
            |   READY(5)     X              X    READY(8)    |
            X--------------->X              X<---------------X
@@ -993,6 +1007,12 @@ Client - Server/Server - Client
 Batch sizes:
 
 
+- Because the `Filter` has the `Server` role for both `Producer` and `Consumer`, it has the ability to initialize the maximum batch size. For this case, this size is 1000 messages.
+
+.. tip::
+
+   This pattern is particularly useful for implementation of Services that provide stable, globally defined Data Pipes using a `Router` as a middleman.
+
 
 .. aafig::
    :textual:
@@ -1012,7 +1032,7 @@ Batch sizes:
            |                X              X                |          
            |   OPEN(IN)     X              X                |
            X--------------->X              X                |          
-           X   READY(0)     |              X                | connect F
+           X   READY(0)     | no out peer  X                | connect F
            X<---------------+              X                |
            X                |              X   OPEN(OUT)    |
            X                |              X<---------------X

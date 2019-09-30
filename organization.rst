@@ -1,23 +1,23 @@
-####################
-Project organization
-####################
+######################
+Organization structure
+######################
 
 
-Basic project structure
-=======================
+Basic layout
+============
 
 
-Firebird Butler is an extensive project, divided into several layers and pillars.
+Firebird Butler is an extensive division with number of parts and projects divided into several layers and pillars.
 
 The layers are:
 
 1. **Specifications and other documents**
     
-   This is the shared foundation of the Butler project. This document collection (in which this text is included) contains a description of the project, its parts and how they fit in with each other, the specification of the developer platform, the used communication protocols, and the recommended practices for their implementation and use. It also includes the specification of selected services implemented within the project, and other related documentation.
+   This is the shared foundation of the Butler projects. This document collection (in which this text is included) contains a description of the division, its parts and how they fit in with each other, the specification of the developer platform, the used communication protocols, and the recommended practices for their implementation and use. It also includes the specification of selected services implemented within the Butler's projects, and other related documentation.
        
    All these documents (provided under `CC-BY-SA-4.0` license) reside in the `Butler repository <https://github.com/FirebirdSQL/Butler>`_ on GitHub. They are also accessible in HTML and other formats at `readthedocs`.
    
-   The main communication channel for discussion of specifications, implementation strategies, and other issues related to the whole project or its basics is the `firebird-butler forum <https://groups.google.com/d/forum/firebird-butler>`_ on googlegroups.
+   The main communication channel for discussion of specifications, implementation strategies, and other issues related to the whole division or its basics is the `firebird-butler forum <https://groups.google.com/d/forum/firebird-butler>`_ on googlegroups.
    
    .. tip::
    
@@ -25,13 +25,13 @@ The layers are:
        
 2. **Implementations of the Butler SDK**
     
-   Different implementations of the development platform represent the individual pillars of the project. These pillars are typically formed around a particular programming language or development environment. Currently, due to limited resources, the project has only three pillars:
+   Different implementations of the development platform represent the individual pillars of the division. These pillars are typically formed around a particular programming language or development environment. Currently, due to limited resources, the division has only three pillars:
    
     1. `saturnin-sdk`_ : a reference implementation in Python
     2. `ButlerJavaSDK`_ : implementation in Java
     3. :ref:`Butler SDK for Free Pascal <butler-fpc-sdk>` : implementation in Free Pascal
      
-   We hope the project's potential will attract other developers to help us deliver implementations also for Delphi, C# and other environments.
+   We hope the Butler's potential will attract other developers to help us deliver implementations also for Delphi, C# and other environments.
    
    Each SDK is a sub-project with its own repositories, communication channels, developers and documentation.
        

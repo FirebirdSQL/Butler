@@ -22,7 +22,7 @@ with open(path.join(HERE, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='firebird-butler-protobuf',
-    version='0.1.0',
+    version='0.2.0',
     description='Firebird Butler protocol buffers',
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/x-rst",
