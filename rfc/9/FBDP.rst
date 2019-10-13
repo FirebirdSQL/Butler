@@ -5,7 +5,7 @@
 :domain: github.com/FirebirdSQL/Butler
 :shortname: 9/FBDP
 :name: Firebird Butler Data Pipe Protocol
-:status: raw
+:status: draft
 :editor: Pavel Císař <pcisar@users.sourceforge.net>
 
 The Firebird Butler Data Pipe Protocol (FBDP) defines unified data format, and formal rules for exchanging user data messages through a Data Pipe in accordance with the specification in |Data Pipe Definition|.

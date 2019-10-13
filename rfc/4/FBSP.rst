@@ -5,7 +5,7 @@
 :domain: github.com/FirebirdSQL/Butler
 :shortname: 4/FBSP
 :name: Firebird Butler Service Protocol
-:status: raw
+:status: draft
 :editor: Pavel Císař <pcisar@users.sourceforge.net>
 
 The Firebird Butler Service Protocol (FBSP) defines formal rules for exchanging messages between Butler Service and its Client over Service Sockets as they are defined in |FBSD|.
@@ -283,7 +283,7 @@ The REQUEST message is a `Client` request to the `Service`.
 3. The `Service` MUST respond to this message by sending REPLY_ or ERROR_ message with the same `Request Code`_ in type-data_ field.
 4. The `Service` MAY send additional subsequent messages in response to the same REQUEST message.
 5. The type and number of messages in reply to particular request, as well as method for indicating the end of the message stream to the `Client` SHALL be defined by the API for particular `Request Code`_.
-6. When ACK-REQUEST_ flag is set in received REQUEST message, the `Service` MUST respond according to rules for ACK-REQUEST_ flag handling. This ACK response MUST be immediate, before further processing of the request.
+6. When ACK-REQUEST_ flag is set in received REQUEST message, the `Service` MUST respond according to rules for ACK-REQUEST_ flag handling.
 
 .. seealso::
 
@@ -328,8 +328,9 @@ The CANCEL message represents a request for a `Service` to stop processing the p
 1. One CANCEL message is a request to end the processing of one active request.
 2. The content of type-data_ field in this message is not significant.
 3. The message MUST have a data-frame_ with specification of the request whose processing is to be terminated. The data-frame_ MAY contain additional information.
-4. The `Service` SHALL terminate specified active request of the `Client`, and send the REPLY_ message to the `Client` when cancellation is successfully finished. The REPLY_ message MAY have a data-frame_ with additional information.
-5. If the `Service` can not stop processing the request whose cancellation is requested, it MUST respond with the ERROR_ message.
+4. The `Service` MUST respond with the ERROR_ message with appropriate `Error Code`_. 
+5. If `Service` successfully terminated specified active `Client` request, the ERROR_ message MUST have `Request Canceled` `Error Code`_.
+6. The ERROR_ message MAY have a data-frame_ with additional information.
 
 .. seealso::
 
@@ -514,7 +515,7 @@ The `Service API` consists from `Interfaces` (API contracts) that consists from 
 The `Request Code` uniquely identifies the `Service` functionality (an API call). This specification define following rules for request codes:
 
 1. The first (more significant) byte of type-data_ field SHALL contain the `Interface identification number` assigned by `Service` to particular `Interface` it supports (see :ref:`Data frames - WELCOME <welcome-dataframe>`).
-2. The second (less significant byte) byte of type-data_ field SHALL contain the `Interface operation code`.
+2. The second (less significant) byte of type-data_ field SHALL contain the `Interface operation code`.
 
 
 .. _protocol-buffer:
@@ -747,6 +748,10 @@ Errors indicating that particular request cannot be satisfied
 :16 - Insufficient Storage:
 
   The service is unable to store data needed to successfully complete the request.
+  
+:17 - Request Canceled:
+
+  The client's request was canceled by CANCEL_ request.
 
 
 Fatal errors indicating that connection would/should be terminated

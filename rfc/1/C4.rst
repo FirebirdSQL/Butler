@@ -5,7 +5,7 @@
 :domain: github.com/FirebirdSQL/Butler
 :shortname: 1/C4
 :name: Collective Code Construction Contract
-:status: draft
+:status: stable
 :editor: Pavel Císař <pcisar@users.sourceforge.net>
 
 

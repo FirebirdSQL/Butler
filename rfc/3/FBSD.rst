@@ -5,7 +5,7 @@
 :domain: github.com/FirebirdSQL/Butler
 :shortname: 3/FBSD
 :name: Firebird Butler Service Definition
-:status: raw
+:status: draft
 :editor: Pavel Císař <pcisar@users.sourceforge.net>
 
 This document describes a specific category of software components capable of providing their services to clients working in the same or different contexts where the context may be a thread or a process. It defines common functionality and operational parameters to ensure interoperability and integration under defined working conditions.

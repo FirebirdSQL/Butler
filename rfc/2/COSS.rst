@@ -5,7 +5,7 @@
 :domain: github.com/FirebirdSQL/Butler
 :shortname: 2/COSS
 :name: Consensus-Oriented Specification System
-:status: draft
+:status: stable
 :editor: Pavel Císař <pcisar@users.sourceforge.net>
 
 

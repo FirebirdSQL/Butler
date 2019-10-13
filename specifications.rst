@@ -26,13 +26,10 @@ Raw
 .. toctree::
    :maxdepth: 1
 
-   /rfc/3/FBSD
-   /rfc/4/FBSP
    /rfc/5/FBLP
    /rfc/6/SSTP
    /rfc/7/RSCFG
    /rfc/8/RSCTRL
-   /rfc/9/FBDP
 
 Draft
 =====
@@ -40,13 +37,18 @@ Draft
 .. toctree::
    :maxdepth: 1
 
-   /rfc/1/C4
-   /rfc/2/COSS
+   /rfc/3/FBSD
+   /rfc/4/FBSP
+   /rfc/9/FBDP
 
 Stable
 ======
    
-None at this time.
+.. toctree::
+   :maxdepth: 1
+
+   /rfc/1/C4
+   /rfc/2/COSS
 
 Deprecated
 ==========
