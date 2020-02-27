@@ -30,24 +30,3 @@ children:
     email: pcisar@users.sourceforge.net
     site: https://firebirdsql.org/en/saturnin/
     node-spec: leaf
-  - number: 2
-    name: datagen
-    description: Data generator service
-    contact: Pavel Císař
-    email: pcisar@users.sourceforge.net
-    site: https://firebirdsql.org/en/saturnin/
-    node-spec: leaf
-  - number: 3
-    name: logging
-    description: Logging Service
-    contact: Pavel Císař
-    email: pcisar@users.sourceforge.net
-    site: https://firebirdsql.org/en/saturnin/
-    node-spec: leaf
-  - number: 4
-    name: firebird-log
-    description: Firebird Log Service
-    contact: Pavel Císař
-    email: pcisar@users.sourceforge.net
-    site: https://firebirdsql.org/en/saturnin/
-    node-spec: leaf

@@ -1,4 +1,6 @@
-# Firebird Butler Protocol Buffers
+================================
+Firebird Butler Protocol Buffers
+================================
 
 This package contains Python modules for work with protocol buffers defined by various
 Firebird Butler [specifications][1].

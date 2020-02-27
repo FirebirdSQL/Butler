@@ -25,7 +25,7 @@ copyright = u'2018, Firebird Butler Project, CC BY-SA 4.0'
 author = u'Pavel Cisar'
 
 # The short X.Y version
-version = u'1.0'
+#version = u'1.0'
 # The full version, including alpha/beta/rc tags
 release = u'1.0'
 
@@ -176,6 +176,7 @@ html_theme_options = {
     # - Bootstrap 3: https://bootswatch.com/3
     #'bootswatch_theme': "united", # cerulean, flatly, lumen, materia, united, yeti
     'bootswatch_theme': "cerulean",
+    #'bootswatch_theme': "united",
 
     # Choose Bootstrap version.
     # Values: "3" (default) or "2" (in quotes)
