@@ -20,16 +20,14 @@ The change process is :doc:`C4 </rfc/1/C4>` with a few modifications:
    rfc/rfc-index
 
 
-Raw
-===
-
+Stable
+======
+   
 .. toctree::
    :maxdepth: 1
 
-   /rfc/5/FBLP
-   /rfc/6/SSTP
-   /rfc/7/RSCFG
-   /rfc/8/RSCTRL
+   /rfc/1/C4
+   /rfc/2/COSS
 
 Draft
 =====
@@ -41,14 +39,16 @@ Draft
    /rfc/4/FBSP
    /rfc/9/FBDP
 
-Stable
-======
-   
+Raw
+===
+
 .. toctree::
    :maxdepth: 1
 
-   /rfc/1/C4
-   /rfc/2/COSS
+   /rfc/5/FBLP
+   /rfc/6/SSTP
+   /rfc/7/RSCFG
+   /rfc/8/RSCTRL
 
 Deprecated
 ==========
