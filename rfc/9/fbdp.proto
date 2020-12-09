@@ -11,7 +11,7 @@
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
 // and/or sell copies of the Software, and to permit persons to whom
 // the Software is furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included
 // in all copies or substantial portions of the Software.
 //
@@ -37,7 +37,7 @@ import "google/protobuf/struct.proto";
 
 message FBDPOpenDataframe {
   string                 data_pipe   = 1 ; // [required] Data Pipe Identification
-  uint32                 pipe_stream = 2 ; // [required] Data Pipe stream Identification
+  uint32                 pipe_socket = 2 ; // [required] Data Pipe socket Identification
   string                 data_format = 3 ; // Specification of format for transmitted user data
   google.protobuf.Struct parameters  = 4 ; // Implementation-specific Data Pipe parameters
 }

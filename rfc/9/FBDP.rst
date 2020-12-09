@@ -330,7 +330,7 @@ OPEN data
 
    message FBDPOpenDataframe {
      string                 data_pipe   = 1 ;
-     uint32                 pipe_stream = 2 ;
+     uint32                 pipe_socket = 2 ;
      string                 data_format = 3 ;
      google.protobuf.Struct parameters  = 4 ;
    }
@@ -338,12 +338,12 @@ OPEN data
 :data_pipe:
   MANDATORY Data Pipe Identification. The value MAY be arbitrary, but it is RECOMMENDED to use structured names, or *uuid* values in hexadecimal string representation.
 
-:pipe_stream:
-  MANDATORY Data Pipe stream Identification. Any implementation MUST support next values:
+:pipe_socket:
+  MANDATORY Data Pipe socket Identification. Any implementation MUST support next values:
   
-  - 0 = UNKNOWN data stream. Not a valid option, defined only to handle undefined value.
-  - 1 = INPUT data stream
-  - 2 = OUTPUT data stream
+  - 0 = UNKNOWN data soscket. Not a valid option, defined only to handle undefined value.
+  - 1 = INPUT data socket
+  - 2 = OUTPUT data socket
   
 :data_format:
   Specification of format for user data transmitted in DATA messages. The value MAY be arbitrary, but it is RECOMMENDED that the data format specification be determined by the open specification.
