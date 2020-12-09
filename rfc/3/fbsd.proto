@@ -110,14 +110,6 @@ enum DependencyTypeEnum {
   DEPTYPE_OPTIONAL  = 3 ; // The resource MAY be provided if available
 }
 
-// ZMQ endpoint address
-
-message EndpointAddress {
-  AddressDomainEnum     domain   = 1 ;
-  TransportProtocolEnum protocol = 2 ;
-  string                address  = 3 ;
-}
-
 // Butler Development Platform Identification
 
 message PlatformId {

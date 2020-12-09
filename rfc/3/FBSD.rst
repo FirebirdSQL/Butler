@@ -352,30 +352,6 @@ Enumeration for definition of dependency type.
 5.1.2 Data structures (messages)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-ZeroMQ endpoint address
-"""""""""""""""""""""""
-
-A data structure that describes ZeroMQ endpoint address.
-
-.. code-block:: protobuf
-
-   package firebird.butler;
-
-   message EndpointAddress {
-     AddressDomainEnum     domain   = 1 ;
-     TransportProtocolEnum protocol = 2 ;
-     string                address  = 3 ;
-   }
-
-:domain:
-  MANDATORY address domain.
-
-:protocol:
-  MANDATORY protocol identification.
-
-:address:
-  MANDATORY address specification.
-
 Platform Identification
 """""""""""""""""""""""
 
