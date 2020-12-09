@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x1a\x66irebird/butler/fbdp.proto\x12\x0f\x66irebird.butler\x1a\x1cgoogle/protobuf/struct.proto\"}\n\x11\x46\x42\x44POpenDataframe\x12\x11\n\tdata_pipe\x18\x01 \x01(\t\x12\x13\n\x0bpipe_stream\x18\x02 \x01(\r\x12\x13\n\x0b\x64\x61ta_format\x18\x03 \x01(\t\x12+\n\nparameters\x18\x04 \x01(\x0b\x32\x17.google.protobuf.Structb\x06proto3'
+  serialized_pb=b'\n\x1a\x66irebird/butler/fbdp.proto\x12\x0f\x66irebird.butler\x1a\x1cgoogle/protobuf/struct.proto\"}\n\x11\x46\x42\x44POpenDataframe\x12\x11\n\tdata_pipe\x18\x01 \x01(\t\x12\x13\n\x0bpipe_socket\x18\x02 \x01(\r\x12\x13\n\x0b\x64\x61ta_format\x18\x03 \x01(\t\x12+\n\nparameters\x18\x04 \x01(\x0b\x32\x17.google.protobuf.Structb\x06proto3'
   ,
   dependencies=[google_dot_protobuf_dot_struct__pb2.DESCRIPTOR,])
 
@@ -43,7 +43,7 @@ _FBDPOPENDATAFRAME = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='pipe_stream', full_name='firebird.butler.FBDPOpenDataframe.pipe_stream', index=1,
+      name='pipe_socket', full_name='firebird.butler.FBDPOpenDataframe.pipe_socket', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
