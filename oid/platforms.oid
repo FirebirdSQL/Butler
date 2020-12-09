@@ -17,12 +17,12 @@ node:
 # could be omitted for leaf node (see node.type)
 children:        
   - number: 0
-    name: saturnin-sdk
-    description: Saturnin SDK is a reference implementation of Butler Development Platform
+    name: saturnin
+    description: Firebird Butler Development & Deployment Platform in Python 3, also provides reference implementations for Firebird Burtler standards
     contact: Pavel Císař
     email: pcisar@users.sourceforge.net
     site: https://firebirdsql.org/en/saturnin-sdk/
-    node-spec: leaf
+    node-spec: https://raw.githubusercontent.com/FirebirdSQL/saturnin/master/oid/saturnin.oid
   - number: 1
     name: java-sdk
     description: ButlerJavaSDK

@@ -24,45 +24,24 @@ children:
     site: https://firebird-butler.rtfd.io
     node-spec: leaf  # one of: keywords "leaf" or "private" or URL to YAML file describing this child node
   - number: 1
-    name: service
-    description: Root node for registered Firebird Butler Services
-    contact: Pavel Císař
-    email: pcisar@users.sourceforge.net
-    site: https://firebird-butler.rtfd.io
-    node-spec: https://raw.githubusercontent.com/FirebirdSQL/Butler/master/oid/services.oid
-  - number: 2
     name: platform
     description: Root node for registered Firebird Butler Development Platforms
     contact: Pavel Císař
     email: pcisar@users.sourceforge.net
     site: https://firebird-butler.rtfd.io
     node-spec: https://raw.githubusercontent.com/FirebirdSQL/Butler/master/platforms.oid
-  - number: 3
+  - number: 2
     name: vendor
     description: Root node for registered Firebird Butler Service Vendors
     contact: Pavel Císař
     email: pcisar@users.sourceforge.net
     site: https://firebird-butler.rtfd.io
     node-spec: https://raw.githubusercontent.com/FirebirdSQL/Butler/master/vendors.oid
-  - number: 4
-    name: ability
-    description: Root node for registered Firebird Butler Service abilities
-    contact: Pavel Císař
-    email: pcisar@users.sourceforge.net
-    site: https://firebird-butler.rtfd.io
-    node-spec: leaf
-  - number: 5
+  - number: 3
     name: protocol
     description: Root node for registered Firebird Butler protocols
     contact: Pavel Císař
     email: pcisar@users.sourceforge.net
     site: https://firebird-butler.rtfd.io
     node-spec: https://raw.githubusercontent.com/FirebirdSQL/Butler/master/protocols.oid
-  - number: 6
-    name: microservice
-    description: Root node for registered Firebird Butler Microservices
-    contact: Pavel Císař
-    email: pcisar@users.sourceforge.net
-    site: https://firebird-butler.rtfd.io
-    node-spec: https://raw.githubusercontent.com/FirebirdSQL/Butler/master/oid/micros.oid
    

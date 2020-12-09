@@ -35,33 +35,5 @@ children:
     description: Firebird Butler Data Pipe Protocol
     contact: Pavel Císař
     email: pcisar@users.sourceforge.net
-    site: https://firebird-butler.rtfd.io
-    node-spec: leaf  # one of: keywords "leaf" or "private" or URL to YAML file describing this child node
-  - number: 3
-    name: fblp
-    description: Firebird Butler Log Protocol
-    contact: Pavel Císař
-    email: pcisar@users.sourceforge.net
-    site: https://firebird-butler.readthedocs.io/en/latest/rfc/5/FBLP.html
-    node-spec: leaf  # one of: keywords "leaf" or "private" or URL to YAML file describing this child node
-  - number: 4
-    name: sstp
-    description: Service State Protocol
-    contact: Pavel Císař
-    email: pcisar@users.sourceforge.net
-    site: https://firebird-butler.readthedocs.io/en/latest/rfc/6/SSTP.html
-    node-spec: leaf  # one of: keywords "leaf" or "private" or URL to YAML file describing this child node
-  - number: 5
-    name: rscfg
-    description: Remote Service Configuration Protocol
-    contact: Pavel Císař
-    email: pcisar@users.sourceforge.net
-    site: https://firebird-butler.readthedocs.io/en/latest/rfc/7/RSCFG.html
-    node-spec: leaf  # one of: keywords "leaf" or "private" or URL to YAML file describing this child node
-  - number: 6
-    name: rsctrl
-    description: Remote Service Control Protocol
-    contact: Pavel Císař
-    email: pcisar@users.sourceforge.net
-    site: https://firebird-butler.readthedocs.io/en/latest/rfc/8/RSCTRL.html
+    site: https://firebird-butler.readthedocs.io/en/latest/rfc/9/FBDP.html
     node-spec: leaf  # one of: keywords "leaf" or "private" or URL to YAML file describing this child node
