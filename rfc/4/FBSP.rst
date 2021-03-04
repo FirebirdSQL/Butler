@@ -329,7 +329,7 @@ The CANCEL message represents a request for a `Service` to stop processing the p
 2. The content of type-data_ field in this message is not significant.
 3. The message MUST have a data-frame_ with specification of the request whose processing is to be terminated. The data-frame_ MAY contain additional information.
 4. The `Service` MUST respond with the ERROR_ message with appropriate `Error Code`_. 
-5. If `Service` successfully terminated specified active `Client` request, the ERROR_ message MUST have `Request Canceled` `Error Code`_.
+5. If `Service` successfully terminated specified active `Client` request, the ERROR_ message MUST have `Request Cancelled` `Error Code`_.
 6. The ERROR_ message MAY have a data-frame_ with additional information.
 
 .. seealso::
@@ -401,14 +401,14 @@ ACK-REQUEST
 
 The ACK-REQUEST flag is intended for verification and synchronization purposes.
 
-1. Any received control-frame_ of message-type_ NOOP_, REQUEST_, REPLY_, DATA_, STATE_ or CANCEL_ that have ACK-REQUEST flag set SHALL be sent back to the sender as confirmation of accepted message, unless the receiver is a `Service` and an error condition occurs. In such a case the ERROR_ message SHALL be sent by `Service` instead confirmation message.
+1. Any received control-frame_ of message-type_ NOOP_, REQUEST_, REPLY_, DATA_ or STATE_ that have ACK-REQUEST flag set SHALL be sent back to the sender as confirmation of accepted message, unless the receiver is a `Service` and an error condition occurs. In such a case the ERROR_ message SHALL be sent by `Service` instead confirmation message.
 2. Returned confirmatory message SHALL consists only from the received control-frame_ with ACK-REQUEST flag cleared, and with ACK-REPLY_ flag set (ie the control-frame_ MUST be otherwise unchanged).
 3. The ACK-REQUEST flag SHALL be ignored for all message-type_ values not listed in rule 1.
 
 Rules for ACK-REQUEST received by `Service`:
 
 1. NOOP_ message SHALL be acknowledged without any delay.
-2. REQUEST_ and CANCEL_ messages SHALL be acknowledged at the time the `Service` has positively decided to accept the client's request and before commencing the fulfillment of the client's request.
+2. REQUEST_ message SHALL be acknowledged at the time the `Service` has positively decided to accept the client's request and before commencing the fulfillment of the client's request.
 3. DATA_ message SHALL be acknowledged without any delay, unless a previous agreement between the `Client` and the `Service` exists to handle it differently (for example to send it when DATA message is actually processed and Service is able to accept another DATA message).
 
 Rules for ACK-REQUEST received by `Client`:
@@ -624,7 +624,7 @@ CANCEL data
    }
 
 :token:
-  MANDATORY message-token_ of the message to be canceled.
+  MANDATORY message-token_ of the message to be cancelled.
 
 :supplement:
   Any additional information required or supported by Service API specification for cancellation of particular message.
@@ -749,9 +749,9 @@ Errors indicating that particular request cannot be satisfied
 
   The service is unable to store data needed to successfully complete the request.
   
-:17 - Request Canceled:
+:17 - Request Cancelled:
 
-  The client's request was canceled by CANCEL_ request.
+  The client's request was cancelled by CANCEL_ request.
 
 
 Fatal errors indicating that connection would/should be terminated

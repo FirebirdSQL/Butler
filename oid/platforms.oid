@@ -21,7 +21,7 @@ children:
     description: Firebird Butler Development & Deployment Platform in Python 3, also provides reference implementations for Firebird Burtler standards
     contact: Pavel Císař
     email: pcisar@users.sourceforge.net
-    site: https://firebirdsql.org/en/saturnin-sdk/
+    site: https://firebirdsql.org/en/saturnin/
     node-spec: https://raw.githubusercontent.com/FirebirdSQL/saturnin/master/oid/saturnin.oid
   - number: 1
     name: java-sdk
