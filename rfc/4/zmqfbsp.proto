@@ -1,0 +1,43 @@
+// ZeroMQ 4.2 socket types
+
+enum ZMQSocketType {
+  UNKNOWN = 0 ;
+  ROUTER  = 1 ;
+  DEALER  = 2 ;
+  PUB     = 3 ;
+  XPUB    = 4 ;
+  SUB     = 5 ;
+  XSUB    = 6 ;
+  PUSH    = 7 ;
+  PULL    = 8 ;
+  PAIR    = 9 ;
+  STREAM  = 10 ;
+  CLIENT  = 11 ;
+  SERVER  = 12 ;
+  RADIO   = 13 ;
+  DISH    = 14 ;
+  REQ     = 15 ;
+  REP     = 16 ;
+}
+
+// ZeroMQ Protocols
+
+enum ZMQProtocolType {
+  UNKNOWN = 0 ;
+  TCP     = 1 ;
+  IPC     = 2 ;
+  INPROC  = 3 ;
+  PGM     = 4 ;
+  VMCI    = 5 ;
+  UDP     = 6 ;
+}
+
+// ZeroMQ Security Scheme
+
+enum ZMQSecurityScheme {
+  NULL   = 0 ;
+  PLAIN  = 1 ;
+  CURVE  = 2 ;
+  GSSAPI = 3 ;
+}
+
