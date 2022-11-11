@@ -29,19 +29,19 @@ children:
     contact: Pavel Císař
     email: pcisar@users.sourceforge.net
     site: https://firebird-butler.rtfd.io
-    node-spec: https://raw.githubusercontent.com/FirebirdSQL/Butler/master/platforms.oid
+    node-spec: https://raw.githubusercontent.com/FirebirdSQL/Butler/master/oid/platforms.oid
   - number: 2
     name: vendor
     description: Root node for registered Firebird Butler Service Vendors
     contact: Pavel Císař
     email: pcisar@users.sourceforge.net
     site: https://firebird-butler.rtfd.io
-    node-spec: https://raw.githubusercontent.com/FirebirdSQL/Butler/master/vendors.oid
+    node-spec: https://raw.githubusercontent.com/FirebirdSQL/Butler/master/oid/vendors.oid
   - number: 3
     name: protocol
     description: Root node for registered Firebird Butler protocols
     contact: Pavel Císař
     email: pcisar@users.sourceforge.net
     site: https://firebird-butler.rtfd.io
-    node-spec: https://raw.githubusercontent.com/FirebirdSQL/Butler/master/protocols.oid
+    node-spec: https://raw.githubusercontent.com/FirebirdSQL/Butler/master/oid/protocols.oid
    
