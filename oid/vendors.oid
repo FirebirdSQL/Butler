@@ -4,7 +4,7 @@
 #
 # Description of root node for this sub-tree
 node:            
-  oid: 1.3.6.1.4.1.53446.1.3
+  oid: 1.3.6.1.4.1.53446.1.2
   name: vendor
   description: Root node for registered Firebird Butler Service Vendors
   contact: Pavel Císař
