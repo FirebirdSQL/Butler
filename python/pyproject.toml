@@ -1,39 +1,41 @@
 [build-system]
-requires = ["setuptools >= 65.0.0", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [project]
-name = "firebird-butler-protobuf"
-version = "0.5.0"
-description = "Firebird Butler protocol buffers"
+name = "butler"
+dynamic = ["version"]
+description = 'Firebird Butler protocol buffers'
 readme = "README.rst"
-requires-python = ">=3.8, <4"
+requires-python = ">=3.8"
 license = { file = "LICENSE" }
-authors = [{ name = "Pavel Císař", email = "pcisar@users.sourceforge.net"}]
 keywords = ["Firebird", "Butler", "protobuf"]
+authors = [
+  { name = "Pavel Cisar", email = "pcisar@ibphoenix.cz" },
+]
 classifiers = [
-    "Development Status :: 5 - Production/Stable",
-    "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
-    "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Operating System :: POSIX :: Linux",
-    "Operating System :: Microsoft :: Windows",
-    "Operating System :: MacOS",
-    "Topic :: Software Development",
-    ]
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Operating System :: POSIX :: Linux",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: MacOS",
+  "Topic :: Software Development",
+]
 dependencies = [
-    "protobuf>=4.21.0, <5",
-    ]
+  "protobuf>=4.24.3, <5",
+]
 
 [project.urls]
 Home = "https://firebirdsql.org/en/firebird-butler-dev/"
 Documentation = "https://firebird-butler.rtfd.io"
-"Bug Reports" = "https://github.com/FirebirdSQL/Butler/issues"
-Funding = "https://www.firebirdsql.org/en/donate/"
+Issues = "https://github.com/FirebirdSQL/Butler/issues"
+Funding = "https://github.com/sponsors/pcisar"
 Source = "https://github.com/FirebirdSQL/Butler/python"
 
 [project.entry-points."firebird.butler.protobuf"]
@@ -41,5 +43,5 @@ Source = "https://github.com/FirebirdSQL/Butler/python"
 "firebird.butler.fbsd" = "firebird.butler.fbsd_pb2:DESCRIPTOR"
 "firebird.butler.fbsp" = "firebird.butler.fbsp_pb2:DESCRIPTOR"
 
-[tool.setuptools]
-zip-safe = true
+[tool.hatch.version]
+path = "src/firebird/butler/__about__.py"
