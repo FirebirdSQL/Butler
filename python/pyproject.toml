@@ -3,10 +3,10 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "butler"
+name = "firebird-butler-protobuf"
 dynamic = ["version"]
 description = 'Firebird Butler protocol buffers'
-readme = "README.rst"
+readme = "README.md"
 requires-python = ">=3.8"
 license = { file = "LICENSE" }
 keywords = ["Firebird", "Butler", "protobuf"]
