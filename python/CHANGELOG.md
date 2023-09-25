@@ -9,8 +9,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 
 - Update dependency to protobuf >=4.24.3
+- Recompilation of protobuf definitions with libprotoc 23.4
 - Build system changed from setuptools to hatch
 - Package version is now defined in firebird.butler.__about__.py (__version__)
+
+### Added
+
+- .pyi files for protobuf modules.
 
 ## [0.5.0] - 2022-11-14
 
