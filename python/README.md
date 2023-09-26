@@ -2,6 +2,7 @@
 
 [![PyPI - Version](https://img.shields.io/pypi/v/firebird-butler-protobuf.svg)](https://pypi.org/project/firebird-butler-protobuf)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/firebird-butler-protobuf.svg)](https://pypi.org/project/firebird-butler-protobuf)
+[![Hatch project](https://img.shields.io/badge/%F0%9F%A5%9A-Hatch-4051b5.svg)](https://github.com/pypa/hatch)
 
 This package contains Python modules for work with protocol buffers defined by various
 Firebird Butler [specifications](https://firebird-butler.readthedocs.io/en/latest/specifications.html).
