@@ -45,3 +45,6 @@ Source = "https://github.com/FirebirdSQL/Butler/python"
 
 [tool.hatch.version]
 path = "src/firebird/butler/__about__.py"
+
+[tool.hatch.build]
+packages = ["src/firebird"]
