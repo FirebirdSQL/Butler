@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [1.0.0] - 2023-10-03
 
+### Added
+
+- Tests (pytest)
+
+### Changed
+
+- Requirements downgraded to protobuf>=4.23.4
+
+## [1.0.0] - 2023-10-03
+
 ### Changed
 
 - Update dependency to protobuf >=4.24.3
