@@ -7,7 +7,7 @@ name = "firebird-butler-protobuf"
 dynamic = ["version"]
 description = 'Firebird Butler protocol buffers'
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.11"
 license = { file = "LICENSE" }
 keywords = ["Firebird", "Butler", "protobuf"]
 authors = [
@@ -18,17 +18,16 @@ classifiers = [
   "Intended Audience :: Developers",
   "License :: OSI Approved :: MIT License",
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.8",
-  "Programming Language :: Python :: 3.9",
-  "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
   "Operating System :: POSIX :: Linux",
   "Operating System :: Microsoft :: Windows",
   "Operating System :: MacOS",
   "Topic :: Software Development",
 ]
 dependencies = [
-  "protobuf>=4.23.4",
+    "protobuf~=5.29",
 ]
 
 [project.urls]
@@ -52,95 +51,46 @@ include = ["src"]
 [tool.hatch.build.targets.wheel]
 packages = ["src/firebird"]
 
-[tool.hatch.envs.test]
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.envs.default]
+dependencies = [
+]
+
+[tool.hatch.envs.hatch-test]
+extra-args = ["-vv"]
 dependencies = [
   "coverage[toml]>=6.5",
   "pytest",
 ]
-[tool.hatch.envs.test.scripts]
-test = "pytest {args:tests}"
-test-cov = "coverage run -m pytest {args:tests}"
-cov-report = [
-  "- coverage combine",
-  "coverage report",
-]
-cov = [
-  "test-cov",
-  "cov-report",
-]
-version = "python --version"
 
-[[tool.hatch.envs.test.matrix]]
-python = ["3.8", "3.9", "3.10", "3.11"]
+[[tool.hatch.envs.hatch-test.matrix]]
+python = ["3.11", "3.12", "3.13"]
 
 [tool.hatch.envs.doc]
 detached = false
 platforms = ["linux"]
 dependencies = [
-  "Sphinx>=7.1",
+  "Sphinx==7.2.6",
   "sphinx-bootstrap-theme>=0.8.1",
   "sphinx-autodoc-typehints>=1.24.0",
+  "doc2dash>=3.0.0"
 ]
 [tool.hatch.envs.doc.scripts]
 build = "cd docs ; make html"
-
-[tool.hatch.envs.lint]
-detached = true
-dependencies = [
-  "black>=23.1.0",
-  "mypy>=1.0.0",
-  "ruff>=0.0.243",
+docset = [
+  "cd docs ; doc2dash -u https://firebird-butler.readthedocs.io/en/latest/ -f -i ./_static/fb-favicon.png -n firebird-butler ./_build/html/",
+  "cd docs; VERSION=`hatch version` ; tar --exclude='.DS_Store' -cvzf ../dist/firebird-butler-$VERSION-docset.tgz firebird-butler.docset",
 ]
-[tool.hatch.envs.lint.scripts]
-typing = "mypy --install-types --non-interactive {args:src/firebird/uuid tests}"
-style = [
-  "ruff {args:.}",
-  "black --check --diff {args:.}",
-]
-fmt = [
-  "black {args:.}",
-  "ruff --fix {args:.}",
-  "style",
-]
-all = [
-  "style",
-  "typing",
-]
-
-[tool.black]
-target-version = ["py38"]
-line-length = 120
-skip-string-normalization = true
 
 [tool.ruff]
-target-version = "py38"
+target-version = "py311"
 line-length = 120
-select = [
-  "A",
-  "ARG",
-  "B",
-  "C",
-  "DTZ",
-  "E",
-  "EM",
-  "F",
-  "FBT",
-  "I",
-  "ICN",
-  "ISC",
-  "N",
-  "PLC",
-  "PLE",
-  "PLR",
-  "PLW",
-  "Q",
-  "RUF",
-  "S",
-  "T",
-  "TID",
-  "UP",
-  "W",
-  "YTT",
+
+[tool.ruff.lint]
+select = ["A", "ARG", "B", "C", "DTZ", "E", "EM", "F", "FBT", "I", "ICN", "ISC", "N",
+  "PLC", "PLE", "PLR", "PLW", "Q", "RUF", "S", "T", "TID", "UP", "W", "YTT",
 ]
 ignore = [
   # Allow non-abstract empty methods in abstract base classes
@@ -151,32 +101,43 @@ ignore = [
   "S105", "S106", "S107",
   # Ignore complexity
   "C901", "PLR0911", "PLR0912", "PLR0913", "PLR0915",
+  #
+  "E741",
+  # Allow relative imports
+  "TID252",
+  # Allow literals in exceptions
+  "EM101", "EM102",
+  # Single quotes instead double
+  "Q000"
 ]
 unfixable = [
   # Don't touch unused imports
   "F401",
+  # Don't change single quotes to double
+  "Q000"
 ]
+exclude = ["*_pb2.py", "*.pyi", "tests/*", "docs/*", "personal/*"]
 
-[tool.ruff.isort]
-known-first-party = ["firebird.uuid"]
+[tool.ruff.lint.isort]
+known-first-party = ["firebird.butler"]
 
-[tool.ruff.flake8-tidy-imports]
+[tool.ruff.lint.flake8-tidy-imports]
 ban-relative-imports = "all"
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.extend-per-file-ignores]
 # Tests can use magic values, assertions, and relative imports
 "tests/**/*" = ["PLR2004", "S101", "TID252"]
 
 [tool.coverage.run]
-source_pkgs = ["firebird.uuid", "tests"]
+source_pkgs = ["firebird.butler", "tests"]
 branch = true
 parallel = true
 omit = [
-  "src/firebird/uuid/__about__.py",
+  "src/firebird/butler/__about__.py",
 ]
 
 [tool.coverage.paths]
-firebird_uuid = ["src/python", "*/python/src/firebird/uuid"]
+firebird_butler = ["*/python/src/firebird/butler"]
 tests = ["tests", "*/python/tests"]
 
 [tool.coverage.report]

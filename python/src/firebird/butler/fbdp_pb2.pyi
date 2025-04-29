@@ -6,7 +6,7 @@ from typing import ClassVar as _ClassVar, Mapping as _Mapping, Optional as _Opti
 DESCRIPTOR: _descriptor.FileDescriptor
 
 class FBDPOpenDataframe(_message.Message):
-    __slots__ = ["data_pipe", "pipe_socket", "data_format", "parameters"]
+    __slots__ = ("data_pipe", "pipe_socket", "data_format", "parameters")
     DATA_PIPE_FIELD_NUMBER: _ClassVar[int]
     PIPE_SOCKET_FIELD_NUMBER: _ClassVar[int]
     DATA_FORMAT_FIELD_NUMBER: _ClassVar[int]

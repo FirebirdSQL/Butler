@@ -9,7 +9,7 @@ from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Map
 DESCRIPTOR: _descriptor.FileDescriptor
 
 class StateEnum(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-    __slots__ = []
+    __slots__ = ()
     STATE_UNKNOWN: _ClassVar[StateEnum]
     STATE_READY: _ClassVar[StateEnum]
     STATE_RUNNING: _ClassVar[StateEnum]
@@ -23,14 +23,14 @@ class StateEnum(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     STATE_TERMINATED: _ClassVar[StateEnum]
 
 class AddressDomainEnum(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-    __slots__ = []
+    __slots__ = ()
     DOMAIN_UNKNOWN: _ClassVar[AddressDomainEnum]
     DOMAIN_LOCAL: _ClassVar[AddressDomainEnum]
     DOMAIN_NODE: _ClassVar[AddressDomainEnum]
     DOMAIN_NETWORK: _ClassVar[AddressDomainEnum]
 
 class TransportProtocolEnum(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-    __slots__ = []
+    __slots__ = ()
     PROTOCOL_UNKNOWN: _ClassVar[TransportProtocolEnum]
     PROTOCOL_INPROC: _ClassVar[TransportProtocolEnum]
     PROTOCOL_IPC: _ClassVar[TransportProtocolEnum]
@@ -40,7 +40,7 @@ class TransportProtocolEnum(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     PROTOCOL_VMCI: _ClassVar[TransportProtocolEnum]
 
 class SocketTypeEnum(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-    __slots__ = []
+    __slots__ = ()
     SOCKET_TYPE_UNKNOWN: _ClassVar[SocketTypeEnum]
     SOCKET_TYPE_DEALER: _ClassVar[SocketTypeEnum]
     SOCKET_TYPE_ROUTER: _ClassVar[SocketTypeEnum]
@@ -54,14 +54,14 @@ class SocketTypeEnum(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     SOCKET_TYPE_PAIR: _ClassVar[SocketTypeEnum]
 
 class SocketUseEnum(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-    __slots__ = []
+    __slots__ = ()
     SOCKET_USE_UNKNOWN: _ClassVar[SocketUseEnum]
     SOCKET_USE_PRODUCER: _ClassVar[SocketUseEnum]
     SOCKET_USE_CONSUMER: _ClassVar[SocketUseEnum]
     SOCKET_USE_EXCHANGE: _ClassVar[SocketUseEnum]
 
 class DependencyTypeEnum(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-    __slots__ = []
+    __slots__ = ()
     DEPTYPE_UNKNOWN: _ClassVar[DependencyTypeEnum]
     DEPTYPE_REQUIRED: _ClassVar[DependencyTypeEnum]
     DEPTYPE_PREFERRED: _ClassVar[DependencyTypeEnum]
@@ -109,7 +109,7 @@ DEPTYPE_PREFERRED: DependencyTypeEnum
 DEPTYPE_OPTIONAL: DependencyTypeEnum
 
 class PlatformId(_message.Message):
-    __slots__ = ["uid", "version"]
+    __slots__ = ("uid", "version")
     UID_FIELD_NUMBER: _ClassVar[int]
     VERSION_FIELD_NUMBER: _ClassVar[int]
     uid: bytes
@@ -117,13 +117,13 @@ class PlatformId(_message.Message):
     def __init__(self, uid: _Optional[bytes] = ..., version: _Optional[str] = ...) -> None: ...
 
 class VendorId(_message.Message):
-    __slots__ = ["uid"]
+    __slots__ = ("uid",)
     UID_FIELD_NUMBER: _ClassVar[int]
     uid: bytes
     def __init__(self, uid: _Optional[bytes] = ...) -> None: ...
 
 class AgentIdentification(_message.Message):
-    __slots__ = ["uid", "name", "version", "vendor", "platform", "classification", "supplement"]
+    __slots__ = ("uid", "name", "version", "vendor", "platform", "classification", "supplement")
     UID_FIELD_NUMBER: _ClassVar[int]
     NAME_FIELD_NUMBER: _ClassVar[int]
     VERSION_FIELD_NUMBER: _ClassVar[int]
@@ -141,7 +141,7 @@ class AgentIdentification(_message.Message):
     def __init__(self, uid: _Optional[bytes] = ..., name: _Optional[str] = ..., version: _Optional[str] = ..., vendor: _Optional[_Union[VendorId, _Mapping]] = ..., platform: _Optional[_Union[PlatformId, _Mapping]] = ..., classification: _Optional[str] = ..., supplement: _Optional[_Iterable[_Union[_any_pb2.Any, _Mapping]]] = ...) -> None: ...
 
 class PeerIdentification(_message.Message):
-    __slots__ = ["uid", "pid", "host", "supplement"]
+    __slots__ = ("uid", "pid", "host", "supplement")
     UID_FIELD_NUMBER: _ClassVar[int]
     PID_FIELD_NUMBER: _ClassVar[int]
     HOST_FIELD_NUMBER: _ClassVar[int]
@@ -153,7 +153,7 @@ class PeerIdentification(_message.Message):
     def __init__(self, uid: _Optional[bytes] = ..., pid: _Optional[int] = ..., host: _Optional[str] = ..., supplement: _Optional[_Iterable[_Union[_any_pb2.Any, _Mapping]]] = ...) -> None: ...
 
 class InterfaceSpec(_message.Message):
-    __slots__ = ["number", "uid"]
+    __slots__ = ("number", "uid")
     NUMBER_FIELD_NUMBER: _ClassVar[int]
     UID_FIELD_NUMBER: _ClassVar[int]
     number: int
@@ -161,7 +161,7 @@ class InterfaceSpec(_message.Message):
     def __init__(self, number: _Optional[int] = ..., uid: _Optional[bytes] = ...) -> None: ...
 
 class ErrorDescription(_message.Message):
-    __slots__ = ["code", "description", "context", "annotation"]
+    __slots__ = ("code", "description", "context", "annotation")
     CODE_FIELD_NUMBER: _ClassVar[int]
     DESCRIPTION_FIELD_NUMBER: _ClassVar[int]
     CONTEXT_FIELD_NUMBER: _ClassVar[int]
