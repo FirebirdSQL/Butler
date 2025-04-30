@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.0.0] - 2025-04-30
+
+### Changed
+
+- Minimal Python version raised to 3.11
+- Dependency on `protobuf` changed to "~=5.29".
+- Protobufs recompiled with protoc 25.1
+
 ## [1.0.0] - 2023-10-03
 
 ### Added

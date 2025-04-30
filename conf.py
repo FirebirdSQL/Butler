@@ -21,7 +21,7 @@ import sphinx_bootstrap_theme
 # -- Project information -----------------------------------------------------
 
 project = u'Firebird Butler'
-copyright = u'2018-2022, Firebird Butler Project, CC BY-SA 4.0'
+copyright = u'2018-present, Firebird Butler Project, CC BY-SA 4.0'
 author = u'Pavel Cisar'
 
 # The short X.Y version
